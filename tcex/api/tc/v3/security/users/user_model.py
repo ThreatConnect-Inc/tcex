@@ -1,7 +1,10 @@
 """TcEx Framework Module"""
 
+# standard library
+from __future__ import annotations
+
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -11,29 +14,29 @@ from tcex.util import Util
 class UserModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='User Model',
     validate_assignment=True,
 ):
     """User Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     user_name: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **user name** for the User.',
-        read_only=True,
+        frozen=True,
         title='userName',
+        validate_default=True,
     )
 
 
@@ -48,8 +51,8 @@ class UserDataModel(
     data: list[UserModel] | None = Field(
         [],
         description='The data for the Users.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -61,23 +64,22 @@ class UsersModel(
 ):
     """Users Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[UserModel] | None = Field(
         [],
         description='The data for the Users.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
-# add forward references
-UserDataModel.update_forward_refs()
-UserModel.update_forward_refs()
-UsersModel.update_forward_refs()
+# rebuild model
+UserDataModel.model_rebuild()
+UserModel.model_rebuild()
+UsersModel.model_rebuild()

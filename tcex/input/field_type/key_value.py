@@ -4,8 +4,8 @@
 from typing import ForwardRef
 
 # third-party
-from pydantic import BaseModel, validator
-from pydantic.fields import ModelField  # TYPE-CHECKING
+from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic_core.core_schema import ValidationInfo
 
 # first-party
 from tcex.input.field_type.binary import Binary
@@ -21,7 +21,7 @@ class KeyValue(BaseModel):
     """Model for KeyValue Input."""
 
     key: str
-    type: str | None
+    type: str | None = None
     value: (
         list[KeyValue]  # SELF-REFERENCE
         | KeyValue  # SELF-REFERENCE
@@ -34,21 +34,18 @@ class KeyValue(BaseModel):
         | Sensitive
     )
 
-    @validator('key')
+    @field_validator('key')
     @classmethod
-    def non_empty_string(cls, value: str, field: ModelField) -> str:
+    def non_empty_string(cls, value: str, info: ValidationInfo) -> str:
         """Validate that the value is a non-empty string."""
         if isinstance(value, str) and value.replace(' ', '') == '':
-            raise InvalidEmptyValue(field_name=field.name)
+            raise InvalidEmptyValue(field_name=info.field_name or 'Unknown')
         return value
 
-    class Config:
-        """Model Config"""
-
-        validate_assignment = True
+    model_config = ConfigDict(validate_assignment=True)
 
 
-KeyValue.update_forward_refs()
+KeyValue.model_rebuild()
 
 
 def key_value(allow_none=False):
@@ -68,7 +65,7 @@ def key_value(allow_none=False):
                 | Binary
                 | Sensitive
                 | None
-            )
+            ) = None
 
         key_value_model = _KeyValue
     return key_value_model

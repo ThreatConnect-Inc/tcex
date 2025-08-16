@@ -4,8 +4,8 @@
 from typing import ClassVar
 
 # third-party
-from pydantic import create_model, validator
-from pydantic.fields import ModelField  # TYPE-CHECKING
+from pydantic import create_model, field_validator
+from pydantic_core.core_schema import ValidationInfo
 
 # first-party
 from tcex.input.field_type.exception import InvalidEmptyValue, InvalidEntityType
@@ -27,21 +27,23 @@ class CaseManagementEntity(TCEntity):
 
     case_management_types: ClassVar[list[str]] = CASE_MANAGEMENT_TYPES
 
-    @validator('type', allow_reuse=True)
+    @field_validator('type')
     @classmethod
-    def is_empty(cls, value: str, field: ModelField) -> str:
+    def is_empty(cls, value: str, info: ValidationInfo) -> str:
         """Validate that the value is a non-empty string."""
         if isinstance(value, str) and value.replace(' ', '') == '':
-            raise InvalidEmptyValue(field_name=field.name)
+            raise InvalidEmptyValue(field_name=info.field_name or '--unknown--')
         return value
 
-    @validator('type', allow_reuse=True)
+    @field_validator('type')
     @classmethod
-    def is_type(cls, value: str, field: ModelField) -> str:
+    def is_type(cls, value: str, info: ValidationInfo) -> str:
         """Validate that the entity is of Indicator type."""
         if value.lower() not in [i.lower() for i in cls.case_management_types]:
             raise InvalidEntityType(
-                field_name=field.name, entity_type=str(cls.case_management_types), value=value
+                field_name=info.field_name or '--unknown--',
+                entity_type=str(cls.case_management_types),
+                value=value,
             )
         return value
 

@@ -18,7 +18,7 @@ class TestCaseAttributeSnippets(TestV3):
     #     """Test snippet"""
     #     # Begin Snippet
     #     for case_attribute in self.tcex.api.tc.v3.case_attributes():
-    #         print(case_attribute.model.dict(exclude_none=True))
+    #         print(case_attribute.model.model_dump(exclude_none=True))
     #     # End Snippet
 
     def test_case_attributes_tql_filter(self):
@@ -49,7 +49,7 @@ class TestCaseAttributeSnippets(TestV3):
         case_attributes.filter.last_modified(TqlOperator.GT, '1 day ago')
         case_attributes.filter.type_name(TqlOperator.EQ, 'Description')
         for case_attribute in case_attributes:
-            print(case_attribute.model.dict(exclude_none=True))
+            print(case_attribute.model.model_dump(exclude_none=True))
         # End Snippet
 
     def test_case_attribute_get_by_id(self):
@@ -73,5 +73,5 @@ class TestCaseAttributeSnippets(TestV3):
         # Begin Snippet
         case_attribute = self.tcex.api.tc.v3.case_attribute(id=attribute_id)
         case_attribute.get()
-        print(case_attribute.model.dict(exclude_none=True))
+        print(case_attribute.model.model_dump(exclude_none=True))
         # End Snippet

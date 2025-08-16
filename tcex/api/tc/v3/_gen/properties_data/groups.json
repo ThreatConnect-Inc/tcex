@@ -1,0 +1,1204 @@
+[
+  {
+    "field_name": "assignments",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of assignees and escalatees associated with this group (Task specific)",
+          "name": "assignments",
+          "required": false,
+          "type": "TaskAssignees"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of assignees and escalatees associated with this group (Task specific)",
+      "name": "assignments",
+      "required": false,
+      "type": "TaskAssignees"
+    }
+  },
+  {
+    "field_name": "associatedArtifacts",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Artifacts associated with this Group",
+          "maxSize": 1000,
+          "name": "associatedArtifacts",
+          "required": false,
+          "type": "Artifacts"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Artifacts associated with this Group",
+      "maxSize": 1000,
+      "name": "associatedArtifacts",
+      "required": false,
+      "type": "Artifacts"
+    }
+  },
+  {
+    "field_name": "associatedCases",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Cases associated with this Group",
+          "maxSize": 1000,
+          "name": "associatedCases",
+          "required": false,
+          "type": "Cases"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Cases associated with this Group",
+      "maxSize": 1000,
+      "name": "associatedCases",
+      "required": false,
+      "type": "Cases"
+    }
+  },
+  {
+    "field_name": "associatedGroups",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of groups associated with this group",
+          "name": "associatedGroups",
+          "required": false,
+          "type": "Groups"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of groups associated with this group",
+      "name": "associatedGroups",
+      "required": false,
+      "type": "Groups"
+    }
+  },
+  {
+    "field_name": "associatedIndicators",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of indicators associated with this group",
+          "name": "associatedIndicators",
+          "required": false,
+          "type": "Indicators"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of indicators associated with this group",
+      "name": "associatedIndicators",
+      "required": false,
+      "type": "Indicators"
+    }
+  },
+  {
+    "field_name": "associatedVictimAssets",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of victim assets associated with this group",
+          "name": "associatedVictimAssets",
+          "required": false,
+          "type": "VictimAssets"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of victim assets associated with this group",
+      "name": "associatedVictimAssets",
+      "required": false,
+      "type": "VictimAssets"
+    }
+  },
+  {
+    "field_name": "attributes",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Attributes corresponding to the Group",
+          "maxSize": 1000,
+          "name": "attributes",
+          "required": false,
+          "type": "GroupAttributes"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Attributes corresponding to the Group",
+      "maxSize": 1000,
+      "name": "attributes",
+      "required": false,
+      "type": "GroupAttributes"
+    }
+  },
+  {
+    "field_name": "body",
+    "input_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email Body",
+      "maxLength": 65535,
+      "minLength": 0,
+      "name": "body",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email Body",
+      "maxLength": 65535,
+      "minLength": 0,
+      "name": "body",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "commonGroup",
+    "input_data": {
+      "description": "the common data shared across groups by name and type",
+      "name": "commonGroup",
+      "readOnly": true,
+      "type": "CommonGroup"
+    },
+    "output_data": {
+      "description": "the common data shared across groups by name and type",
+      "name": "commonGroup",
+      "readOnly": true,
+      "type": "CommonGroup"
+    }
+  },
+  {
+    "field_name": "createdBy",
+    "input_data": {
+      "name": "createdBy",
+      "readOnly": true,
+      "type": "User"
+    },
+    "output_data": {
+      "name": "createdBy",
+      "readOnly": true,
+      "type": "User"
+    }
+  },
+  {
+    "field_name": "dateAdded",
+    "input_data": {
+      "description": "the date and time that the item was first created",
+      "name": "dateAdded",
+      "readOnly": true,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the date and time that the item was first created",
+      "name": "dateAdded",
+      "readOnly": true,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "documentDateAdded",
+    "input_data": {
+      "appliesTo": [
+        "Document",
+        "Report"
+      ],
+      "description": "the date and time that the document was first created",
+      "name": "documentDateAdded",
+      "readOnly": true,
+      "type": "Date"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Document",
+        "Report"
+      ],
+      "description": "the date and time that the document was first created",
+      "name": "documentDateAdded",
+      "readOnly": true,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "documentType",
+    "input_data": {
+      "appliesTo": [
+        "Document",
+        "Report"
+      ],
+      "description": "the document type",
+      "name": "documentType",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Document",
+        "Report"
+      ],
+      "description": "the document type",
+      "name": "documentType",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "downVoteCount",
+    "input_data": {
+      "description": "the total number of users who find the intel not helpful",
+      "name": "downVoteCount",
+      "readOnly": true,
+      "type": "Integer"
+    },
+    "output_data": {
+      "description": "the total number of users who find the intel not helpful",
+      "name": "downVoteCount",
+      "readOnly": true,
+      "type": "Integer"
+    }
+  },
+  {
+    "field_name": "dueDate",
+    "input_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "the date and time that the Task is due",
+      "name": "dueDate",
+      "required": false,
+      "type": "Date"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "the date and time that the Task is due",
+      "name": "dueDate",
+      "required": false,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "emailDate",
+    "input_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the date and time that the email was first created",
+      "name": "emailDate",
+      "readOnly": true,
+      "type": "Date"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the date and time that the email was first created",
+      "name": "emailDate",
+      "readOnly": true,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "escalated",
+    "input_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "flag indicating whether or not the task has been escalated",
+      "name": "escalated",
+      "readOnly": true,
+      "type": "Boolean"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "flag indicating whether or not the task has been escalated",
+      "name": "escalated",
+      "readOnly": true,
+      "type": "Boolean"
+    }
+  },
+  {
+    "field_name": "escalationDate",
+    "input_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "the escalation date and time",
+      "name": "escalationDate",
+      "required": false,
+      "type": "Date"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "the escalation date and time",
+      "name": "escalationDate",
+      "required": false,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "eventDate",
+    "input_data": {
+      "appliesTo": [
+        "Incident",
+        "Event"
+      ],
+      "description": "the date and time that the incident or event was first created",
+      "name": "eventDate",
+      "required": false,
+      "type": "Date"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Incident",
+        "Event"
+      ],
+      "description": "the date and time that the incident or event was first created",
+      "name": "eventDate",
+      "required": false,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "eventType",
+    "input_data": {
+      "appliesTo": [
+        "Event"
+      ],
+      "description": "the identification of an event type",
+      "maxLength": 35,
+      "minLength": 0,
+      "name": "eventType",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Event"
+      ],
+      "description": "the identification of an event type",
+      "maxLength": 35,
+      "minLength": 0,
+      "name": "eventType",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "externalDateAdded",
+    "input_data": {
+      "description": "the date and time that the item was first created externally",
+      "name": "externalDateAdded",
+      "required": false,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the date and time that the item was first created externally",
+      "name": "externalDateAdded",
+      "required": false,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "externalDateExpires",
+    "input_data": {
+      "description": "the date and time the item expires externally",
+      "name": "externalDateExpires",
+      "required": false,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the date and time the item expires externally",
+      "name": "externalDateExpires",
+      "required": false,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "externalLastModified",
+    "input_data": {
+      "description": "the date and time the item was modified externally",
+      "name": "externalLastModified",
+      "required": false,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the date and time the item was modified externally",
+      "name": "externalLastModified",
+      "required": false,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "fileName",
+    "input_data": {
+      "appliesTo": [
+        "Document",
+        "Report",
+        "Signature"
+      ],
+      "conditionalRequired": [
+        "Document",
+        "Report",
+        "Signature"
+      ],
+      "description": "the document or signature file name",
+      "maxLength": 255,
+      "minLength": 0,
+      "name": "fileName",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Document",
+        "Report",
+        "Signature"
+      ],
+      "conditionalRequired": [
+        "Document",
+        "Report",
+        "Signature"
+      ],
+      "description": "the document or signature file name",
+      "maxLength": 255,
+      "minLength": 0,
+      "name": "fileName",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "fileSize",
+    "input_data": {
+      "appliesTo": [
+        "Document",
+        "Report"
+      ],
+      "description": "the document file size",
+      "name": "fileSize",
+      "readOnly": true,
+      "type": "Long"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Document",
+        "Report"
+      ],
+      "description": "the document file size",
+      "name": "fileSize",
+      "readOnly": true,
+      "type": "Long"
+    }
+  },
+  {
+    "field_name": "fileText",
+    "input_data": {
+      "appliesTo": [
+        "Signature"
+      ],
+      "description": "the signature file text",
+      "name": "fileText",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Signature"
+      ],
+      "description": "the signature file text",
+      "name": "fileText",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "fileType",
+    "input_data": {
+      "appliesTo": [
+        "Signature"
+      ],
+      "description": "the signature file type",
+      "name": "fileType",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Signature"
+      ],
+      "description": "the signature file type",
+      "name": "fileType",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "firstSeen",
+    "input_data": {
+      "description": "the date and time that the item was first seen",
+      "name": "firstSeen",
+      "required": false,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the date and time that the item was first seen",
+      "name": "firstSeen",
+      "required": false,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "from",
+    "input_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email From field",
+      "maxLength": 100,
+      "minLength": 0,
+      "name": "from",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email From field",
+      "maxLength": 100,
+      "minLength": 0,
+      "name": "from",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "generatedReport",
+    "input_data": {
+      "description": "is the report auto-generated?",
+      "name": "generatedReport",
+      "readOnly": true,
+      "type": "Boolean"
+    },
+    "output_data": {
+      "description": "is the report auto-generated?",
+      "name": "generatedReport",
+      "readOnly": true,
+      "type": "Boolean"
+    }
+  },
+  {
+    "field_name": "header",
+    "input_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email Header field",
+      "maxLength": 65535,
+      "minLength": 0,
+      "name": "header",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email Header field",
+      "maxLength": 65535,
+      "minLength": 0,
+      "name": "header",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "id",
+    "input_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    },
+    "output_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    }
+  },
+  {
+    "field_name": "insights",
+    "input_data": {
+      "appliesTo": [
+        "Document",
+        "Report"
+      ],
+      "description": "an AI generated synopsis of the document",
+      "name": "insights",
+      "readOnly": true,
+      "type": "AiInsights"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Document",
+        "Report"
+      ],
+      "description": "an AI generated synopsis of the document",
+      "name": "insights",
+      "readOnly": true,
+      "type": "AiInsights"
+    }
+  },
+  {
+    "field_name": "lastModified",
+    "input_data": {
+      "description": "the date and time that the Entity was last modified",
+      "name": "lastModified",
+      "readOnly": true,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the date and time that the Entity was last modified",
+      "name": "lastModified",
+      "readOnly": true,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "lastSeen",
+    "input_data": {
+      "description": "the date and time that the item was last seen",
+      "name": "lastSeen",
+      "required": false,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the date and time that the item was last seen",
+      "name": "lastSeen",
+      "required": false,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "legacyLink",
+    "input_data": {
+      "description": "a link to the legacy ThreatConnect details page for this entity",
+      "name": "legacyLink",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "a link to the legacy ThreatConnect details page for this entity",
+      "name": "legacyLink",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "malware",
+    "input_data": {
+      "appliesTo": [
+        "Document"
+      ],
+      "description": "is the document malware?",
+      "name": "malware",
+      "required": false,
+      "type": "Boolean"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Document"
+      ],
+      "description": "is the document malware?",
+      "name": "malware",
+      "required": false,
+      "type": "Boolean"
+    }
+  },
+  {
+    "field_name": "name",
+    "input_data": {
+      "description": "the name of the group",
+      "maxLength": 200,
+      "minLength": 0,
+      "name": "name",
+      "required": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "the name of the group",
+      "maxLength": 200,
+      "minLength": 0,
+      "name": "name",
+      "required": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "overdue",
+    "input_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "flag indicating whether or not the task is overdue",
+      "name": "overdue",
+      "readOnly": true,
+      "type": "Boolean"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "flag indicating whether or not the task is overdue",
+      "name": "overdue",
+      "readOnly": true,
+      "type": "Boolean"
+    }
+  },
+  {
+    "field_name": "ownerId",
+    "input_data": {
+      "description": "the id of the Organization, Community, or Source that the item belongs to",
+      "name": "ownerId",
+      "required": false,
+      "type": "Long",
+      "updatable": false
+    },
+    "output_data": {
+      "description": "the id of the Organization, Community, or Source that the item belongs to",
+      "name": "ownerId",
+      "required": false,
+      "type": "Long",
+      "updatable": false
+    }
+  },
+  {
+    "field_name": "ownerName",
+    "input_data": {
+      "conditionalReadOnly": [
+        "Victim"
+      ],
+      "description": "the name of the Organization, Community, or Source that the item belongs to",
+      "name": "ownerName",
+      "required": false,
+      "type": "String",
+      "updatable": false
+    },
+    "output_data": {
+      "conditionalReadOnly": [
+        "Victim"
+      ],
+      "description": "the name of the Organization, Community, or Source that the item belongs to",
+      "name": "ownerName",
+      "required": false,
+      "type": "String",
+      "updatable": false
+    }
+  },
+  {
+    "field_name": "password",
+    "input_data": {
+      "appliesTo": [
+        "Document"
+      ],
+      "description": "the password associated with the document (Required if Malware is true)",
+      "name": "password",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Document"
+      ],
+      "description": "the password associated with the document (Required if Malware is true)",
+      "name": "password",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "publishDate",
+    "input_data": {
+      "appliesTo": [
+        "Report"
+      ],
+      "description": "the date and time that the report was first created",
+      "name": "publishDate",
+      "required": false,
+      "type": "Date"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Report"
+      ],
+      "description": "the date and time that the report was first created",
+      "name": "publishDate",
+      "required": false,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "reminded",
+    "input_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "flag indicating whether or not the task reminders have been sent",
+      "name": "reminded",
+      "readOnly": true,
+      "type": "Boolean"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "flag indicating whether or not the task reminders have been sent",
+      "name": "reminded",
+      "readOnly": true,
+      "type": "Boolean"
+    }
+  },
+  {
+    "field_name": "reminderDate",
+    "input_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "the reminder date and time",
+      "name": "reminderDate",
+      "required": false,
+      "type": "Date"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Task"
+      ],
+      "description": "the reminder date and time",
+      "name": "reminderDate",
+      "required": false,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "reviews",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of reviews corresponding to the Group",
+          "name": "reviews",
+          "required": false,
+          "type": "IntelligenceReviews"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of reviews corresponding to the Group",
+      "name": "reviews",
+      "required": false,
+      "type": "IntelligenceReviews"
+    }
+  },
+  {
+    "field_name": "score",
+    "input_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the score value for this email",
+      "name": "score",
+      "readOnly": true,
+      "type": "Integer"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the score value for this email",
+      "name": "score",
+      "readOnly": true,
+      "type": "Integer"
+    }
+  },
+  {
+    "field_name": "scoreBreakdown",
+    "input_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email score breakdown",
+      "name": "scoreBreakdown",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email score breakdown",
+      "name": "scoreBreakdown",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "scoreIncludesBody",
+    "input_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "is the Body included in the email score?",
+      "name": "scoreIncludesBody",
+      "readOnly": true,
+      "type": "Boolean"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "is the Body included in the email score?",
+      "name": "scoreIncludesBody",
+      "readOnly": true,
+      "type": "Boolean"
+    }
+  },
+  {
+    "field_name": "securityLabels",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Security Labels corresponding to the Intel item (NOTE: Setting this parameter will replace any existing tag(s) with the one(s) specified)",
+          "maxSize": 1000,
+          "name": "securityLabels",
+          "required": false,
+          "type": "SecurityLabels"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Security Labels corresponding to the Intel item (NOTE: Setting this parameter will replace any existing tag(s) with the one(s) specified)",
+      "maxSize": 1000,
+      "name": "securityLabels",
+      "required": false,
+      "type": "SecurityLabels"
+    }
+  },
+  {
+    "field_name": "signatureDateAdded",
+    "input_data": {
+      "appliesTo": [
+        "Signature"
+      ],
+      "description": "the date and time that the signature was first created",
+      "name": "signatureDateAdded",
+      "readOnly": true,
+      "type": "Date"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Signature"
+      ],
+      "description": "the date and time that the signature was first created",
+      "name": "signatureDateAdded",
+      "readOnly": true,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "status",
+    "input_data": {
+      "appliesTo": [
+        "Document",
+        "Report",
+        "Event",
+        "Task",
+        "Incident"
+      ],
+      "conditionalReadOnly": [
+        "Document",
+        "Report",
+        "Task"
+      ],
+      "description": "the status associated with this document, event, task, or incident (read only for task, document, and report)",
+      "name": "status",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Document",
+        "Report",
+        "Event",
+        "Task",
+        "Incident"
+      ],
+      "conditionalReadOnly": [
+        "Document",
+        "Report",
+        "Task"
+      ],
+      "description": "the status associated with this document, event, task, or incident (read only for task, document, and report)",
+      "name": "status",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "subject",
+    "input_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email Subject section",
+      "maxLength": 255,
+      "minLength": 0,
+      "name": "subject",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email Subject section",
+      "maxLength": 255,
+      "minLength": 0,
+      "name": "subject",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "tags",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Tags corresponding to the item (NOTE: Setting this parameter will replace any existing tag(s) with the one(s) specified)",
+          "maxSize": 1000,
+          "name": "tags",
+          "required": false,
+          "type": "Tags"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Tags corresponding to the item (NOTE: Setting this parameter will replace any existing tag(s) with the one(s) specified)",
+      "maxSize": 1000,
+      "name": "tags",
+      "required": false,
+      "type": "Tags"
+    }
+  },
+  {
+    "field_name": "to",
+    "input_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email To field ",
+      "name": "to",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Email"
+      ],
+      "description": "the email To field ",
+      "name": "to",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "type",
+    "input_data": {
+      "minLength": 1,
+      "name": "type",
+      "required": true,
+      "type": "String"
+    },
+    "output_data": {
+      "minLength": 1,
+      "name": "type",
+      "required": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "upVote",
+    "input_data": {
+      "description": "is the intelligence valid and useful? (0 means downvote, 1 means upvote, and NULL means no vote)",
+      "name": "upVote",
+      "readOnly": true,
+      "type": "Boolean"
+    },
+    "output_data": {
+      "description": "is the intelligence valid and useful? (0 means downvote, 1 means upvote, and NULL means no vote)",
+      "name": "upVote",
+      "readOnly": true,
+      "type": "Boolean"
+    }
+  },
+  {
+    "field_name": "upVoteCount",
+    "input_data": {
+      "description": "the total number of users who find the intel useful",
+      "name": "upVoteCount",
+      "readOnly": true,
+      "type": "Integer"
+    },
+    "output_data": {
+      "description": "the total number of users who find the intel useful",
+      "name": "upVoteCount",
+      "readOnly": true,
+      "type": "Integer"
+    }
+  },
+  {
+    "field_name": "webLink",
+    "input_data": {
+      "description": "a link to the ThreatConnect details page for this entity",
+      "name": "webLink",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "a link to the ThreatConnect details page for this entity",
+      "name": "webLink",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "xid",
+    "input_data": {
+      "description": "the xid of the item",
+      "name": "xid",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "the xid of the item",
+      "name": "xid",
+      "required": false,
+      "type": "String"
+    }
+  }
+]

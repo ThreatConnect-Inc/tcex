@@ -1,11 +1,21 @@
-"""TcEx Framework Module"""
+"""TestAdvancedSettings for testing advanced settings functionality.
+
+This module contains comprehensive test cases for the advanced settings implementation in TcEx,
+including validation of optional/required settings, data transformation, and error handling.
+
+Classes:
+    TestInputsFieldTypes: Test class for advanced settings validation
+
+TcEx Module Tested: tcex.input.m.modify_advanced_settings
+"""
 
 # standard library
 from collections.abc import Callable
+from typing import Literal
 
 # third-party
 import pytest
-from pydantic import BaseModel, Extra, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 # first-party
 from tcex.input.field_type import DateTime, String, modify_advanced_settings
@@ -16,17 +26,31 @@ from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
 class TestInputsFieldTypes(InputTest):
-    """Test TcEx String Field Model Tests."""
+    """TestInputsFieldTypes for comprehensive advanced settings testing.
 
-    def setup_method(self):
+    This class provides extensive test coverage for the advanced settings functionality,
+    including validation of optional/required settings, data transformation, and error handling.
+
+    Fixtures:
+        playbook_app: Mock application fixture for testing TcEx functionality
+    """
+
+    def setup_method(self) -> None:
         """Configure setup before all tests."""
         scoped_property._reset()
         cached_property._reset()
 
     def test_advanced_settings_is_optional_input_initialized_with_none(
         self, playbook_app: Callable[..., MockApp]
-    ):
-        """Test scenario where advanced_settings input is optional and initialized with None"""
+    ) -> None:
+        """Test optional advanced_settings input initialized with None.
+
+        This test validates that when an optional advanced_settings input is initialized with None,
+        the model correctly reflects this value without raising any validation errors.
+
+        Fixtures:
+            playbook_app: Mock application fixture for testing TcEx functionality
+        """
 
         # Model that defines entries expected in pipe-delimited advanced settings input string
         class AdvancedSettingsModel(BaseModel):
@@ -39,7 +63,7 @@ class TestInputsFieldTypes(InputTest):
             """Test Model for Inputs"""
 
             # advanced settings input is Optional for this app
-            advanced_settings: AdvancedSettingsModel | None
+            advanced_settings: AdvancedSettingsModel | None = Field(default=None)
             # configure "modify_advanced_settings" validator to act on "advanced_settings" input,
             # which performs the parsing of the pipe-delimited string into a dictionary,
             # which would then be used to initialize AdvancedSettingsModel
@@ -54,10 +78,14 @@ class TestInputsFieldTypes(InputTest):
 
     def test_advanced_settings_is_optional_input_and_is_not_initialized(
         self, playbook_app: Callable[..., MockApp]
-    ):
-        """Test scenario where advanced_settings input is optional and is not initialized
+    ) -> None:
+        """Test optional advanced_settings input that is not initialized.
 
-        App config data contains nothing for advanced_settings input
+        This test validates that when an optional advanced_settings input is not provided in the
+        configuration, the model correctly defaults to None without raising validation errors.
+
+        Fixtures:
+            playbook_app: Mock application fixture for testing TcEx functionality
         """
 
         # Model that defines entries expected in pipe-delimited advanced settings input string
@@ -71,7 +99,7 @@ class TestInputsFieldTypes(InputTest):
             """Test Model for Inputs"""
 
             # advanced settings input is Optional for this app
-            advanced_settings: AdvancedSettingsModel | None
+            advanced_settings: AdvancedSettingsModel | None = Field(default=None)
             # configure "modify_advanced_settings" validator to act on "advanced_settings" input,
             # which performs the parsing of the pipe-delimited string into a dictionary,
             # which would then be used to initialize AdvancedSettingsModel
@@ -86,8 +114,15 @@ class TestInputsFieldTypes(InputTest):
 
     def test_advanced_settings_is_required_input_initialized_with_none(
         self, playbook_app: Callable[..., MockApp]
-    ):
-        """Test scenario where advanced_settings input is required and initialized with None"""
+    ) -> None:
+        """Test required advanced_settings input initialized with None.
+
+        This test validates that a ValidationError is raised when a required advanced_settings
+        input is initialized with None, as this violates the requirement.
+
+        Fixtures:
+            playbook_app: Mock application fixture for testing TcEx functionality
+        """
 
         # Model that defines entries expected in pipe-delimited advanced settings input string
         class AdvancedSettingsModel(BaseModel):
@@ -117,10 +152,14 @@ class TestInputsFieldTypes(InputTest):
 
     def test_advanced_settings_is_required_input_and_is_not_initialized(
         self, playbook_app: Callable[..., MockApp]
-    ):
-        """Test scenario where advanced_settings input is required and is not initialized
+    ) -> None:
+        """Test required advanced_settings input that is not initialized.
 
-        App config data contains nothing for advanced_settings input
+        This test validates that a ValidationError is raised when a required advanced_settings
+        input is not provided in the configuration, ensuring the requirement is enforced.
+
+        Fixtures:
+            playbook_app: Mock application fixture for testing TcEx functionality
         """
 
         # Model that defines entries expected in pipe-delimited advanced settings input string
@@ -151,13 +190,16 @@ class TestInputsFieldTypes(InputTest):
 
     def test_advanced_settings_value_is_properly_transformed_per_advanced_settings_model(
         self, playbook_app: Callable[..., MockApp]
-    ):
-        """Test that AdvancedSettingsModel properly transforms entry.
+    ) -> None:
+        """Test that AdvancedSettingsModel properly transforms values.
 
-        After modify_advanced_settings validator parses the pipe-delimited string,
-        the resulting dictionary should be used to initialize AdvancedSettingsModel, and the values
-        should be validated/transformed by each entry's corresponding type definition within
-        AdvancedSettingsModel
+        This test ensures that after the modify_advanced_settings validator parses the
+        pipe-delimited string, the resulting dictionary is used to initialize the
+        AdvancedSettingsModel, and the values are correctly validated and transformed according
+        to the type definitions within the model.
+
+        Fixtures:
+            playbook_app: Mock application fixture for testing TcEx functionality
         """
 
         # Model that defines entries expected in pipe-delimited advanced settings input string
@@ -181,7 +223,9 @@ class TestInputsFieldTypes(InputTest):
             # which would then be used to initialize AdvancedSettingsModel
             _ = modify_advanced_settings('advanced_settings')
 
-        config_data = {'advanced_settings': 'run_until=Wednesday, 27-May-2020 10:30:35 UTC'}
+        config_data = {
+            'advanced_settings': 'run_until=Wednesday, 27-May-2020 10:30:35 UTC'
+        }
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
         tcex.inputs.add_model(PytestModel)
@@ -192,15 +236,15 @@ class TestInputsFieldTypes(InputTest):
 
     def test_validation_performed_on_parsed_advanced_settings_raises_proper_error(
         self, playbook_app: Callable[..., MockApp]
-    ):
-        """Test that AdvancedSettingsModel errors found within AdvancedSettingsModel are raised
+    ) -> None:
+        """Test that validation errors within AdvancedSettingsModel are raised.
 
-        After modify_advanced_settings validator parses the pipe-delimited string,
-        the resulting dictionary should be used to initialize AdvancedSettingsModel, and the values
-        should be validated/transformed by each entry's corresponding type definition within
-        AdvancedSettingsModel.
+        This test ensures that if a value in the parsed advanced settings string fails validation
+        within the AdvancedSettingsModel (e.g., a malformed date), the appropriate
+        ValidationError is raised and propagated.
 
-        In this case, run_until's value will not be properly converted to a DateTime. Error expected
+        Fixtures:
+            playbook_app: Mock application fixture for testing TcEx functionality
         """
 
         # Model that defines entries expected in pipe-delimited advanced settings input string
@@ -228,12 +272,11 @@ class TestInputsFieldTypes(InputTest):
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
 
-        with pytest.raises(ValidationError) as error:
+        with pytest.raises(ValidationError) as ex:
             tcex.inputs.add_model(PytestModel)
 
-        error = str(error)
         # expect to be told that run_until's value could not be parsed as DateTime
-        assert 'run_until' in error and 'could not be parsed as a date time object' in error
+        assert 'run_until' in str(ex.value) and 'this is not a date' in str(ex.value)
 
     @pytest.mark.parametrize(
         'advanced_settings_string,expected_model,optional,extra_config,fail_expected',
@@ -241,115 +284,297 @@ class TestInputsFieldTypes(InputTest):
             #
             # Required Testing - AdvancedSettingsModel sets 'my_setting' as required String
             #
-            ('my_setting=value', {'my_setting': 'value'}, False, Extra.ignore, False),
+            pytest.param(
+                'my_setting=value',
+                {'my_setting': 'value'},
+                False,
+                'ignore',
+                False,
+                id='pass-required-my-setting-value',
+            ),
             # keys are not case sensitive
-            ('My_Setting=value', {'my_setting': 'value'}, False, Extra.ignore, False),
+            pytest.param(
+                'My_Setting=value',
+                {'my_setting': 'value'},
+                False,
+                'ignore',
+                False,
+                id='pass-required-my-setting-case-insensitive',
+            ),
             # key should be stripped
-            (' my_setting=value', {'my_setting': 'value'}, False, Extra.ignore, False),
-            ('my_setting =value', {'my_setting': 'value'}, False, Extra.ignore, False),
-            (' my_setting =value', {'my_setting': 'value'}, False, Extra.ignore, False),
+            pytest.param(
+                ' my_setting=value',
+                {'my_setting': 'value'},
+                False,
+                'ignore',
+                False,
+                id='pass-required-my-setting-leading-space',
+            ),
+            pytest.param(
+                'my_setting =value',
+                {'my_setting': 'value'},
+                False,
+                'ignore',
+                False,
+                id='pass-required-my-setting-space-after-key',
+            ),
+            pytest.param(
+                ' my_setting =value',
+                {'my_setting': 'value'},
+                False,
+                'ignore',
+                False,
+                id='pass-required-my-setting-spaces-around-key',
+            ),
             # value should be empty
-            ('my_setting=', {'my_setting': ''}, False, Extra.ignore, False),
+            pytest.param(
+                'my_setting=',
+                {'my_setting': ''},
+                False,
+                'ignore',
+                False,
+                id='pass-required-my-setting-empty-value',
+            ),
             # should split on first equal sign only
-            ('my_setting=value=other', {'my_setting': 'value=other'}, False, Extra.ignore, False),
-            ('my_setting==', {'my_setting': '='}, False, Extra.ignore, False),
+            pytest.param(
+                'my_setting=value=other',
+                {'my_setting': 'value=other'},
+                False,
+                'ignore',
+                False,
+                id='pass-required-my-setting-multiple-equals',
+            ),
+            pytest.param(
+                'my_setting==',
+                {'my_setting': '='},
+                False,
+                'ignore',
+                False,
+                id='pass-required-my-setting-double-equals',
+            ),
             # value should be string containing single space
-            ('my_setting= ', {'my_setting': ' '}, False, Extra.ignore, False),
+            pytest.param(
+                'my_setting= ',
+                {'my_setting': ' '},
+                False,
+                'ignore',
+                False,
+                id='pass-required-my-setting-space-value',
+            ),
             #
             # Optional Testing - AdvancedSettingsModel sets 'my_setting' as Optional[String]
             #
             # Note: 'my_setting' will be None within the model, since no value can be parsed
-            ('my_setting', {'my_setting': None}, True, Extra.ignore, False),
+            pytest.param(
+                'my_setting',
+                {'my_setting': None},
+                True,
+                'ignore',
+                False,
+                id='pass-optional-my-setting-no-value',
+            ),
             # Note: 'my_setting' will be None in model, since my_setting is not found in string
-            ('', {'my_setting': None}, True, Extra.ignore, False),
+            pytest.param(
+                '',
+                {'my_setting': None},
+                True,
+                'ignore',
+                False,
+                id='pass-optional-empty-string',
+            ),
             # my_setting key not defined in advanced_settings input string
-            (' =value', {'my_setting': None}, True, Extra.ignore, False),
+            pytest.param(
+                ' =value',
+                {'my_setting': None},
+                True,
+                'ignore',
+                False,
+                id='pass-optional-space-equals-value',
+            ),
             # my_setting key not defined in advanced_settings input string
-            ('=value', {'my_setting': None}, True, Extra.ignore, False),
+            pytest.param(
+                '=value',
+                {'my_setting': None},
+                True,
+                'ignore',
+                False,
+                id='pass-optional-equals-value',
+            ),
             # my_setting key not defined in advanced_settings input string
-            ('==value', {'my_setting': None}, True, Extra.ignore, False),
+            pytest.param(
+                '==value',
+                {'my_setting': None},
+                True,
+                'ignore',
+                False,
+                id='pass-optional-double-equals-value',
+            ),
             #
-            # Extra fields allowed via Extra.allow in AdvancedSettingsModel Config
+            # Extra fields allowed via 'allow' in AdvancedSettingsModel Config
             #
-            (
+            pytest.param(
                 'my_setting=val|other=val2',
                 {'my_setting': 'val', 'other': 'val2'},
                 True,
-                Extra.allow,
+                'allow',
                 False,
+                id='pass-allow-extra-fields',
             ),
             # trailing pipe
-            (
+            pytest.param(
                 'my_setting=val|other=val2|',
                 {'my_setting': 'val', 'other': 'val2'},
                 True,
-                Extra.allow,
+                'allow',
                 False,
+                id='pass-allow-trailing-pipe',
             ),
             # extra pipe at start
-            (
+            pytest.param(
                 '|my_setting=val|other=val2',
                 {'my_setting': 'val', 'other': 'val2'},
                 True,
-                Extra.allow,
+                'allow',
                 False,
+                id='pass-allow-leading-pipe',
             ),
             # extra pipes at start and end of string
-            (
+            pytest.param(
                 '|my_setting=val|other=val2|',
                 {'my_setting': 'val', 'other': 'val2'},
                 True,
-                Extra.allow,
+                'allow',
                 False,
+                id='pass-allow-leading-and-trailing-pipes',
             ),
             # extra setting has empty key, skipped
-            ('my_setting=val|=val2', {'my_setting': 'val'}, True, Extra.allow, False),
+            pytest.param(
+                'my_setting=val|=val2',
+                {'my_setting': 'val'},
+                True,
+                'allow',
+                False,
+                id='pass-allow-empty-extra-key',
+            ),
             # extra setting has empty key when stripped, skipped
-            ('my_setting=val| =val2', {'my_setting': 'val'}, True, Extra.allow, False),
+            pytest.param(
+                'my_setting=val| =val2',
+                {'my_setting': 'val'},
+                True,
+                'allow',
+                False,
+                id='pass-allow-space-extra-key',
+            ),
             # extra setting has empty value
-            ('my_setting=val|other=', {'my_setting': 'val', 'other': ''}, True, Extra.allow, False),
+            pytest.param(
+                'my_setting=val|other=',
+                {'my_setting': 'val', 'other': ''},
+                True,
+                'allow',
+                False,
+                id='pass-allow-empty-extra-value',
+            ),
             # setting defined in model has no value
-            (
+            pytest.param(
                 'my_setting=|other=val2',
                 {'my_setting': '', 'other': 'val2'},
                 True,
-                Extra.allow,
+                'allow',
                 False,
+                id='pass-allow-empty-model-value',
             ),
             # no entry for setting defined in model, but extra setting makes it through
-            ('other=val2', {'my_setting': None, 'other': 'val2'}, True, Extra.allow, False),
+            pytest.param(
+                'other=val2',
+                {'my_setting': None, 'other': 'val2'},
+                True,
+                'allow',
+                False,
+                id='pass-allow-missing-model-setting',
+            ),
             # extra setting is malformed, skipped
-            ('my_setting=val|other', {'my_setting': 'val'}, True, Extra.allow, False),
+            pytest.param(
+                'my_setting=val|other',
+                {'my_setting': 'val'},
+                True,
+                'allow',
+                False,
+                id='pass-allow-malformed-extra-setting',
+            ),
             # extra setting is malformed, skipped
-            ('my_setting=val|=', {'my_setting': 'val'}, True, Extra.allow, False),
+            pytest.param(
+                'my_setting=val|=',
+                {'my_setting': 'val'},
+                True,
+                'allow',
+                False,
+                id='pass-allow-malformed-extra-setting-no-value',
+            ),
             # extra setting is malformed, skipped
-            ('my_setting=val|=val2', {'my_setting': 'val'}, True, Extra.allow, False),
+            pytest.param(
+                'my_setting=val|=val2',
+                {'my_setting': 'val'},
+                True,
+                'allow',
+                False,
+                id='pass-allow-malformed-extra-setting-with-value',
+            ),
             #
             # Fail Testing
             #
             # my_setting required, but no valid entry provided for it
             # fails because my_setting is required but was not defined in passed-in setting string
-            ('=value', None, False, Extra.ignore, True),
+            pytest.param(
+                '=value', None, False, 'ignore', True, id='fail-required-missing-key'
+            ),
             # fails because my_setting is required but was not defined in passed-in setting string
-            (' =value', None, False, Extra.ignore, True),
+            pytest.param(
+                ' =value',
+                None,
+                False,
+                'ignore',
+                True,
+                id='fail-required-missing-key-space',
+            ),
             # fails because my_setting is required but was not defined in passed-in setting string
-            ('my_setting', None, False, Extra.ignore, True),
+            pytest.param(
+                'my_setting',
+                None,
+                False,
+                'ignore',
+                True,
+                id='fail-required-missing-value',
+            ),
             # my_setting defined twice in settings string
-            ('my_setting=val|my_setting=val2', None, False, Extra.ignore, True),
+            pytest.param(
+                'my_setting=val|my_setting=val2',
+                None,
+                False,
+                'ignore',
+                True,
+                id='fail-duplicate-key',
+            ),
             # extra field not allowed
-            ('my_setting=val|other=val2', None, False, Extra.forbid, True),
+            pytest.param(
+                'my_setting=val|other=val2',
+                None,
+                False,
+                'forbid',
+                True,
+                id='fail-forbid-extra-field',
+            ),
         ],
     )
     def test_advanced_settings_scenarios(
         self,
         advanced_settings_string: str,
-        expected_model: dict,
+        expected_model: dict | None,
         optional: bool,
-        extra_config: str,
+        extra_config: Literal['allow', 'ignore', 'forbid'],
         fail_expected: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test Advanced Settings logic relying on modify_advanced_settings validator for parsing
+    ) -> None:
+        """Test various advanced settings scenarios.
 
         NOTE: the advanced_settings INPUT is required for all scenarios of this test. The 'optional'
         parameter controls whether 'my_setting' is optional or not within the advanced settings
@@ -363,36 +588,34 @@ class TestInputsFieldTypes(InputTest):
         The act of parsing the pipe-delimited string to a dictionary is handled by the
         modify_advanced_settings validator.
 
-        :param advanced_settings_string: the string as passed via advanced_settings input
-        :param expected_model: Dictionary that is expected to be the equivalent of calling
-        tcex.inputs.model.advanced_settings.__dict__
-        :param optional: whether or not 'my_setting' is optional as described above.
-        :param extra_config: one of Extra.ignore, Extra.allow, Extra.forbid. Controls whether
-        extra entries within the advanced settings string will make it to the final model or not
-        :param fail_expected: Whether test is expected to fail or not
+        Args:
+            advanced_settings_string: The pipe-delimited string for advanced_settings.
+            expected_model: The expected dictionary representation of the parsed model.
+            optional: Controls if 'my_setting' is optional in the AdvancedSettingsModel.
+            extra_config: Configures behavior for extra fields ('ignore', 'allow', 'forbid').
+            fail_expected: If True, the test expects a ValidationError.
+            playbook_app: Mock app fixture.
+
+        Fixtures:
+            playbook_app: Mock application fixture for testing TcEx functionality
         """
 
         # "my_setting" advanced_setting entry will be required/optional depending on input
+        # my_setting_type = String | None if optional else String
         my_setting_type = String | None if optional else String
+        my_setting_type_default = None if optional else ...
 
         # Model that defines entries expected in pipe-delimited advanced settings input string
         class AdvancedSettingsModel(BaseModel):
             """Model that defines all expected advanced settings entries"""
 
-            # define "my_setting" advanced setting entry. Will be either required or optional
-            # depending on value of "optional" test method input parameter.
-            my_setting: my_setting_type  # type: ignore
-
             # configuration class of AdvancedSettingsModel. This is not required, but allows us
             # to further define model behavior.
-            class Config:
-                """DataModel config"""
+            model_config = ConfigDict(extra=extra_config)
 
-                # "extra" config setting allows us to control whether we want to keep any passed-in
-                # advanced settings that are not explicitly defined in our AdvancedSettingsModel.
-                # Any extra settings not defined in model should be ignored by default (if this
-                # config class is not included).
-                extra = extra_config
+            # define "my_setting" advanced setting entry. Will be either required or optional
+            # depending on value of "optional" test method input parameter.
+            my_setting: my_setting_type = Field(my_setting_type_default)  # type: ignore
 
         # the app model
         class PytestModel(BaseModel):
@@ -413,7 +636,7 @@ class TestInputsFieldTypes(InputTest):
 
         if not fail_expected:
             tcex.inputs.add_model(PytestModel)
-            assert tcex.inputs.model.advanced_settings.__dict__ == expected_model  # type: ignore
+            assert tcex.inputs.model.advanced_settings.model_dump() == expected_model  # type: ignore
         else:
             with pytest.raises(ValidationError):
                 tcex.inputs.add_model(PytestModel)

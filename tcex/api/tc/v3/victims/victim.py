@@ -25,23 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Victim(ObjectABC):
-    """Victims Object.
-
-    Args:
-        assets (VictimAssets, kwargs): A list of victim assets corresponding to the Victim.
-        associated_groups (Groups, kwargs): A list of groups that this victim is associated with.
-        attributes (VictimAttributes, kwargs): A list of Attributes corresponding to the Victim.
-        name (str, kwargs): Name of the Victim.
-        nationality (str, kwargs): Nationality of the Victim.
-        org (str, kwargs): Org of the Victim.
-        security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
-            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
-            the one(s) specified).
-        suborg (str, kwargs): Suborg of the Victim.
-        tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this parameter
-            will replace any existing tag(s) with the one(s) specified).
-        work_location (str, kwargs): Work location of the Victim.
-    """
+    """Victims Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""
@@ -86,7 +70,6 @@ class Victim(ObjectABC):
     @property
     def victim_assets(self) -> Generator['VictimAsset', None, None]:
         """Yield VictimAsset from VictimAssets."""
-        # first-party
         from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
 
         yield from self._iterate_over_sublist(VictimAssets)  # type: ignore
@@ -94,7 +77,6 @@ class Victim(ObjectABC):
     @property
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
-        # first-party
         from tcex.api.tc.v3.groups.group import Groups
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
@@ -102,7 +84,6 @@ class Victim(ObjectABC):
     @property
     def attributes(self) -> Generator['VictimAttribute', None, None]:
         """Yield Attribute from Attributes."""
-        # first-party
         from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttributes
 
         yield from self._iterate_over_sublist(VictimAttributes)  # type: ignore
@@ -110,7 +91,6 @@ class Victim(ObjectABC):
     @property
     def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
-        # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
 
         yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
@@ -118,7 +98,6 @@ class Victim(ObjectABC):
     @property
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
-        # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore

@@ -17,32 +17,38 @@ class LoggingModel(BaseModel):
 
     # target 50Mb in total log size (1x10Mb + 25x~1.6Mb = ~50Mb)
     tc_log_backup_count: int = Field(
-        25,
+        default=25,
         description='The maximum number of log files to retain for an App.',
-        inclusion_reason='runtimeLevel',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'runtimeLevel',
+            'requires_definition': True,
+        },
     )
     tc_log_file: str = Field(
-        'app.log',
+        default='app.log',
         description="The default name of the App's log file.",
-        inclusion_reason='runtimeLevel',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'runtimeLevel',
+            'requires_definition': True,
+        },
     )
     # job Apps have to collect tc_log_level manually
     tc_log_level: str = Field(
-        'info',
+        default='info',
         description='The logging level for the App.',
-        inclusion_reason='runtimeLevel',
+        json_schema_extra={'inclusion_reason': 'runtimeLevel'},
         # requires_definition=True, # this is true for only Organization runtimeLevel
     )
     tc_log_max_bytes: int = Field(
-        10_485_760,
+        default=10_485_760,
         description='The maximum size of the App log file before rotation.',
-        inclusion_reason='runtimeLevel',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'runtimeLevel',
+            'requires_definition': True,
+        },
     )
     tc_log_to_api: bool = Field(
         default=False,
         description='Flag to enable API logging for the App.',
-        inclusion_reason='runtimeLevel',
+        json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )

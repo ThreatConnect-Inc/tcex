@@ -1,10 +1,12 @@
 """TcEx Framework Module"""
 
 # standard library
+from __future__ import annotations
+
 from datetime import datetime
 
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -14,541 +16,537 @@ from tcex.util import Util
 class GroupModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='Group Model',
     validate_assignment=True,
 ):
     """Group Model"""
 
-    _associated_type = PrivateAttr(default=True)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=True)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
-    assignments: 'TaskAssigneesModel' = Field(
-        None,
+    assignments: TaskAssigneesModel | None = Field(
+        default=None,
         description=(
             'A list of assignees and escalatees associated with this group (Task specific).'
         ),
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='assignments',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_artifacts: 'ArtifactsModel' = Field(
-        None,
+    associated_artifacts: ArtifactsModel | None = Field(
+        default=None,
         description='A list of Artifacts associated with this Group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedArtifacts',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_cases: 'CasesModel' = Field(
-        None,
+    associated_cases: CasesModel | None = Field(
+        default=None,
         description='A list of Cases associated with this Group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedCases',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_groups: 'GroupsModel' = Field(
-        None,
+    associated_groups: GroupsModel | None = Field(
+        default=None,
         description='A list of groups associated with this group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedGroups',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_indicators: 'IndicatorsModel' = Field(
-        None,
+    associated_indicators: IndicatorsModel | None = Field(
+        default=None,
         description='A list of indicators associated with this group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedIndicators',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_victim_assets: 'VictimAssetsModel' = Field(
-        None,
+    associated_victim_assets: VictimAssetsModel | None = Field(
+        default=None,
         description='A list of victim assets associated with this group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedVictimAssets',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    attributes: 'GroupAttributesModel' = Field(
-        None,
+    attributes: GroupAttributesModel | None = Field(
+        default=None,
         description='A list of Attributes corresponding to the Group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='attributes',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     body: str | None = Field(
-        None,
-        applies_to=['Email'],
+        default=None,
         description='The email Body.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='body',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Email'], 'methods': ['POST', 'PUT']},
     )
-    created_by: 'UserModel' = Field(
-        None,
-        allow_mutation=False,
+    common_group: dict | None = Field(
+        default=None,
+        description='The common data shared across groups by name and type.',
+        frozen=True,
+        title='commonGroup',
+        validate_default=True,
+    )
+    created_by: UserModel | None = Field(
+        default=None,
         description='The **created by** for the Group.',
-        read_only=True,
+        frozen=True,
         title='createdBy',
+        validate_default=True,
     )
     date_added: datetime | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The date and time that the item was first created.',
-        read_only=True,
+        frozen=True,
         title='dateAdded',
+        validate_default=True,
     )
     document_date_added: datetime | None = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Document', 'Report'],
+        default=None,
         description='The date and time that the document was first created.',
-        read_only=True,
+        frozen=True,
         title='documentDateAdded',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Document', 'Report']},
     )
     document_type: str | None = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Document', 'Report'],
+        default=None,
         description='The document type.',
-        read_only=True,
+        frozen=True,
         title='documentType',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Document', 'Report']},
     )
     down_vote_count: int | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The total number of users who find the intel not helpful.',
-        read_only=True,
+        frozen=True,
         title='downVoteCount',
+        validate_default=True,
     )
     due_date: datetime | None = Field(
-        None,
-        applies_to=['Task'],
+        default=None,
         description='The date and time that the Task is due.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='dueDate',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Task'], 'methods': ['POST', 'PUT']},
     )
     email_date: datetime | None = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Email'],
+        default=None,
         description='The date and time that the email was first created.',
-        read_only=True,
+        frozen=True,
         title='emailDate',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Email']},
     )
-    escalated: bool = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Task'],
+    escalated: bool | None = Field(
+        default=None,
         description='Flag indicating whether or not the task has been escalated.',
-        read_only=True,
+        frozen=True,
         title='escalated',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Task']},
     )
     escalation_date: datetime | None = Field(
-        None,
-        applies_to=['Task'],
+        default=None,
         description='The escalation date and time.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='escalationDate',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Task'], 'methods': ['POST', 'PUT']},
     )
     event_date: datetime | None = Field(
-        None,
-        applies_to=['Incident', 'Event'],
+        default=None,
         description='The date and time that the incident or event was first created.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='eventDate',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Incident', 'Event'], 'methods': ['POST', 'PUT']},
     )
     event_type: str | None = Field(
-        None,
-        applies_to=['Event'],
+        default=None,
         description='The identification of an event type.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='eventType',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Event'], 'methods': ['POST', 'PUT']},
     )
     external_date_added: datetime | None = Field(
-        None,
+        default=None,
         description='The date and time that the item was first created externally.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='externalDateAdded',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     external_date_expires: datetime | None = Field(
-        None,
+        default=None,
         description='The date and time the item expires externally.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='externalDateExpires',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     external_last_modified: datetime | None = Field(
-        None,
+        default=None,
         description='The date and time the item was modified externally.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='externalLastModified',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     file_name: str | None = Field(
-        None,
-        applies_to=['Document', 'Report', 'Signature'],
-        conditional_required=['Document', 'Report', 'Signature'],
+        default=None,
         description='The document or signature file name.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='fileName',
+        validate_default=True,
+        json_schema_extra={
+            'applies_to': ['Document', 'Report', 'Signature'],
+            'conditional_required': ['Document', 'Report', 'Signature'],
+            'methods': ['POST', 'PUT'],
+        },
     )
     file_size: int | None = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Document', 'Report'],
+        default=None,
         description='The document file size.',
-        read_only=True,
+        frozen=True,
         title='fileSize',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Document', 'Report']},
     )
     file_text: str | None = Field(
-        None,
-        applies_to=['Signature'],
+        default=None,
         description='The signature file text.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='fileText',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Signature'], 'methods': ['POST', 'PUT']},
     )
     file_type: str | None = Field(
-        None,
-        applies_to=['Signature'],
+        default=None,
         description='The signature file type.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='fileType',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Signature'], 'methods': ['POST', 'PUT']},
     )
     first_seen: datetime | None = Field(
-        None,
+        default=None,
         description='The date and time that the item was first seen.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='firstSeen',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     from_: str | None = Field(
-        None,
+        default=None,
         alias='from',
-        applies_to=['Email'],
         description='The email From field.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='from',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Email'], 'methods': ['POST', 'PUT']},
     )
-    generated_report: bool = Field(
-        None,
-        allow_mutation=False,
+    generated_report: bool | None = Field(
+        default=None,
         description='Is the report auto-generated?',
-        read_only=True,
+        frozen=True,
         title='generatedReport',
+        validate_default=True,
     )
     header: str | None = Field(
-        None,
-        applies_to=['Email'],
+        default=None,
         description='The email Header field.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='header',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Email'], 'methods': ['POST', 'PUT']},
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     insights: dict | None = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Document', 'Report'],
+        default=None,
         description='An AI generated synopsis of the document.',
-        read_only=True,
+        frozen=True,
         title='insights',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Document', 'Report']},
     )
     last_modified: datetime | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The date and time that the Entity was last modified.',
-        read_only=True,
+        frozen=True,
         title='lastModified',
+        validate_default=True,
     )
     last_seen: datetime | None = Field(
-        None,
+        default=None,
         description='The date and time that the item was last seen.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='lastSeen',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     legacy_link: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='A link to the legacy ThreatConnect details page for this entity.',
-        read_only=True,
+        frozen=True,
         title='legacyLink',
+        validate_default=True,
     )
-    malware: bool = Field(
-        None,
-        applies_to=['Document'],
+    malware: bool | None = Field(
+        default=None,
         description='Is the document malware?',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='malware',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Document'], 'methods': ['POST', 'PUT']},
     )
     name: str | None = Field(
-        None,
+        default=None,
         description='The name of the group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='name',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    overdue: bool = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Task'],
+    overdue: bool | None = Field(
+        default=None,
         description='Flag indicating whether or not the task is overdue.',
-        read_only=True,
+        frozen=True,
         title='overdue',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Task']},
     )
     owner_id: int | None = Field(
-        None,
+        default=None,
         description='The id of the Organization, Community, or Source that the item belongs to.',
-        methods=['POST'],
-        read_only=False,
         title='ownerId',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST']},
     )
     owner_name: str | None = Field(
-        None,
-        conditional_read_only=['Victim'],
+        default=None,
         description='The name of the Organization, Community, or Source that the item belongs to.',
-        methods=['POST'],
-        read_only=False,
         title='ownerName',
+        validate_default=True,
+        json_schema_extra={'conditional_read_only': ['Victim'], 'methods': ['POST']},
     )
     password: str | None = Field(
-        None,
-        applies_to=['Document'],
+        default=None,
         description='The password associated with the document (Required if Malware is true).',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='password',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Document'], 'methods': ['POST', 'PUT']},
     )
     publish_date: datetime | None = Field(
-        None,
-        applies_to=['Report'],
+        default=None,
         description='The date and time that the report was first created.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='publishDate',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Report'], 'methods': ['POST', 'PUT']},
     )
-    reminded: bool = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Task'],
+    reminded: bool | None = Field(
+        default=None,
         description='Flag indicating whether or not the task reminders have been sent.',
-        read_only=True,
+        frozen=True,
         title='reminded',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Task']},
     )
     reminder_date: datetime | None = Field(
-        None,
-        applies_to=['Task'],
+        default=None,
         description='The reminder date and time.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='reminderDate',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Task'], 'methods': ['POST', 'PUT']},
     )
     reviews: dict | None = Field(
-        None,
+        default=None,
         description='A list of reviews corresponding to the Group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='reviews',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     score: int | None = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Email'],
+        default=None,
         description='The score value for this email.',
-        read_only=True,
+        frozen=True,
         title='score',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Email']},
     )
     score_breakdown: str | None = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Email'],
+        default=None,
         description='The email score breakdown.',
-        read_only=True,
+        frozen=True,
         title='scoreBreakdown',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Email']},
     )
-    score_includes_body: bool = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Email'],
+    score_includes_body: bool | None = Field(
+        default=None,
         description='Is the Body included in the email score?',
-        read_only=True,
+        frozen=True,
         title='scoreIncludesBody',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Email']},
     )
-    security_labels: 'SecurityLabelsModel' = Field(
-        None,
+    security_labels: SecurityLabelsModel | None = Field(
+        default=None,
         description=(
             'A list of Security Labels corresponding to the Intel item (NOTE: Setting this '
             'parameter will replace any existing tag(s) with the one(s) specified).'
         ),
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='securityLabels',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     signature_date_added: datetime | None = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Signature'],
+        default=None,
         description='The date and time that the signature was first created.',
-        read_only=True,
+        frozen=True,
         title='signatureDateAdded',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Signature']},
     )
     status: str | None = Field(
-        None,
-        applies_to=['Document', 'Report', 'Event', 'Task', 'Incident'],
-        conditional_read_only=['Document', 'Report', 'Task'],
+        default=None,
         description=(
             'The status associated with this document, event, task, or incident (read only for '
             'task, document, and report).'
         ),
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='status',
+        validate_default=True,
+        json_schema_extra={
+            'applies_to': ['Document', 'Report', 'Event', 'Task', 'Incident'],
+            'conditional_read_only': ['Document', 'Report', 'Task'],
+            'methods': ['POST', 'PUT'],
+        },
     )
     subject: str | None = Field(
-        None,
-        applies_to=['Email'],
+        default=None,
         description='The email Subject section.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='subject',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Email'], 'methods': ['POST', 'PUT']},
     )
-    tags: 'TagsModel' = Field(
-        None,
+    tags: TagsModel | None = Field(
+        default=None,
         description=(
             'A list of Tags corresponding to the item (NOTE: Setting this parameter will replace '
             'any existing tag(s) with the one(s) specified).'
         ),
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='tags',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     to: str | None = Field(
-        None,
-        allow_mutation=False,
-        applies_to=['Email'],
+        default=None,
         description='The email To field .',
-        read_only=True,
+        frozen=True,
         title='to',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Email']},
     )
     type: str | None = Field(
-        None,
+        default=None,
         description='The **type** for the Group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='type',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    up_vote: bool = Field(
-        None,
-        allow_mutation=False,
+    up_vote: bool | None = Field(
+        default=None,
         description=(
             'Is the intelligence valid and useful? (0 means downvote, 1 means upvote, and NULL '
             'means no vote).'
         ),
-        read_only=True,
+        frozen=True,
         title='upVote',
+        validate_default=True,
     )
     up_vote_count: int | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The total number of users who find the intel useful.',
-        read_only=True,
+        frozen=True,
         title='upVoteCount',
+        validate_default=True,
     )
     web_link: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='A link to the ThreatConnect details page for this entity.',
-        read_only=True,
+        frozen=True,
         title='webLink',
+        validate_default=True,
     )
     xid: str | None = Field(
-        None,
+        default=None,
         description='The xid of the item.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='xid',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
-    @validator('associated_artifacts', always=True, pre=True)
+    @field_validator('associated_artifacts', mode='before')
     @classmethod
     def _validate_artifacts(cls, v):
         if not v:
             return ArtifactsModel()  # type: ignore
         return v
 
-    @validator('associated_cases', always=True, pre=True)
+    @field_validator('associated_cases', mode='before')
     @classmethod
     def _validate_cases(cls, v):
         if not v:
             return CasesModel()  # type: ignore
         return v
 
-    @validator('attributes', always=True, pre=True)
+    @field_validator('attributes', mode='before')
     @classmethod
     def _validate_group_attributes(cls, v):
         if not v:
             return GroupAttributesModel()  # type: ignore
         return v
 
-    @validator('associated_groups', always=True, pre=True)
+    @field_validator('associated_groups', mode='before')
     @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
         return v
 
-    @validator('associated_indicators', always=True, pre=True)
+    @field_validator('associated_indicators', mode='before')
     @classmethod
     def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()  # type: ignore
         return v
 
-    @validator('security_labels', always=True, pre=True)
+    @field_validator('security_labels', mode='before')
     @classmethod
     def _validate_security_labels(cls, v):
         if not v:
             return SecurityLabelsModel()  # type: ignore
         return v
 
-    @validator('tags', always=True, pre=True)
+    @field_validator('tags', mode='before')
     @classmethod
     def _validate_tags(cls, v):
         if not v:
             return TagsModel()  # type: ignore
         return v
 
-    @validator('assignments', always=True, pre=True)
+    @field_validator('assignments', mode='before')
     @classmethod
     def _validate_task_assignees(cls, v):
         if not v:
             return TaskAssigneesModel()  # type: ignore
         return v
 
-    @validator('created_by', always=True, pre=True)
+    @field_validator('created_by', mode='before')
     @classmethod
     def _validate_user(cls, v):
         if not v:
             return UserModel()  # type: ignore
         return v
 
-    @validator('associated_victim_assets', always=True, pre=True)
+    @field_validator('associated_victim_assets', mode='before')
     @classmethod
     def _validate_victim_assets(cls, v):
         if not v:
@@ -567,8 +565,8 @@ class GroupDataModel(
     data: list[GroupModel] | None = Field(
         [],
         description='The data for the Groups.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -580,19 +578,18 @@ class GroupsModel(
 ):
     """Groups Model"""
 
-    _mode_support = PrivateAttr(default=True)
+    _mode_support: bool = PrivateAttr(default=True)
 
     data: list[GroupModel] | None = Field(
         [],
         description='The data for the Groups.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -607,7 +604,7 @@ from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsMo
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetsModel
 
-# add forward references
-GroupDataModel.update_forward_refs()
-GroupModel.update_forward_refs()
-GroupsModel.update_forward_refs()
+# rebuild model
+# GroupDataModel.model_rebuild()
+# GroupModel.model_rebuild()
+# GroupsModel.model_rebuild()

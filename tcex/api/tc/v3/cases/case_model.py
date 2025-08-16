@@ -1,10 +1,12 @@
 """TcEx Framework Module"""
 
 # standard library
+from __future__ import annotations
+
 from datetime import datetime
 
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -14,325 +16,372 @@ from tcex.util import Util
 class CaseModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='Case Model',
     validate_assignment=True,
 ):
     """Case Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=True)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=True)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
-    artifacts: 'ArtifactsModel' = Field(
-        None,
+    artifacts: ArtifactsModel | None = Field(
+        default=None,
         description='A list of Artifacts corresponding to the Case.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='artifacts',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    assignee: 'AssigneeModel' = Field(
-        None,
+    assignee: AssigneeModel | None = Field(
+        default=None,
         description='The user or group Assignee object for the Case.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='assignee',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_cases: 'CasesModel' = Field(
-        None,
+    associated_cases: CasesModel | None = Field(
+        default=None,
         description='A list of Cases associated with this Case.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedCases',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_groups: 'GroupsModel' = Field(
-        None,
+    associated_groups: GroupsModel | None = Field(
+        default=None,
         description='A list of Groups associated with this Case.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedGroups',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_indicators: 'IndicatorsModel' = Field(
-        None,
+    associated_indicators: IndicatorsModel | None = Field(
+        default=None,
         description='A list of Indicators associated with this Case.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedIndicators',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    attributes: 'CaseAttributesModel' = Field(
-        None,
+    attributes: CaseAttributesModel | None = Field(
+        default=None,
         description='A list of Attributes corresponding to the Case.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='attributes',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     case_close_time: datetime | None = Field(
-        None,
+        default=None,
         description='The date and time that the Case was closed.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='caseCloseTime',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    case_close_user: 'UserModel' = Field(
-        None,
-        allow_mutation=False,
+    case_close_user: UserModel | None = Field(
+        default=None,
         description='The user that closed the Case.',
-        read_only=True,
+        frozen=True,
         title='caseCloseUser',
+        validate_default=True,
     )
     case_detection_time: datetime | None = Field(
-        None,
+        default=None,
         description='The date and time that ends the user initiated Case duration.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='caseDetectionTime',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    case_detection_user: 'UserModel' = Field(
-        None,
-        allow_mutation=False,
+    case_detection_user: UserModel | None = Field(
+        default=None,
         description='The user that stopped the clock on Case duration.',
-        read_only=True,
+        frozen=True,
         title='caseDetectionUser',
+        validate_default=True,
     )
     case_occurrence_time: datetime | None = Field(
-        None,
+        default=None,
         description='The date and time that starts the user initiated Case duration.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='caseOccurrenceTime',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    case_occurrence_user: 'UserModel' = Field(
-        None,
-        allow_mutation=False,
+    case_occurrence_user: UserModel | None = Field(
+        default=None,
         description='The user that started the clock on Case duration.',
-        read_only=True,
+        frozen=True,
         title='caseOccurrenceUser',
+        validate_default=True,
     )
     case_open_time: datetime | None = Field(
-        None,
+        default=None,
         description='The date and time that the Case was first opened.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='caseOpenTime',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    case_open_user: 'UserModel' = Field(
-        None,
-        allow_mutation=False,
+    case_open_user: UserModel | None = Field(
+        default=None,
         description='The user that opened the Case.',
-        read_only=True,
+        frozen=True,
         title='caseOpenUser',
+        validate_default=True,
     )
-    created_by: 'UserModel' = Field(
-        None,
-        allow_mutation=False,
+    created_by: UserModel | None = Field(
+        default=None,
         description='The **created by** for the Case.',
-        read_only=True,
+        frozen=True,
         title='createdBy',
+        validate_default=True,
     )
     date_added: datetime | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The date and time that the Case was first created.',
-        read_only=True,
+        frozen=True,
         title='dateAdded',
+        validate_default=True,
     )
     description: str | None = Field(
-        None,
+        default=None,
         description='The description of the Case.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='description',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
+    )
+    detection_due: datetime | None = Field(
+        default=None,
+        description='The date and time that the Case detection is due.',
+        frozen=True,
+        title='detectionDue',
+        validate_default=True,
+    )
+    detection_overdue: bool | None = Field(
+        default=None,
+        description=(
+            'Flag indicating whether or not the case detection is overdue, based on the '
+            'organization SLA settings.'
+        ),
+        frozen=True,
+        title='detectionOverdue',
+        validate_default=True,
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     last_updated: datetime | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The date and time that the Case was last updated.',
-        read_only=True,
+        frozen=True,
         title='lastUpdated',
+        validate_default=True,
     )
     name: str | None = Field(
-        None,
+        default=None,
         description='The name of the Case.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='name',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    notes: 'NotesModel' = Field(
-        None,
+    notes: NotesModel | None = Field(
+        default=None,
         description='A list of Notes corresponding to the Case.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='notes',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     owner: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The name of the Owner of the Case.',
-        read_only=True,
+        frozen=True,
         title='owner',
+        validate_default=True,
     )
     owner_id: int | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The id of the Owner of the Case.',
-        read_only=True,
+        frozen=True,
         title='ownerId',
+        validate_default=True,
     )
-    related: 'CasesModel' = Field(
-        None,
-        allow_mutation=False,
+    related: CasesModel | None = Field(
+        default=None,
         description='The **related** for the Case.',
-        read_only=True,
+        frozen=True,
         title='related',
+        validate_default=True,
     )
     resolution: str | None = Field(
-        None,
+        default=None,
         description='The Case resolution.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='resolution',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
+    )
+    response_due: datetime | None = Field(
+        default=None,
+        description='The date and time that the Case response is due.',
+        frozen=True,
+        title='responseDue',
+        validate_default=True,
+    )
+    response_overdue: bool | None = Field(
+        default=None,
+        description=(
+            'Flag indicating whether or not the case response is overdue, based on the organization'
+            ' SLA settings.'
+        ),
+        frozen=True,
+        title='responseOverdue',
+        validate_default=True,
     )
     severity: str | None = Field(
-        None,
+        default=None,
         description='The Case severity.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='severity',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     status: str | None = Field(
-        None,
+        default=None,
         description='The Case status.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='status',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    tags: 'TagsModel' = Field(
-        None,
+    tags: TagsModel | None = Field(
+        default=None,
         description=(
             'A list of Tags corresponding to the Case (NOTE: Setting this parameter will replace '
             'any existing tag(s) with the one(s) specified).'
         ),
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='tags',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    tasks: 'TasksModel' = Field(
-        None,
+    tasks: TasksModel | None = Field(
+        default=None,
         description='A list of Tasks corresponding to the Case.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='tasks',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    user_access: 'UsersModel' = Field(
-        None,
+    time_to_detect: int | None = Field(
+        default=None,
+        description='The resultant time (in seconds) from the case detection time calculation.',
+        frozen=True,
+        title='timeToDetect',
+        validate_default=True,
+    )
+    time_to_respond: int | None = Field(
+        default=None,
+        description='The resultant time (in seconds) from the case response time calculation.',
+        frozen=True,
+        title='timeToRespond',
+        validate_default=True,
+    )
+    user_access: UsersModel | None = Field(
+        default=None,
         description=(
             'A list of Users that, when defined, are the only ones allowed to view or edit the '
             'Case.'
         ),
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='userAccess',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    workflow_events: 'WorkflowEventsModel' = Field(
-        None,
+    workflow_events: WorkflowEventsModel | None = Field(
+        default=None,
         description='A list of workflowEvents (timeline) corresponding to the Case.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='workflowEvents',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    workflow_template: 'WorkflowTemplateModel' = Field(
-        None,
+    workflow_template: WorkflowTemplateModel | None = Field(
+        default=None,
         description='The Template that the Case is populated by.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='workflowTemplate',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     xid: str | None = Field(
-        None,
+        default=None,
         description='The **xid** for the Case.',
-        methods=['POST'],
-        read_only=False,
         title='xid',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST']},
     )
 
-    @validator('artifacts', always=True, pre=True)
+    @field_validator('artifacts', mode='before')
     @classmethod
     def _validate_artifacts(cls, v):
         if not v:
             return ArtifactsModel()  # type: ignore
         return v
 
-    @validator('assignee', always=True, pre=True)
+    @field_validator('assignee', mode='before')
     @classmethod
     def _validate_assignee(cls, v):
         if not v:
             return AssigneeModel()  # type: ignore
         return v
 
-    @validator('attributes', always=True, pre=True)
+    @field_validator('attributes', mode='before')
     @classmethod
     def _validate_case_attributes(cls, v):
         if not v:
             return CaseAttributesModel()  # type: ignore
         return v
 
-    @validator('associated_cases', 'related', always=True, pre=True)
+    @field_validator('associated_cases', 'related', mode='before')
     @classmethod
     def _validate_cases(cls, v):
         if not v:
             return CasesModel()  # type: ignore
         return v
 
-    @validator('associated_groups', always=True, pre=True)
+    @field_validator('associated_groups', mode='before')
     @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
         return v
 
-    @validator('associated_indicators', always=True, pre=True)
+    @field_validator('associated_indicators', mode='before')
     @classmethod
     def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()  # type: ignore
         return v
 
-    @validator('notes', always=True, pre=True)
+    @field_validator('notes', mode='before')
     @classmethod
     def _validate_notes(cls, v):
         if not v:
             return NotesModel()  # type: ignore
         return v
 
-    @validator('tags', always=True, pre=True)
+    @field_validator('tags', mode='before')
     @classmethod
     def _validate_tags(cls, v):
         if not v:
             return TagsModel()  # type: ignore
         return v
 
-    @validator('tasks', always=True, pre=True)
+    @field_validator('tasks', mode='before')
     @classmethod
     def _validate_tasks(cls, v):
         if not v:
             return TasksModel()  # type: ignore
         return v
 
-    @validator(
+    @field_validator(
         'case_close_user',
         'case_detection_user',
         'case_occurrence_user',
         'case_open_user',
         'created_by',
-        always=True,
-        pre=True,
+        mode='before',
     )
     @classmethod
     def _validate_user(cls, v):
@@ -340,21 +389,21 @@ class CaseModel(
             return UserModel()  # type: ignore
         return v
 
-    @validator('user_access', always=True, pre=True)
+    @field_validator('user_access', mode='before')
     @classmethod
     def _validate_users(cls, v):
         if not v:
             return UsersModel()  # type: ignore
         return v
 
-    @validator('workflow_events', always=True, pre=True)
+    @field_validator('workflow_events', mode='before')
     @classmethod
     def _validate_workflow_events(cls, v):
         if not v:
             return WorkflowEventsModel()  # type: ignore
         return v
 
-    @validator('workflow_template', always=True, pre=True)
+    @field_validator('workflow_template', mode='before')
     @classmethod
     def _validate_workflow_template(cls, v):
         if not v:
@@ -373,8 +422,8 @@ class CaseDataModel(
     data: list[CaseModel] | None = Field(
         [],
         description='The data for the Cases.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -386,19 +435,18 @@ class CasesModel(
 ):
     """Cases Model"""
 
-    _mode_support = PrivateAttr(default=True)
+    _mode_support: bool = PrivateAttr(default=True)
 
     data: list[CaseModel] | None = Field(
         [],
         description='The data for the Cases.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -415,7 +463,7 @@ from tcex.api.tc.v3.tasks.task_model import TasksModel
 from tcex.api.tc.v3.workflow_events.workflow_event_model import WorkflowEventsModel
 from tcex.api.tc.v3.workflow_templates.workflow_template_model import WorkflowTemplateModel
 
-# add forward references
-CaseDataModel.update_forward_refs()
-CaseModel.update_forward_refs()
-CasesModel.update_forward_refs()
+# rebuild model
+# CaseDataModel.model_rebuild()
+# CaseModel.model_rebuild()
+# CasesModel.model_rebuild()

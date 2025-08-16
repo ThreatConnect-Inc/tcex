@@ -18,9 +18,10 @@ class AssigneeUserModel(
 
     user_name: str = Field(
         ...,
-        allow_mutation=False,
+        frozen=True,
         description='The **user name** for the User.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        # TODO: @bsummers-tc
+        # read_only=False,
         title='userName',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )

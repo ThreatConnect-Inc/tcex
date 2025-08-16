@@ -14,7 +14,7 @@ class TestUserSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         for user in self.tcex.api.tc.v3.users():
-            print(user.model.dict(exclude_none=True))
+            print(user.model.model_dump(exclude_none=True))
         # End Snippet
 
     def test_user_tql_filter(self):
@@ -26,7 +26,7 @@ class TestUserSnippets(TestV3):
         users.filter.last_name(TqlOperator.EQ, 'Sparkles')
         users.filter.user_name(TqlOperator.EQ, 'rsparkles')
         for user in users:
-            print(user.model.dict(exclude_none=True))
+            print(user.model.model_dump(exclude_none=True))
         # End Snippet
 
     def test_user_get_by_id(self):
@@ -34,5 +34,5 @@ class TestUserSnippets(TestV3):
         # Begin Snippet
         user = self.tcex.api.tc.v3.user(id=15)
         user.get()
-        print(user.model.dict(exclude_none=True))
+        print(user.model.model_dump(exclude_none=True))
         # End Snippet

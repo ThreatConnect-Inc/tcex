@@ -6,13 +6,16 @@ import logging
 import os
 import re
 import shutil
+import socket
 from collections.abc import Callable, Iterator
+from threading import Thread
 
 # third-party
 import fakeredis
 import pytest
 import redis
 from _pytest.monkeypatch import MonkeyPatch
+from fakeredis import TcpFakeServer
 
 # first-party
 from tcex import TcEx
@@ -197,10 +200,23 @@ def pytest_configure(config):
     except OSError:
         pass
 
-    # Replace Redis with FakeRedis for testing
-    client_prop = cached_property(lambda *args: fakeredis.FakeRedis())
-    client_prop.__set_name__(RedisClient, 'client')
-    RedisClient.client = client_prop  # type: ignore
+    config.tcp_fake_server = None  # type: ignore
+    server_address = 'localhost'
+    server_port = 6379
+
+    def is_port_in_use() -> bool:
+        """Check if a port is in use."""
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            return s.connect_ex((server_address, server_port)) == 0
+
+    if not is_port_in_use():
+        tcp_fake_server = TcpFakeServer((server_address, server_port), server_type='redis')
+        tcp_fake_server.daemon_threads = True
+        t = Thread(target=tcp_fake_server.serve_forever, daemon=True)
+        t.start()
+        config.tcp_fake_server = tcp_fake_server  # type: ignore
+
+        print('Starting fake Redis server.')  # noqa: T201
 
 
 def pytest_sessionstart(session):
@@ -220,6 +236,10 @@ def pytest_sessionfinish(session, exitstatus):
 
 def pytest_unconfigure(config):
     """Execute unconfigure logic before test process is exited."""
+    if config.tcp_fake_server:  # type: ignore
+        config.tcp_fake_server.server_close()  # type: ignore
+        config.tcp_fake_server.shutdown()  # type: ignore
+
     try:
         # remove temp app_config.json file
         os.remove('app_config.json')

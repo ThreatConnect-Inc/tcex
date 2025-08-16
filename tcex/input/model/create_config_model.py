@@ -4,7 +4,7 @@
 from typing import Any
 
 # third-party
-from pydantic import BaseModel, Extra, root_validator, validator
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 
 # first-party
 from tcex.app.config import InstallJson
@@ -19,7 +19,7 @@ class CreateConfigModel(BaseModel):
     tc_playbook_out_variables: list[str]
     trigger_id: int
 
-    @validator('tc_playbook_out_variables', pre=True)
+    @field_validator('tc_playbook_out_variables', mode='before')
     @classmethod
     def _tc_playbook_out_variables(cls, v) -> list[str]:
         """Convert tc_playbook_out_variables into a list of strings.
@@ -29,7 +29,7 @@ class CreateConfigModel(BaseModel):
         return v.split(',') if v else []
 
     # TODO: [low] workaround for PLAT-4393
-    @root_validator(pre=True)
+    @model_validator(mode='before')
     @classmethod
     def _update_inputs(cls, values: dict[str, Any]):
         """Convert empty strings to None.
@@ -53,7 +53,4 @@ class CreateConfigModel(BaseModel):
 
         return values
 
-    class Config:
-        """Model Config"""
-
-        extra = Extra.allow
+    model_config = ConfigDict(extra='allow')

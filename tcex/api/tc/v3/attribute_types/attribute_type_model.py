@@ -1,7 +1,10 @@
 """TcEx Framework Module"""
 
+# standard library
+from __future__ import annotations
+
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -11,64 +14,64 @@ from tcex.util import Util
 class AttributeTypeModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='AttributeType Model',
     validate_assignment=True,
 ):
     """Attribute_Type Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
-    allow_markdown: bool = Field(
-        None,
+    allow_markdown: bool | None = Field(
+        default=None,
         description='Flag that enables markdown feature in the attribute value field.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='allowMarkdown',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     description: str | None = Field(
-        None,
+        default=None,
         description='The description of the attribute type.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='description',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     error_message: str | None = Field(
-        None,
+        default=None,
         description='The error message displayed.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='errorMessage',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     max_size: int | None = Field(
-        None,
+        default=None,
         description='The maximum size of the attribute value.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='maxSize',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     name: str | None = Field(
-        None,
+        default=None,
         description='The name of the attribute type.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='name',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     validation_rule: dict | None = Field(
-        None,
+        default=None,
         description='The validation rule that governs the attribute value.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='validationRule',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -83,8 +86,8 @@ class AttributeTypeDataModel(
     data: list[AttributeTypeModel] | None = Field(
         [],
         description='The data for the AttributeTypes.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -96,23 +99,22 @@ class AttributeTypesModel(
 ):
     """Attribute_Types Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[AttributeTypeModel] | None = Field(
         [],
         description='The data for the AttributeTypes.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
-# add forward references
-AttributeTypeDataModel.update_forward_refs()
-AttributeTypeModel.update_forward_refs()
-AttributeTypesModel.update_forward_refs()
+# rebuild model
+AttributeTypeDataModel.model_rebuild()
+AttributeTypeModel.model_rebuild()
+AttributeTypesModel.model_rebuild()

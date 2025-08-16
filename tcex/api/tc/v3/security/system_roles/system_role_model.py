@@ -1,7 +1,10 @@
 """TcEx Framework Module"""
 
+# standard library
+from __future__ import annotations
+
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -11,50 +14,50 @@ from tcex.util import Util
 class SystemRoleModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='SystemRole Model',
     validate_assignment=True,
 ):
     """System_Role Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
-    active: bool = Field(
-        None,
-        allow_mutation=False,
+    active: bool | None = Field(
+        default=None,
         description='The **active** for the System_Role.',
-        read_only=True,
+        frozen=True,
         title='active',
+        validate_default=True,
     )
-    assignable: bool = Field(
-        None,
-        allow_mutation=False,
+    assignable: bool | None = Field(
+        default=None,
         description='The **assignable** for the System_Role.',
-        read_only=True,
+        frozen=True,
         title='assignable',
+        validate_default=True,
     )
-    displayed: bool = Field(
-        None,
-        allow_mutation=False,
+    displayed: bool | None = Field(
+        default=None,
         description='The **displayed** for the System_Role.',
-        read_only=True,
+        frozen=True,
         title='displayed',
+        validate_default=True,
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     name: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **name** for the System_Role.',
-        read_only=True,
+        frozen=True,
         title='name',
+        validate_default=True,
     )
 
 
@@ -69,8 +72,8 @@ class SystemRoleDataModel(
     data: list[SystemRoleModel] | None = Field(
         [],
         description='The data for the SystemRoles.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -82,23 +85,22 @@ class SystemRolesModel(
 ):
     """System_Roles Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[SystemRoleModel] | None = Field(
         [],
         description='The data for the SystemRoles.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
-# add forward references
-SystemRoleDataModel.update_forward_refs()
-SystemRoleModel.update_forward_refs()
-SystemRolesModel.update_forward_refs()
+# rebuild model
+SystemRoleDataModel.model_rebuild()
+SystemRoleModel.model_rebuild()
+SystemRolesModel.model_rebuild()

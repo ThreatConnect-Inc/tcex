@@ -4,7 +4,7 @@
 from typing import Any
 
 # third-party
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 # first-party
 from tcex.input.field_type import EditChoice
@@ -25,53 +25,69 @@ class AdvancedRequestModel(BaseModel):
     tc_adv_req_body: Any | None = Field(
         None,
         description='The HTTP body for the request.',
-        inclusion_reason='feature (advancedRequest)',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'feature (advancedRequest)',
+            'requires_definition': True,
+        },
     )
     tc_adv_req_exclude_null_params: bool = Field(
         default=False,
         description='Flag to exclude any null query parameters.',
-        inclusion_reason='feature (advancedRequest)',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'feature (advancedRequest)',
+            'requires_definition': True,
+        },
     )
     tc_adv_req_fail_on_error: bool = Field(
         default=False,
         description='Flag to force fail on any error.',
-        inclusion_reason='feature (advancedRequest)',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'feature (advancedRequest)',
+            'requires_definition': True,
+        },
     )
     tc_adv_req_headers: list[dict] | None = Field(
         None,
         description='The HTTP headers for the request.',
-        inclusion_reason='feature (advancedRequest)',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'feature (advancedRequest)',
+            'requires_definition': True,
+        },
     )
-    tc_adv_req_http_method: EditChoice = Field(
+    tc_adv_req_http_method: EditChoice | None = Field(
         None,
         description='The HTTP method for the request.',
-        inclusion_reason='feature (advancedRequest)',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'feature (advancedRequest)',
+            'requires_definition': True,
+        },
     )
     tc_adv_req_params: list[dict] | None = Field(
         None,
         description='The HTTP query params for the request.',
-        inclusion_reason='feature (advancedRequest)',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'feature (advancedRequest)',
+            'requires_definition': True,
+        },
     )
     tc_adv_req_path: str | None = Field(
         None,
         description='The API path for the request.',
-        inclusion_reason='feature (advancedRequest)',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'feature (advancedRequest)',
+            'requires_definition': True,
+        },
     )
     tc_adv_req_urlencode_body: bool = Field(
         default=False,
         description='Flag to set URL encoding for the request body.',
-        inclusion_reason='feature (advancedRequest)',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'feature (advancedRequest)',
+            'requires_definition': True,
+        },
     )
 
-    @validator('tc_adv_req_headers', 'tc_adv_req_params', always=True, pre=True)
+    @field_validator('tc_adv_req_headers', 'tc_adv_req_params', mode='before')
     @classmethod
     def _always_array(cls, value: list | str | None) -> list:
         """Return array value for headers and params."""

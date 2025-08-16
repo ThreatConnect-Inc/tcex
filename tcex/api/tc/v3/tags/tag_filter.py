@@ -4,10 +4,9 @@
 from datetime import datetime
 from enum import Enum
 
-# third-party
+# first-party
 from arrow import Arrow
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.filter_abc import FilterABC
 from tcex.api.tc.v3.tql.tql import Tql
@@ -118,6 +117,57 @@ class TagFilter(FilterABC):
             raise RuntimeError(ex_msg)
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
+
+    def financial_risk(self, operator: Enum, financial_risk: list | str):
+        """Filter Financial Risk based on **financialRisk** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            financial_risk: The RQ-derived financial risk category of an ATT&CK-based tag as it
+                relates to the user's organization.
+        """
+        if isinstance(financial_risk, list) and operator not in self.list_types:
+            ex_msg = (
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+            raise RuntimeError(ex_msg)
+
+        self._tql.add_filter('financialRisk', operator, financial_risk, TqlType.STRING)
+
+    def financial_risk_score(self, operator: Enum, financial_risk_score: int | list):
+        """Filter Financial Risk Score based on **financialRiskScore** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            financial_risk_score: The RQ-derived financial risk score of an ATT&CK-based tag as it
+                relates to the user's organization.
+        """
+        if isinstance(financial_risk_score, list) and operator not in self.list_types:
+            ex_msg = (
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+            raise RuntimeError(ex_msg)
+
+        self._tql.add_filter('financialRiskScore', operator, financial_risk_score, TqlType.INTEGER)
+
+    def financial_risk_value(self, operator: Enum, financial_risk_value: int | list):
+        """Filter Financial Risk Value based on **financialRiskValue** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            financial_risk_value: The RQ-derived financial risk currency value of an ATT&CK-based
+                tag as it relates to the user's organization.
+        """
+        if isinstance(financial_risk_value, list) and operator not in self.list_types:
+            ex_msg = (
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+            raise RuntimeError(ex_msg)
+
+        self._tql.add_filter('financialRiskValue', operator, financial_risk_value, TqlType.INTEGER)
 
     @property
     def has_case(self):

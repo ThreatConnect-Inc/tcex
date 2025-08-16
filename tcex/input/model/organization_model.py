@@ -12,7 +12,7 @@ class OrganizationModel(BaseModel):
     """
 
     tc_job_id: int | None = Field(
-        None,
+        default=None,
         description='The Job Id for the current App execution.',
-        inclusion_reason='runtimeLevel',
+        json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )

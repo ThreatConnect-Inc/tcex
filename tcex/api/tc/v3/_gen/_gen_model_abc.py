@@ -18,9 +18,9 @@ class GenerateModelABC(GenerateABC, ABC):
 
         # properties
         self.requirements = {
-            'standard library': [],
+            'standard library': ['from __future__ import annotations'],
             'third-party': [
-                {'module': 'pydantic', 'imports': ['BaseModel', 'Extra', 'Field']},
+                {'module': 'pydantic', 'imports': ['BaseModel', 'Field']},
             ],
             'first-party': [
                 {'module': 'tcex.util', 'imports': ['Util']},
@@ -38,7 +38,7 @@ class GenerateModelABC(GenerateABC, ABC):
 
     def _add_pydantic_validator(self):
         """Add pydantic validator only when required."""
-        self._add_module_class('third-party', 'pydantic', 'validator')
+        self._add_module_class('third-party', 'pydantic', 'field_validator')
 
     def _add_pydantic_private_attr(self):
         """Add pydantic validator only when required."""
@@ -47,7 +47,7 @@ class GenerateModelABC(GenerateABC, ABC):
     def _gen_code_validator_method(self, type_: str, data: dict) -> str:
         """Return the validator code
 
-        @validator('artifact_type', always=True, pre=True)
+        @field_validator('artifact_type', mode='before')
         def _validate_artifact_type(cls, v):
             if not v:
                 return ArtifactTypeModel()
@@ -55,12 +55,12 @@ class GenerateModelABC(GenerateABC, ABC):
         """
         type_ = self.util.camel_string(type_)
         fields = data['fields']
-        typing_type = data['typing_type'].strip("'")
+        typing_type = data['typing_type'].strip("'").strip(' | None')
 
         fields_string = ', '.join(f"'{field}'" for field in fields)
         return '\n'.join(
             [
-                f'{self.i1}@validator({fields_string}, always=True, pre=True)',
+                f'{self.i1}@field_validator({fields_string}, mode="before")',
                 f'{self.i1}@classmethod',
                 f'{self.i1}def _validate_{type_.snake_case()}(cls, v):',
                 f'{self.i2}if not v:',
@@ -121,13 +121,13 @@ class GenerateModelABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 '',
-                f"""class {self.type_.plural().pascal_case()}Model(""",
-                f"""{self.i1}BaseModel,""",
-                f"""{self.i1}title='{self.type_.plural().pascal_case()} Model',""",
-                f"""{self.i1}alias_generator=Util().snake_to_camel,""",
-                f"""{self.i1}validate_assignment=True,""",
-                """):""",
-                f'''{self.i1}"""{self.type_.plural().title()} Model"""''',
+                f'class {self.type_.plural().pascal_case()}Model(',
+                f'{self.i1}BaseModel,',
+                f"{self.i1}title='{self.type_.plural().pascal_case()} Model',",
+                f'{self.i1}alias_generator=Util().snake_to_camel,',
+                f'{self.i1}validate_assignment=True,',
+                '):',
+                f'{self.i1}"""{self.type_.plural().title()} Model"""',
                 '',
                 '',
             ]
@@ -139,34 +139,30 @@ class GenerateModelABC(GenerateABC, ABC):
         data: list[ArtifactModel] | None = Field(
             [],
             description='The data of the Cases.',
-            methods=['POST', 'PUT'],
             title='data',
+            json_schema_extra={'methods': ['POST', 'PUT']},
         )
         """
         return '\n'.join(
             [
                 (
-                    f"""{self.i1}data: """
-                    f"""list[{self.type_.singular().pascal_case()}Model] | None """
-                    """= Field("""
+                    f'{self.i1}data: '
+                    f'list[{self.type_.singular().pascal_case()}Model] | None '
+                    '= Field('
                 ),
-                f"""{self.i2}[],""",
+                f'{self.i2}[],',
+                (f"{self.i2}description='The data for the {self.type_.plural().pascal_case()}.',"),
+                f"{self.i2}title='data',",
+                f'{self.i1})',
+                f'{self.i1}mode: str = Field(',
+                f"{self.i2}'append',",
                 (
-                    f"""{self.i2}description='The data for the """
-                    f"""{self.type_.plural().pascal_case()}.',"""
+                    f"{self.i2}description='The PUT mode for nested "
+                    "objects (append, delete, replace). Default: append',"
                 ),
-                f"""{self.i2}methods=['POST', 'PUT'],""",
-                f"""{self.i2}title='data',""",
-                f"""{self.i1})""",
-                f"""{self.i1}mode: str = Field(""",
-                f"""{self.i2}'append',""",
-                (
-                    f"""{self.i2}description='The PUT mode for nested """
-                    """objects (append, delete, replace). Default: append',"""
-                ),
-                f"""{self.i2}methods=['POST', 'PUT'],""",
-                f"""{self.i2}title='append',""",
-                f"""{self.i1})""",
+                f"{self.i2}title='append',",
+                f"{self.i2}json_schema_extra={{'methods': ['POST', 'PUT']}},",
+                f'{self.i1})',
                 '',
                 '',
             ]
@@ -189,14 +185,14 @@ class GenerateModelABC(GenerateABC, ABC):
         ]:
             return '\n'.join(
                 [
-                    f'{self.i1}_mode_support = PrivateAttr(default=True)',
+                    f'{self.i1}_mode_support: bool = PrivateAttr(default=True)',
                     '',
                     '',
                 ]
             )
         return '\n'.join(
             [
-                f'{self.i1}_mode_support = PrivateAttr(default=False)',
+                f'{self.i1}_mode_support: bool = PrivateAttr(default=False)',
                 '',
                 '',
             ]
@@ -215,13 +211,13 @@ class GenerateModelABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 '',
-                f"""class {self.type_.singular().pascal_case()}DataModel(""",
-                f"""{self.i1}BaseModel,""",
-                f"""{self.i1}title='{self.type_.singular().pascal_case()} Data Model',""",
-                f"""{self.i1}alias_generator=Util().snake_to_camel,""",
-                f"""{self.i1}validate_assignment=True,""",
-                """):""",
-                f'''{self.i1}"""{self.type_.plural().title()} Data Model"""''',
+                f'class {self.type_.singular().pascal_case()}DataModel(',
+                f'{self.i1}BaseModel,',
+                f"{self.i1}title='{self.type_.singular().pascal_case()} Data Model',",
+                f'{self.i1}alias_generator=Util().snake_to_camel,',
+                f'{self.i1}validate_assignment=True,',
+                '):',
+                f'{self.i1}"""{self.type_.plural().title()} Data Model"""',
                 '',
                 '',
             ]
@@ -239,18 +235,15 @@ class GenerateModelABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 (
-                    f"""{self.i1}data: """
-                    f"""list[{self.type_.singular().pascal_case()}Model] | None """
-                    """= Field("""
+                    f'{self.i1}data: '
+                    f'list[{self.type_.singular().pascal_case()}Model] | None '
+                    '= Field('
                 ),
-                f"""{self.i2}[],""",
-                (
-                    f"""{self.i2}description='The data for the """
-                    f"""{self.type_.plural().pascal_case()}.',"""
-                ),
-                f"""{self.i2}methods=['POST', 'PUT'],""",
-                f"""{self.i2}title='data',""",
-                f"""{self.i1})""",
+                f'{self.i2}[],',
+                (f"{self.i2}description='The data for the {self.type_.plural().pascal_case()}.',"),
+                f"{self.i2}title='data',",
+                f"{self.i2}json_schema_extra={{'methods': ['POST', 'PUT']}},",
+                f'{self.i1})',
                 '',
                 '',
             ]
@@ -269,14 +262,14 @@ class GenerateModelABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 '',
-                f"""class {self.type_.singular().pascal_case()}Model(""",
-                f"""{self.i1}V3ModelABC,""",
-                f"""{self.i1}alias_generator=Util().snake_to_camel,""",
-                f"""{self.i1}extra=Extra.allow,""",
-                f"""{self.i1}title='{self.type_.singular().pascal_case()} Model',""",
-                f"""{self.i1}validate_assignment=True,""",
-                """):""",
-                f'''{self.i1}"""{self.type_.singular().title()} Model"""''',
+                f'class {self.type_.singular().pascal_case()}Model(',
+                f'{self.i1}V3ModelABC,',
+                f'{self.i1}alias_generator=Util().snake_to_camel,',
+                f"{self.i1}extra='allow',",
+                f"{self.i1}title='{self.type_.singular().pascal_case()} Model',",
+                f'{self.i1}validate_assignment=True,',
+                '):',
+                f'{self.i1}"""{self.type_.singular().title()} Model"""',
                 '',
                 '',
             ]
@@ -301,7 +294,9 @@ class GenerateModelABC(GenerateABC, ABC):
         )
         """
         _model = []
-        for prop in self._prop_models:
+        for prop in self.content_models:
+            json_schema_extra = {}
+
             # only add requirements for non-current model type
             if (
                 prop.extra.type != self.type_.plural().pascal_case()
@@ -310,7 +305,7 @@ class GenerateModelABC(GenerateABC, ABC):
             ):
                 self.requirements[prop.extra.import_source].append(prop.extra.import_data)
 
-            # add validator
+            # add field validator
             if prop.extra.model is not None:
                 self.validators.setdefault(prop.type, {})
                 self.validators[prop.type].setdefault('fields', [])
@@ -322,30 +317,14 @@ class GenerateModelABC(GenerateABC, ABC):
             if prop.extra.alias.snake_case() in ['id']:
                 comment = '  # type: ignore'
             _model.append(
-                f"""{self.i1}{prop.extra.alias.snake_case()}: """
-                f"""{prop.extra.typing_type} = Field({comment}"""
+                f'{self.i1}{prop.extra.alias.snake_case()}: '
+                f'{prop.extra.typing_type} = Field({comment}'
             )
-            _model.append(f"""{self.i2}None,""")  # the default value
-
-            # allow_mutation / readOnly
-            if prop.read_only is True and prop.name != 'id':
-                _model.append(f"""{self.i2}allow_mutation=False,""")  # readOnly/mutation setting
+            _model.append(f'{self.i2}default=None,')  # the default value
 
             # alias
             if prop.extra.alias is not None and prop.name != prop.extra.alias:
-                _model.append(f"""{self.i2}alias='{prop.name}',""")
-
-            # applies_to
-            if prop.applies_to is not None:
-                _model.append(f"""{self.i2}applies_to={prop.applies_to},""")
-
-            # conditional_read_only
-            if prop.conditional_read_only is not None:
-                _model.append(f"""{self.i2}conditional_read_only={prop.conditional_read_only},""")
-
-            # conditional_required
-            if prop.conditional_required is not None:
-                _model.append(f"""{self.i2}conditional_required={prop.conditional_required},""")
+                _model.append(f"{self.i2}alias='{prop.name}',")
 
             # description - Use the TC provided description
             # if available, otherwise use a default format.
@@ -360,43 +339,71 @@ class GenerateModelABC(GenerateABC, ABC):
                 100,
             )
             if field_description is not None:
-                _model.append(f"""{self.i2}description={field_description},""")
+                _model.append(f'{self.i2}description={field_description},')
 
-            # methods (HTTP)
-            if prop.extra.methods:
-                _model.append(f"""{self.i2}methods={prop.extra.methods},""")
+            # frozen / readOnly
+            if prop.read_only is True and prop.name != 'id':
+                _model.append(f'{self.i2}frozen=True,')  # readOnly/mutation setting
 
             # max_length
             # if prop.max_length is not None:
-            #     _model.append(f'''{self.i2}max_length={prop.max_length},''')
+            #     _model.append(f'{self.i2}max_length={prop.max_length},')
 
             # max_size
             # if field_max_size is not None:
-            #     _model.append(f'''{self.i2}max_items={field_max_size},''')
+            #     _model.append(f'{self.i2}max_items={field_max_size},')
 
             # max_value
             # if prop.max_value is not None:
-            #     _model.append(f'''{self.i2}maximum={prop.max_value},''')
+            #     _model.append(f'{self.i2}maximum={prop.max_value},')
 
             # min_length
             # if prop.min_length is not None:
-            #     _model.append(f'''{self.i2}min_length={prop.min_length},''')
+            #     _model.append(f'{self.i2}min_length={prop.min_length},')
 
             # min_value
             # if prop.min_value is not None:
-            #     _model.append(f'''{self.i2}minimum={prop.min_value},''')
+            #     _model.append(f'{self.i2}minimum={prop.min_value},')
 
+            # this is no longer required
             # readOnly/allow_mutation setting
-            _model.append(f"""{self.i2}read_only={prop.read_only},""")
+            # _model.append(f"{self.i2}read_only={prop.read_only},")
+
+            # title
+            _model.append(f"{self.i2}title='{prop.name}',")
+
+            # validate_default
+            _model.append(f'{self.i2}validate_default=True,')  # readOnly/mutation setting
+
+            # applies_to
+            if prop.applies_to is not None:
+                json_schema_extra['applies_to'] = prop.applies_to
+                # _model.append(f"{self.i2}applies_to={prop.applies_to},")
+
+            # conditional_read_only
+            if prop.conditional_read_only is not None:
+                json_schema_extra['conditional_read_only'] = prop.conditional_read_only
+                # _model.append(f"{self.i2}conditional_read_only={prop.conditional_read_only},")
+
+            # conditional_required
+            if prop.conditional_required is not None:
+                json_schema_extra['conditional_required'] = prop.conditional_required
+                # _model.append(f"{self.i2}conditional_required={prop.conditional_required},")
+
+            # methods (HTTP)
+            if prop.extra.methods:
+                json_schema_extra['methods'] = prop.extra.methods
 
             # required-alt-field
             if prop.required_alt_field is not None:
-                _model.append(f"""{self.i2}required_alt_field='{prop.required_alt_field}',""")
+                json_schema_extra['required_alt_field'] = prop.required_alt_field
+                # _model.append(f"{self.i2}required_alt_field='{prop.required_alt_field}',")
 
-            # title
-            _model.append(f"""{self.i2}title='{prop.name}',""")
+            # add json_schema_extra if exists
+            if json_schema_extra:
+                _model.append(f'{self.i2}json_schema_extra={json_schema_extra},')
 
-            _model.append(f"""{self.i1})""")
+            _model.append(f'{self.i1})')
         _model.append('')
 
         return '\n'.join(_model)
@@ -432,10 +439,10 @@ class GenerateModelABC(GenerateABC, ABC):
 
         return '\n'.join(
             [
-                f'{self.i1}_associated_type = PrivateAttr(default={associated_type})',
-                f'{self.i1}_cm_type = PrivateAttr(default={cm_type})',
-                f'{self.i1}_shared_type = PrivateAttr(default={shared_type})',
-                f'{self.i1}_staged = PrivateAttr(default=False)',
+                f'{self.i1}_associated_type: bool = PrivateAttr(default={associated_type})',
+                f'{self.i1}_cm_type: bool = PrivateAttr(default={cm_type})',
+                f'{self.i1}_shared_type: bool = PrivateAttr(default={shared_type})',
+                f'{self.i1}_staged: bool = PrivateAttr(default=False)',
                 '',
                 '',
             ]
@@ -462,10 +469,10 @@ class GenerateModelABC(GenerateABC, ABC):
             [
                 '',
                 '',
-                '# add forward references',
-                f'{self.type_.singular().pascal_case()}DataModel.update_forward_refs()',
-                f'{self.type_.singular().pascal_case()}Model.update_forward_refs()',
-                f'{self.type_.plural().pascal_case()}Model.update_forward_refs()',
+                '# rebuild model',
+                f'{self.type_.singular().pascal_case()}DataModel.model_rebuild()',
+                f'{self.type_.singular().pascal_case()}Model.model_rebuild()',
+                f'{self.type_.plural().pascal_case()}Model.model_rebuild()',
                 '',
             ]
         )

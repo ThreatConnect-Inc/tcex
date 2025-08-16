@@ -16,14 +16,7 @@ from tcex.api.tc.v3.security_labels.security_label_model import (
 
 
 class SecurityLabel(ObjectABC):
-    """SecurityLabels Object.
-
-    Args:
-        color (str, kwargs): Color of the security label.
-        description (str, kwargs): Description of the security label.
-        name (str, kwargs): Name of the security label.
-        owner (str, kwargs): The name of the Owner of the Label.
-    """
+    """SecurityLabels Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""

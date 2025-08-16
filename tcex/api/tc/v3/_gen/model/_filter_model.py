@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 # first-party
 from tcex.pleb.cached_property import cached_property
@@ -11,7 +11,7 @@ from tcex.util.string_operation import CamelString
 
 class ExtraModel(
     BaseModel,
-    extra=Extra.forbid,
+    extra='forbid',
     title='Extra Model',
     validate_assignment=True,
 ):
@@ -26,29 +26,32 @@ class FilterModel(
     BaseModel,
     alias_generator=Util().snake_to_camel,
     arbitrary_types_allowed=True,
-    extra=Extra.forbid,
-    keep_untouched=(cached_property,),
+    extra='forbid',
+    ignored_types=(cached_property,),
     title='Property Model',
     validate_assignment=True,
 ):
     """Model Definition"""
 
-    description: str = Field('No description provided.', description='Description of the filter.')
+    description: str = Field(
+        'No description provided.', description='Description of the filter.', validate_default=True
+    )
     groupable: bool = Field(default=False, description='True if the filter is able to be grouped.')
-    keyword: CamelString = Field(..., description='The filter keyword.')
-    name: CamelString = Field(..., description='The name of the filter.')
+    keyword: CamelString = Field(..., description='The filter keyword.', validate_default=True)
+    name: CamelString = Field(..., description='The name of the filter.', validate_default=True)
     targetable: bool = Field(
         default=False, description='True if the filter is able to be targeted.'
     )
     type: str = Field(..., description='The type of the filter.')
+    units: dict | None = Field(default=None, description='The units of the filter.')
 
-    @validator('keyword', 'name', always=True, pre=True)
+    @field_validator('keyword', 'name', mode='before')
     @classmethod
     def _camel_string(cls, v):
         """Convert to CamelString."""
         return CamelString(v)
 
-    @validator('description', always=True, pre=True)
+    @field_validator('description', mode='before')
     @classmethod
     def _fix_first_letter_of_sentence(cls, v):
         """Convert to CamelString."""

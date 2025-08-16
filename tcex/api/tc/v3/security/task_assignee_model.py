@@ -6,6 +6,7 @@ from enum import Enum
 
 # third-party
 from pydantic import BaseModel, Field, PrivateAttr
+from pydantic.alias_generators import to_camel
 
 # first-party
 from tcex.api.tc.v3.security.users.user_model import UserModel
@@ -23,7 +24,7 @@ class AssigneeTypes(str, Enum):
 class TaskAssigneeModel(
     V3ModelABC,
     title='User Data Model',
-    alias_generator=Util().snake_to_camel,
+    alias_generator=to_camel,
     validate_assignment=True,
 ):
     """Task Assignee Model
@@ -47,9 +48,10 @@ class TaskAssigneeModel(
 
     date_added: datetime | None = Field(
         None,
-        allow_mutation=False,
+        frozen=True,
         description='The date and time that the Entity was first created.',
-        read_only=True,
+        # TODO: @bsummers-tc
+        # read_only=True,
         title='dateAdded',
     )
     id: int | None = Field(  # type: ignore
@@ -61,16 +63,18 @@ class TaskAssigneeModel(
     type: AssigneeTypes | None = Field(
         None,
         description='The **Type** for the Assignee.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        # TODO: @bsummers-tc
+        # read_only=False,
         title='type',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     user: UserModel | None = Field(
         None,
         description='The **User Data** for the Assignee.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        # TODO: @bsummers-tc
+        # read_only=False,
         title='user',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -82,23 +86,23 @@ class TaskAssigneesModel(
 ):
     """Task Assignees Model"""
 
-    _mode_support = PrivateAttr(default=True)
+    _mode_support: bool = PrivateAttr(default=True)
 
-    data: list[TaskAssigneeModel] | None = Field(
+    data: list['TaskAssigneeModel'] | None = Field(
         [],
         description='The data for the Groups.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
 # add forward references
-TaskAssigneeModel.update_forward_refs()
-TaskAssigneesModel.update_forward_refs()
+# TaskAssigneeModel.model_rebuild()
+# TaskAssigneesModel.model_rebuild()

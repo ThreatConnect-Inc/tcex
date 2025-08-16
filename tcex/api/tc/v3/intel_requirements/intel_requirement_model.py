@@ -1,10 +1,12 @@
 """TcEx Framework Module"""
 
 # standard library
+from __future__ import annotations
+
 from datetime import datetime
 
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -14,224 +16,224 @@ from tcex.util import Util
 class IntelRequirementModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='IntelRequirement Model',
     validate_assignment=True,
 ):
     """Intel_Requirement Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
-    associated_artifacts: 'ArtifactsModel' = Field(
-        None,
+    associated_artifacts: ArtifactsModel | None = Field(
+        default=None,
         description='A list of Artifacts associated with this Group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedArtifacts',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_cases: 'CasesModel' = Field(
-        None,
+    associated_cases: CasesModel | None = Field(
+        default=None,
         description='A list of Cases associated with this Group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedCases',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_groups: 'GroupsModel' = Field(
-        None,
+    associated_groups: GroupsModel | None = Field(
+        default=None,
         description='A list of groups associated with this group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedGroups',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_indicators: 'IndicatorsModel' = Field(
-        None,
+    associated_indicators: IndicatorsModel | None = Field(
+        default=None,
         description='A list of indicators associated with this group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedIndicators',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_victim_assets: 'VictimAssetsModel' = Field(
-        None,
+    associated_victim_assets: VictimAssetsModel | None = Field(
+        default=None,
         description='A list of victim assets associated with this group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedVictimAssets',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    category: 'IntelReqTypeModel' = Field(
-        None,
+    category: IntelReqTypeModel | None = Field(
+        default=None,
         description='The category of the intel requirement.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='category',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    created_by: 'UserModel' = Field(
-        None,
-        allow_mutation=False,
+    created_by: UserModel | None = Field(
+        default=None,
         description='The user who created the intel requirement.',
-        read_only=True,
+        frozen=True,
         title='createdBy',
+        validate_default=True,
     )
     date_added: datetime | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The date and time that the item was first created.',
-        read_only=True,
+        frozen=True,
         title='dateAdded',
+        validate_default=True,
     )
     description: str | None = Field(
-        None,
+        default=None,
         description='The description of the intel requirement.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='description',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
-    keyword_sections: list['KeywordSectionModel'] = Field(
-        None,
+    keyword_sections: list[KeywordSectionModel | None] | None = Field(
+        default=None,
         description='The section of the intel requirement that contains the keywords.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='keywordSections',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     last_modified: datetime | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The date and time that the Entity was last modified.',
-        read_only=True,
+        frozen=True,
         title='lastModified',
+        validate_default=True,
     )
     last_retrieved_date: datetime | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The last date the results were retrieved for the intel requirement.',
-        read_only=True,
+        frozen=True,
         title='lastRetrievedDate',
+        validate_default=True,
     )
     requirement_text: str | None = Field(
-        None,
+        default=None,
         description='The detailed text of the intel requirement.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='requirementText',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    reset_results: bool = Field(
-        None,
+    reset_results: bool | None = Field(
+        default=None,
         description='Flag to reset results when updating keywords.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='resetResults',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     results_link: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='A link to the results for the intel requirement.',
-        read_only=True,
+        frozen=True,
         title='resultsLink',
+        validate_default=True,
     )
-    subtype: 'IntelReqTypeModel' = Field(
-        None,
+    subtype: IntelReqTypeModel | None = Field(
+        default=None,
         description='The subtype of the intel requirement.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='subtype',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    tags: 'TagsModel' = Field(
-        None,
+    tags: TagsModel | None = Field(
+        default=None,
         description=(
             'A list of Tags corresponding to the item (NOTE: Setting this parameter will replace '
             'any existing tag(s) with the one(s) specified).'
         ),
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='tags',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     unique_id: str | None = Field(
-        None,
+        default=None,
         description='The unique id of the intel requirement.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='uniqueId',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     web_link: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='A link to the ThreatConnect details page for this entity.',
-        read_only=True,
+        frozen=True,
         title='webLink',
+        validate_default=True,
     )
     xid: str | None = Field(
-        None,
+        default=None,
         description='The xid of the item.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='xid',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
-    @validator('associated_artifacts', always=True, pre=True)
+    @field_validator('associated_artifacts', mode='before')
     @classmethod
     def _validate_artifacts(cls, v):
         if not v:
             return ArtifactsModel()  # type: ignore
         return v
 
-    @validator('associated_cases', always=True, pre=True)
+    @field_validator('associated_cases', mode='before')
     @classmethod
     def _validate_cases(cls, v):
         if not v:
             return CasesModel()  # type: ignore
         return v
 
-    @validator('associated_groups', always=True, pre=True)
+    @field_validator('associated_groups', mode='before')
     @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
         return v
 
-    @validator('associated_indicators', always=True, pre=True)
+    @field_validator('associated_indicators', mode='before')
     @classmethod
     def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()  # type: ignore
         return v
 
-    @validator('category', 'subtype', always=True, pre=True)
+    @field_validator('category', 'subtype', mode='before')
     @classmethod
     def _validate_intel_req_type(cls, v):
         if not v:
             return IntelReqTypeModel()  # type: ignore
         return v
 
-    @validator('keyword_sections', always=True, pre=True)
+    @field_validator('keyword_sections', mode='before')
     @classmethod
     def _validate_keyword_section(cls, v):
         if not v:
-            return list['KeywordSectionModel']()  # type: ignore
+            return list['KeywordSectionModel | None']()  # type: ignore
         return v
 
-    @validator('tags', always=True, pre=True)
+    @field_validator('tags', mode='before')
     @classmethod
     def _validate_tags(cls, v):
         if not v:
             return TagsModel()  # type: ignore
         return v
 
-    @validator('created_by', always=True, pre=True)
+    @field_validator('created_by', mode='before')
     @classmethod
     def _validate_user(cls, v):
         if not v:
             return UserModel()  # type: ignore
         return v
 
-    @validator('associated_victim_assets', always=True, pre=True)
+    @field_validator('associated_victim_assets', mode='before')
     @classmethod
     def _validate_victim_assets(cls, v):
         if not v:
@@ -250,8 +252,8 @@ class IntelRequirementDataModel(
     data: list[IntelRequirementModel] | None = Field(
         [],
         description='The data for the IntelRequirements.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -263,19 +265,18 @@ class IntelRequirementsModel(
 ):
     """Intel_Requirements Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[IntelRequirementModel] | None = Field(
         [],
         description='The data for the IntelRequirements.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -292,7 +293,7 @@ from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetsModel
 
-# add forward references
-IntelRequirementDataModel.update_forward_refs()
-IntelRequirementModel.update_forward_refs()
-IntelRequirementsModel.update_forward_refs()
+# rebuild model
+IntelRequirementDataModel.model_rebuild()
+IntelRequirementModel.model_rebuild()
+IntelRequirementsModel.model_rebuild()

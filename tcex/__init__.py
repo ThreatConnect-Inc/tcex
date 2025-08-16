@@ -1,7 +1,5 @@
 """TcEx Framework Module"""
 
-# ruff: noqa: F401
-
 # standard library
 import contextlib
 import logging
@@ -35,6 +33,9 @@ def initialize_logger():
 # init logger before instantiating tcex
 initialize_logger()
 
-with contextlib.suppress(ImportError):
-    # first-party
-    from tcex.tcex import TcEx
+# first-party
+# TODO: Fix this
+# with contextlib.suppress(ImportError):
+#     # first-party
+#     from tcex.tcex import TcEx
+from tcex.tcex import TcEx

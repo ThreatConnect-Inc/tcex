@@ -1,7 +1,10 @@
 """TcEx Framework Module"""
 
+# standard library
+from __future__ import annotations
+
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -11,78 +14,78 @@ from tcex.util import Util
 class OwnerRoleModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='OwnerRole Model',
     validate_assignment=True,
 ):
     """Owner_Role Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
-    available: bool = Field(
-        None,
-        allow_mutation=False,
+    available: bool | None = Field(
+        default=None,
         description='The **available** for the Owner_Role.',
-        read_only=True,
+        frozen=True,
         title='available',
+        validate_default=True,
     )
-    comm_role: bool = Field(
-        None,
-        allow_mutation=False,
+    comm_role: bool | None = Field(
+        default=None,
         description='The **comm role** for the Owner_Role.',
-        read_only=True,
+        frozen=True,
         title='commRole',
+        validate_default=True,
     )
     description_admin: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **description admin** for the Owner_Role.',
-        read_only=True,
+        frozen=True,
         title='descriptionAdmin',
+        validate_default=True,
     )
     description_comm: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **description comm** for the Owner_Role.',
-        read_only=True,
+        frozen=True,
         title='descriptionComm',
+        validate_default=True,
     )
     description_org: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **description org** for the Owner_Role.',
-        read_only=True,
+        frozen=True,
         title='descriptionOrg',
+        validate_default=True,
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     name: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **name** for the Owner_Role.',
-        read_only=True,
+        frozen=True,
         title='name',
+        validate_default=True,
     )
-    org_role: bool = Field(
-        None,
-        allow_mutation=False,
+    org_role: bool | None = Field(
+        default=None,
         description='The **org role** for the Owner_Role.',
-        read_only=True,
+        frozen=True,
         title='orgRole',
+        validate_default=True,
     )
     version: int | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **version** for the Owner_Role.',
-        read_only=True,
+        frozen=True,
         title='version',
+        validate_default=True,
     )
 
 
@@ -97,8 +100,8 @@ class OwnerRoleDataModel(
     data: list[OwnerRoleModel] | None = Field(
         [],
         description='The data for the OwnerRoles.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -110,23 +113,22 @@ class OwnerRolesModel(
 ):
     """Owner_Roles Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[OwnerRoleModel] | None = Field(
         [],
         description='The data for the OwnerRoles.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
-# add forward references
-OwnerRoleDataModel.update_forward_refs()
-OwnerRoleModel.update_forward_refs()
-OwnerRolesModel.update_forward_refs()
+# rebuild model
+OwnerRoleDataModel.model_rebuild()
+OwnerRoleModel.model_rebuild()
+OwnerRolesModel.model_rebuild()

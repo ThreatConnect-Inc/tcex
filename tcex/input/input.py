@@ -9,7 +9,7 @@ from base64 import b64decode
 from pathlib import Path
 
 # third-party
-from pydantic import BaseModel, Extra, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 # first-party
 from tcex.app.config.install_json import InstallJson
@@ -30,9 +30,6 @@ from tcex.util import Util
 # get tcex logger
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
-# define JSON encoders
-json_encoders = {Sensitive: lambda v: str(v)}
-
 
 def input_model(models: list) -> CommonModel | CommonAdvancedModel:
     """Return Input Model."""
@@ -46,16 +43,12 @@ def input_model(models: list) -> CommonModel | CommonAdvancedModel:
 
         # the user id of the one executing the App
         # supported runtimeLevel: [Organization, Playbook]
-        tc_user_id: int | None
+        tc_user_id: int | None = Field(
+            default=None, description='The user id of the one executing the App.'
+        )
+        model_config = ConfigDict(extra='allow', validate_assignment=True)
 
-        class Config:
-            """DataModel Config"""
-
-            extra = Extra.allow
-            validate_assignment = True
-            json_encoders = json_encoders
-
-    return InputModel
+    return InputModel  # type: ignore
 
 
 class Input:
@@ -263,7 +256,7 @@ class Input:
     def model_advanced_request(self) -> AdvancedRequestModel:
         """Return the Requests Session Model."""
 
-        class _AdvancedRequestModel(AdvancedRequestModel, extra=Extra.ignore):
+        class _AdvancedRequestModel(AdvancedRequestModel, extra='ignore'):
             """Model Definition for AdvancedRequestModel inputs ONLY."""
 
         return _AdvancedRequestModel(**self.contents)
@@ -277,7 +270,7 @@ class Input:
     def model_path(self) -> PathModel:
         """Return the Requests Session Model."""
 
-        class _PathModel(PathModel, extra=Extra.ignore):
+        class _PathModel(PathModel, extra='ignore'):
             """Model Definition for PathModel inputs ONLY."""
 
         return _PathModel(**self.contents)
@@ -300,7 +293,7 @@ class Input:
         should only be used for accessing ThreatConnect specific inputs.
         """
 
-        class _CommonAdvancedModel(CommonAdvancedModel, extra=Extra.ignore):
+        class _CommonAdvancedModel(CommonAdvancedModel, extra='ignore'):
             """Model Definition for CommonAdvancedModel inputs ONLY."""
 
         return _CommonAdvancedModel(**self.contents)

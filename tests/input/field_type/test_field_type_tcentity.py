@@ -1,20 +1,25 @@
-"""TcEx Framework Module"""
+"""TestInputsFieldTypes for TCEntity field type validation.
+
+This module contains comprehensive test cases for the TCEntity field type functionality
+within the TcEx Framework, including validation of single entities, arrays, union types,
+and specialized entity types like IndicatorEntity and GroupEntity.
+
+Classes:
+    TestInputsFieldTypes: Test cases for TCEntity field type validation
+
+TcEx Module Tested: tcex.input.field_type.tcentity
+"""
 
 # standard library
 from collections.abc import Callable
 
 # third-party
 import pytest
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 # first-party
-from tcex.input.field_type import (
-    GroupEntity,
-    IndicatorEntity,
-    TCEntity,
-    always_array,
-    indicator_entity,
-)
+from tcex.input.field_type import (GroupEntity, IndicatorEntity, TCEntity,
+                                   always_array, indicator_entity)
 from tcex.input.model.app_playbook_model import AppPlaybookModel
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_type.util import InputTest
@@ -36,42 +41,47 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, normal input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'},
                 {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5},
                 False,
                 False,
+                id='pass-required-normal-entity',
             ),
             # required, string in -> int out
-            (
+            pytest.param(
                 {'id': '123', 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'},
                 {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5},
                 False,
                 False,
+                id='pass-required-string-to-int-conversion',
             ),
             # optional, None
-            (
+            pytest.param(
                 None,
                 None,
                 True,
                 False,
+                id='pass-optional-null-input',
             ),
             #
             # Fail Testing
             #
             # required, null input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': None, 'rating': '5'},
                 None,
                 False,
                 True,
+                id='fail-required-null-value',
             ),
             # required, empty input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': '', 'rating': '5'},
                 None,
                 False,
                 True,
+                id='fail-required-empty-value',
             ),
             # required, missing field
             # (
@@ -81,11 +91,12 @@ class TestInputsFieldTypes(InputTest):
             #     True,
             # ),
             # optional, Invalid data
-            (
+            pytest.param(
                 {'id': '123', 'type': 'Address', 'value': '', 'rating': '5'},
                 None,
                 True,
                 True,
+                id='fail-optional-empty-value',
             ),
         ],
     )
@@ -96,11 +107,25 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test Binary field type.
+    ) -> None:
+        """Test TCEntity field type with single entity validation.
 
-        Playbook Data Type: String
-        Validation: Not null
+        Validates TCEntity field type with various input scenarios including single entity
+        dict input, string to integer type coercion for id/rating fields, required vs
+        optional field validation, and null/empty value handling with proper error cases.
+
+        Playbook Data Type: TCEntity
+        Validation: Entity structure validation, type coercion, required field presence
+
+        Args:
+            input_value: Input value to validate (dict, None, etc.)
+            expected: Expected output after validation
+            optional: Whether field is optional
+            fail_test: Whether test should fail validation
+            playbook_app: Mock app fixture for testing
+
+        Fixtures:
+            playbook_app: MockApp instance for testing field validation
         """
 
         class PytestModelRequired(BaseModel):
@@ -134,42 +159,47 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, list input
-            (
+            pytest.param(
                 [{'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'}],
                 [{'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5}],
                 False,
                 False,
+                id='pass-required-entity-array',
             ),
             # required, string in -> int out
-            (
+            pytest.param(
                 [{'id': '123', 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'}],
                 [{'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5}],
                 False,
                 False,
+                id='pass-required-array-string-to-int-conversion',
             ),
             # optional, None
-            (
+            pytest.param(
                 None,
                 None,
                 True,
                 False,
+                id='pass-optional-null-input',
             ),
             #
             # Fail Testing
             #
             # required, null input
-            (
+            pytest.param(
                 [{'id': 123, 'type': 'Address', 'value': None, 'rating': '5'}],
                 None,
                 False,
                 True,
+                id='fail-required-array-null-value',
             ),
             # required, empty input
-            (
+            pytest.param(
                 [{'id': 123, 'type': 'Address', 'value': '', 'rating': '5'}],
                 None,
                 False,
                 True,
+                id='fail-required-array-empty-value',
             ),
             # required, missing field
             # (
@@ -179,11 +209,12 @@ class TestInputsFieldTypes(InputTest):
             #     True,
             # ),
             # optional, Invalid data
-            (
+            pytest.param(
                 [{'id': '123', 'type': 'Address', 'value': '', 'rating': '5'}],
                 None,
                 True,
                 True,
+                id='fail-optional-array-empty-value',
             ),
         ],
     )
@@ -194,11 +225,25 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test Binary field type.
+    ) -> None:
+        """Test TCEntity field type with array validation.
 
-        Playbook Data Type: String
-        Validation: Not null
+        Validates TCEntity field type in array format with various scenarios including
+        valid entity arrays, string to integer type coercion, null/empty values, and
+        validation errors for both required and optional array fields.
+
+        Playbook Data Type: list[TCEntity]
+        Validation: Array structure validation, entity validation, type coercion
+
+        Args:
+            input_value: Input value to validate (list, None, etc.)
+            expected: Expected output after validation
+            optional: Whether field is optional
+            fail_test: Whether test should fail validation
+            playbook_app: Mock app fixture for testing
+
+        Fixtures:
+            playbook_app: MockApp instance for testing field validation
         """
 
         class PytestModelRequired(BaseModel):
@@ -232,119 +277,133 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, dict input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'},
                 [{'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5}],
                 'TCEntity',
                 False,
                 False,
+                id='pass-required-single-entity-to-array',
             ),
             # required, list input
-            (
+            pytest.param(
                 [{'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'}],
                 [{'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5}],
                 'TCEntityArray',
                 False,
                 False,
+                id='pass-required-entity-array',
             ),
             # required, dict input, string value in -> int value out
-            (
+            pytest.param(
                 {'id': '123', 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'},
                 [{'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5}],
                 'TCEntity',
                 False,
                 False,
+                id='pass-required-single-entity-string-to-int',
             ),
             # required, list input, string value in -> int value out
-            (
+            pytest.param(
                 [{'id': '123', 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'}],
                 [{'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5}],
                 'TCEntityArray',
                 False,
                 False,
+                id='pass-required-array-entity-string-to-int',
             ),
             # optional, None TCEntity
-            (
+            pytest.param(
                 None,
                 [],
                 'TCEntity',
                 True,
                 False,
+                id='pass-optional-null-entity-to-array',
             ),
             # optional, None TCEntityArray
-            (
+            pytest.param(
                 None,
                 [],
                 'TCEntityArray',
                 True,
                 False,
+                id='pass-optional-null-array-to-array',
             ),
             #
             # Fail Testing
             #
             # required, tcentity, null input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': None, 'rating': '5'},
                 None,
                 'TCEntity',
                 False,
                 True,
+                id='fail-required-entity-null-value',
             ),
             # optional tcentity, null input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': None, 'rating': '5'},
                 None,
                 'TCEntity',
                 True,
                 True,
+                id='fail-optional-entity-null-value',
             ),
             # required, tcentityarray, null input
-            (
+            pytest.param(
                 [{'id': 123, 'type': 'Address', 'value': None, 'rating': '5'}],
                 None,
                 'TCEntityArray',
                 False,
                 True,
+                id='fail-required-array-null-value',
             ),
             # optional, tcentityarray, null input
-            (
+            pytest.param(
                 [{'id': 123, 'type': 'Address', 'value': None, 'rating': '5'}],
                 None,
                 'TCEntityArray',
                 True,
                 True,
+                id='fail-optional-array-null-value',
             ),
             # required, tcentity, empty input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': '', 'rating': '5'},
                 None,
                 'TCEntity',
                 False,
                 True,
+                id='fail-required-entity-empty-value',
             ),
             # optional, tcentity, empty input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': '', 'rating': '5'},
                 None,
                 'TCEntity',
                 True,
                 True,
+                id='fail-optional-entity-empty-value',
             ),
             # required, tcentityarray, empty input
-            (
+            pytest.param(
                 [{'id': 123, 'type': 'Address', 'value': '', 'rating': '5'}],
                 None,
                 'TCEntityArray',
                 False,
                 True,
+                id='fail-required-array-empty-value',
             ),
             # optional, tcentityarray, empty input
-            (
+            pytest.param(
                 [{'id': 123, 'type': 'Address', 'value': '', 'rating': '5'}],
                 None,
                 'TCEntityArray',
                 True,
                 True,
+                id='fail-optional-array-empty-value',
             ),
             # required, missing field
             # (
@@ -355,20 +414,22 @@ class TestInputsFieldTypes(InputTest):
             #     True,
             # ),
             # required, None TCEntity
-            (
+            pytest.param(
                 None,
                 [],
                 'TCEntity',
                 False,
                 True,
+                id='fail-required-null-entity',
             ),
             # required, None TCEntityArray
-            (
+            pytest.param(
                 None,
                 [],
                 'TCEntityArray',
                 False,
                 True,
+                id='fail-required-null-array',
             ),
         ],
     )
@@ -380,11 +441,26 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test Binary field type.
+    ) -> None:
+        """Test TCEntity field type with union validation and always_array.
 
-        Playbook Data Type: String
-        Validation: Not null
+        Validates TCEntity field type as a union of single entity or array with always_array
+        validator applied. Tests single entity to array conversion, array handling, null/empty
+        values, and validation errors for both required and optional union fields.
+
+        Playbook Data Type: TCEntity | list[TCEntity] (with always_array validator)
+        Validation: Union type handling, array conversion, entity validation
+
+        Args:
+            input_value: Input value to validate (dict, list, None, etc.)
+            expected: Expected output after validation
+            input_type: Type specification for the test case
+            optional: Whether field is optional
+            fail_test: Whether test should fail validation
+            playbook_app: Mock app fixture for testing
+
+        Fixtures:
+            playbook_app: MockApp instance for testing field validation
         """
 
         class PytestModelRequired(BaseModel):
@@ -392,14 +468,14 @@ class TestInputsFieldTypes(InputTest):
 
             my_data: TCEntity | list[TCEntity]
 
-            _always_array = validator('my_data', allow_reuse=True)(always_array())
+            _always_array = field_validator('my_data')(always_array())
 
         class PytestModelOptional(BaseModel):
             """Test Model for Inputs"""
 
             my_data: TCEntity | list[TCEntity] | None
 
-            _always_array = validator('my_data', allow_reuse=True)(always_array())
+            _always_array = field_validator('my_data')(always_array())
 
         pytest_model = PytestModelOptional
         if optional is False:
@@ -422,56 +498,63 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, normal input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'},
                 {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5},
                 False,
                 False,
+                id='pass-required-normal-input',
             ),
             # required, string in -> int out
-            (
+            pytest.param(
                 {'id': '123', 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'},
                 {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5},
                 False,
                 False,
+                id='pass-required-string-to-int',
             ),
             # optional, None
-            (
+            pytest.param(
                 None,
                 None,
                 True,
                 False,
+                id='pass-optional-none-input',
             ),
             #
             # Fail Testing
             #
             # required, null input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': None, 'rating': '5'},
                 None,
                 False,
                 True,
+                id='fail-required-null-value',
             ),
             # required, empty input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': '', 'rating': '5'},
                 None,
                 False,
                 True,
+                id='fail-required-empty-value',
             ),
             # required, wrong type
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Adversary', 'value': 'adversary-001', 'rating': '5'},
                 None,
                 False,
                 True,
+                id='fail-required-wrong-type',
             ),
             # optional, wrong type
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Adversary', 'value': 'adversary-001', 'rating': '5'},
                 None,
                 True,
                 True,
+                id='fail-optional-wrong-type',
             ),
             # required, missing field
             # (
@@ -481,11 +564,12 @@ class TestInputsFieldTypes(InputTest):
             #     True,
             # ),
             # optional, Invalid data
-            (
+            pytest.param(
                 {'id': '123', 'type': 'Address', 'value': '', 'rating': '5'},
                 None,
                 True,
                 True,
+                id='fail-optional-invalid-data',
             ),
         ],
     )
@@ -496,11 +580,25 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test Binary field type.
+    ) -> None:
+        """Test IndicatorEntity field type validation.
 
-        Playbook Data Type: String
-        Validation: Not null
+        Validates IndicatorEntity field type with various scenarios including normal indicator
+        entities, string to integer type coercion, null/empty values, wrong entity types, and
+        validation errors for both required and optional indicator entity fields.
+
+        Playbook Data Type: IndicatorEntity
+        Validation: Indicator-specific entity validation, type checking, field presence
+
+        Args:
+            input_value: Input value to validate (dict, None, etc.)
+            expected: Expected output after validation
+            optional: Whether field is optional
+            fail_test: Whether test should fail validation
+            playbook_app: Mock app fixture for testing
+
+        Fixtures:
+            playbook_app: MockApp instance for testing field validation
         """
 
         class PytestModelRequired(BaseModel):
@@ -534,22 +632,24 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, normal input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'},
                 {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5},
                 ['Address'],
                 False,
                 False,
+                id='pass-required-normal-input',
             ),
             #
             # Fail Testing
             #
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': 'bad.com', 'rating': '5'},
                 None,
                 ['Host'],
                 False,
                 True,
+                id='fail-wrong-indicator-type',
             ),
         ],
     )
@@ -561,11 +661,26 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test Binary field type.
+    ) -> None:
+        """Test custom indicator entity field type with type restrictions.
 
-        Playbook Data Type: String
-        Validation: Not null
+        Validates custom indicator entity field type with specific indicator type restrictions.
+        Tests scenarios with correct indicator types, wrong indicator types for validation
+        failures, and ensures proper type checking against allowed indicator types.
+
+        Playbook Data Type: indicator_entity with type restrictions
+        Validation: Indicator type matching, custom type validation
+
+        Args:
+            input_value: Input value to validate (dict, None, etc.)
+            expected: Expected output after validation
+            indicator_types: List of allowed indicator types
+            optional: Whether field is optional
+            fail_test: Whether test should fail validation
+            playbook_app: Mock app fixture for testing
+
+        Fixtures:
+            playbook_app: MockApp instance for testing field validation
         """
 
         class PytestModelRequired(AppPlaybookModel):
@@ -599,56 +714,63 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, normal input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Adversary', 'value': 'adversary-001'},
                 {'id': 123, 'type': 'Adversary', 'value': 'adversary-001'},
                 False,
                 False,
+                id='pass-required-normal-input',
             ),
             # required, string in -> int out
-            (
+            pytest.param(
                 {'id': '123', 'type': 'Adversary', 'value': 'adversary-001'},
                 {'id': 123, 'type': 'Adversary', 'value': 'adversary-001'},
                 False,
                 False,
+                id='pass-required-string-to-int',
             ),
             # optional, None
-            (
+            pytest.param(
                 None,
                 None,
                 True,
                 False,
+                id='pass-optional-none-input',
             ),
             #
             # Fail Testing
             #
             # required, null input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Adversary', 'value': None, 'rating': '5'},
                 None,
                 False,
                 True,
+                id='fail-required-null-value',
             ),
             # required, empty input
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Adversary', 'value': '', 'rating': '5'},
                 None,
                 False,
                 True,
+                id='fail-required-empty-value',
             ),
             # required, wrong type
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'},
                 None,
                 False,
                 True,
+                id='fail-required-wrong-type',
             ),
             # optional, wrong type
-            (
+            pytest.param(
                 {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'},
                 None,
                 True,
                 True,
+                id='fail-optional-wrong-type',
             ),
             # required, missing field
             # (
@@ -658,11 +780,12 @@ class TestInputsFieldTypes(InputTest):
             #     True,
             # ),
             # optional, Invalid data
-            (
+            pytest.param(
                 {'id': '123', 'type': 'Adversary', 'value': '', 'rating': '5'},
                 None,
                 True,
                 True,
+                id='fail-optional-invalid-data',
             ),
         ],
     )
@@ -673,11 +796,25 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test Binary field type.
+    ) -> None:
+        """Test GroupEntity field type validation.
 
-        Playbook Data Type: String
-        Validation: Not null
+        Validates GroupEntity field type with various scenarios including normal group entities,
+        string to integer type coercion, null/empty values, wrong entity types (like Address
+        instead of Adversary), and validation errors for both required and optional group fields.
+
+        Playbook Data Type: GroupEntity
+        Validation: Group-specific entity validation, type checking, field presence
+
+        Args:
+            input_value: Input value to validate (dict, None, etc.)
+            expected: Expected output after validation
+            optional: Whether field is optional
+            fail_test: Whether test should fail validation
+            playbook_app: Mock app fixture for testing
+
+        Fixtures:
+            playbook_app: MockApp instance for testing field validation
         """
 
         class PytestModelRequired(BaseModel):

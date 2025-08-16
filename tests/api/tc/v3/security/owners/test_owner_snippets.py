@@ -14,7 +14,7 @@ class TestOwnerSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         for owner in self.tcex.api.tc.v3.owners():
-            print(owner.model.dict(exclude_none=True))
+            print(owner.model.model_dump(exclude_none=True))
         # End Snippet
 
     def test_owner_tql_filter(self):
@@ -46,7 +46,7 @@ class TestOwnerSnippets(TestV3):
         owners.filter.perm_victim(TqlOperator.EQ, 'FULL')
         owners.filter.perm_workflow_template(TqlOperator.EQ, 'FULL')
         for owner in owners:
-            print(owner.model.dict(exclude_none=True))
+            print(owner.model.model_dump(exclude_none=True))
         # End Snippet
 
     def test_owner_get_by_id(self):
@@ -54,7 +54,7 @@ class TestOwnerSnippets(TestV3):
         # Begin Snippet
         owner = self.tcex.api.tc.v3.owner(id=3)
         owner.get()
-        print(owner.model.dict(exclude_none=True))
+        print(owner.model.model_dump(exclude_none=True))
         # End Snippet
 
         # self.v3_helper.tql_generator(owner.model, 'owner')

@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 
 # first-party
 from tcex.input.field_type.sensitive import Sensitive
@@ -21,27 +21,32 @@ class SmtpSettingModel(BaseModel):
     """
 
     tc_smtp_host: str = Field(
-        None,
+        default=...,
         description='The SMTP server hostname.',
-        inclusion_reason='feature (smtpSettings)',
+        json_schema_extra={'inclusion_reason': 'feature (smtpSettings)'},
     )
     tc_smtp_password: Sensitive = Field(
-        None,
+        default=...,
         description='The SMTP server password.',
-        inclusion_reason='feature (smtpSettings)',
+        json_schema_extra={'inclusion_reason': 'feature (smtpSettings)'},
     )
     tc_smtp_port: int = Field(
-        None,
+        default=...,
         description='The SMTP server port number.',
-        inclusion_reason='feature (smtpSettings)',
+        json_schema_extra={'inclusion_reason': 'feature (smtpSettings)'},
     )
     tc_smtp_username: str = Field(
-        None,
+        default=...,
         description='The SMTP server username.',
-        inclusion_reason='feature (smtpSettings)',
+        json_schema_extra={'inclusion_reason': 'feature (smtpSettings)'},
     )
     tc_sys_email: str = Field(
-        None,
+        default=...,
         description='The system level email address.',
-        inclusion_reason='feature (smtpSettings)',
+        json_schema_extra={'inclusion_reason': 'feature (smtpSettings)'},
     )
+
+    @field_serializer('tc_smtp_password', when_used='json')
+    def convert_sensitive_to_str(self, value: Sensitive | None):
+        """."""
+        return str(value)

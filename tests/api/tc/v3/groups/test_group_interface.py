@@ -55,22 +55,12 @@ class TestGroups(TestV3):
 
         # [Create Testing] define object data
         artifact = self.v3.artifact(
-            **{
-                'case_id': case.model.id,
-                'intel_type': 'indicator-ASN',
-                'summary': 'asn101',
-                'type': 'ASN',
-            }
+            case_id=case.model.id, intel_type='indicator-ASN', summary='asn101', type='ASN'
         )
         artifact.create()
 
         artifact_2 = self.v3.artifact(
-            **{
-                'case_id': case.model.id,
-                'intel_type': 'indicator-ASN',
-                'summary': 'asn102',
-                'type': 'ASN',
-            }
+            case_id=case.model.id, intel_type='indicator-ASN', summary='asn102', type='ASN'
         )
         artifact_2.create()
 
@@ -211,9 +201,9 @@ class TestGroups(TestV3):
             found_victim_assets += 1
             if victim_asset.model.id == asset.id:
                 staged_victim_asset_found = True
-        assert (
-            found_victim_assets == 1
-        ), f'Invalid amount of Victim Assets ({found_victim_assets}) retrieved'
+        assert found_victim_assets == 1, (
+            f'Invalid amount of Victim Assets ({found_victim_assets}) retrieved'
+        )
         assert staged_victim_asset_found, 'Newly staged victim asset not retrieved'
 
     def test_group_create_and_retrieve_nested_types(self):
@@ -229,10 +219,10 @@ class TestGroups(TestV3):
         for group in groups:
             print(group.model.name)
             # print(group.blah.writable)
-            # print(group.model.json(indent=4))
+            # print(group.model.model_dump_json(indent=4))
             # print(group.post_properties)
             # group.get(params={'fields': ['_all_']})
-            # print(group.model.json(exclude_none=True, indent=2))
+            # print(group.model.model_dump_json(exclude_none=True, indent=2))
             # print('writable', group.results.writable)
             # print('raw', group.results.raw)
 
@@ -264,7 +254,7 @@ class TestGroups(TestV3):
         #     # 'xid': '123.123.123.124',
         # }
         # group = self.v3.group(**object_data)
-        # print(group.model.dict())
+        # print(group.model.model_dump())
         # try:
         #     group.create()
         # except RuntimeError:

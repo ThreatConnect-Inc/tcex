@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import Extra
+from pydantic import ConfigDict
 
 # first-party
 from tcex.input.model.api_model import ApiModel
@@ -14,7 +14,4 @@ class ModuleRequestsSessionModel(ApiModel, ProxyModel):
     This model provides all the inputs required by the "tcex.requests_session" module.
     """
 
-    class Config:
-        """Model Config"""
-
-        extra = Extra.ignore
+    model_config = ConfigDict(extra='ignore')

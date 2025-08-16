@@ -36,15 +36,15 @@ class CustomJSONEncoder(JSONEncoder):
         return o
 
 
-class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
+class V3ModelABC(BaseModel, ABC, populate_by_name=True):
     """V3 Base Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=False)
     _dict_hash: str = PrivateAttr()
     _log = _logger
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
     id: int | None = None
 
     def __init__(self, **kwargs):
@@ -64,7 +64,7 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
             self._staged = True
 
         # store initial dict hash of model
-        self._dict_hash = self.gen_model_hash(self.json(sort_keys=True))
+        self._dict_hash = self.gen_model_hash(self.model_dump_json())
 
     def _calculate_field_inclusion(
         self, field: str, method: str, mode: str | None, nested: bool, property_: dict, value: Any
@@ -374,7 +374,7 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
 
             property_ = schema_properties.get(name, {})
             key = property_['title']
-            if isinstance(value, BaseModel) and property_.get('read_only') is False:
+            if isinstance(value, BaseModel) and property_.get('methods'):
                 value: Self  # type: ignore
                 # Handle nested model that should be included in the body (non-read-only).
 

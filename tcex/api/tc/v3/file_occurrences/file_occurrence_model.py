@@ -4,7 +4,7 @@
 from datetime import datetime
 
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -14,7 +14,7 @@ from tcex.util import Util
 class FileOccurrenceModel(
     V3ModelABC,
     title='File Occurrence Model',
-    extra=Extra.allow,
+    extra='allow',
     alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
@@ -67,5 +67,5 @@ class FileOccurrencesModel(
     )
 
 
-FileOccurrenceModel.update_forward_refs()
-FileOccurrencesModel.update_forward_refs()
+FileOccurrenceModel.model_rebuild()
+FileOccurrencesModel.model_rebuild()

@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class PlaybookModel(BaseModel):
@@ -11,18 +11,18 @@ class PlaybookModel(BaseModel):
     * Playbook
     """
 
-    tc_playbook_kvstore_context: str = Field(
-        None,
+    tc_playbook_kvstore_context: str | None = Field(
+        default=None,
         description='The KV Store context for the current App execution.',
-        inclusion_reason='runtimeLevel',
+        json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
     tc_playbook_out_variables: list | None = Field(
-        None,
+        default=None,
         description='The list of requested output variables.',
-        inclusion_reason='runtimeLevel',
+        json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
 
-    @validator('tc_playbook_out_variables', pre=True)
+    @field_validator('tc_playbook_out_variables', mode='before')
     @classmethod
     def parse_tc_playbook_out_variables(cls, v):
         """Ensure value is an array."""

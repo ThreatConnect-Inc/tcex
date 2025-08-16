@@ -62,7 +62,7 @@ class TestIndicators(TestV3):
     #     indicators.filter.summary(TqlOperator.EQ, '123.123.123.123')
     #     for indicator in indicators:
     #         indicator.get(params={'fields': ['_all_']})
-    #         print(indicator.model.json(indent=4, exclude_none=True))
+    #         print(indicator.model.model_dump_json(indent=4, exclude_none=True))
 
     #     return
 
@@ -70,7 +70,7 @@ class TestIndicators(TestV3):
     #     """."""
     #     indicators = self.v3.indicator(id=2984993)
     #     for indicator in enumerate(indicators.custom_associations, start=1):
-    #         print(indicator.model.json(indent=4, exclude_none=True, exclude_unset=True))
+    #         print(indicator.model.model_dump_json(indent=4, exclude_none=True, exclude_unset=True))
 
     def test_indicator_create_and_retrieve_nested_types(self):
         """Test Object Creation
@@ -109,7 +109,7 @@ class TestIndicators(TestV3):
         }
         indicator.stage_tag(tag_data)
 
-        # print(indicator.model.dict())
+        # print(indicator.model.model_dump())
         indicator.create()
 
         # [Retrieve Testing] create the object with id filter,
@@ -163,10 +163,7 @@ class TestIndicators(TestV3):
 
         # [Create Testing] define object data
         indicator = self.v3.indicator(  # type: ignore[__next__]
-            **{
-                'ip': '43.24.65.49',
-                'type': 'Address',
-            }
+            ip='43.24.65.49', type='Address'
         )
 
         association_data = {'name': 'MyCase-22', 'severity': 'Low', 'status': 'Open'}
@@ -186,22 +183,12 @@ class TestIndicators(TestV3):
 
         # [Create Testing] define object data
         artifact = self.v3.artifact(
-            **{
-                'case_id': case.model.id,
-                'intel_type': 'indicator-ASN',
-                'summary': 'asn111',
-                'type': 'ASN',
-            }
+            case_id=case.model.id, intel_type='indicator-ASN', summary='asn111', type='ASN'
         )
         artifact.create()
 
         artifact_2 = self.v3.artifact(
-            **{
-                'case_id': case.model.id,
-                'intel_type': 'indicator-ASN',
-                'summary': 'asn112',
-                'type': 'ASN',
-            }
+            case_id=case.model.id, intel_type='indicator-ASN', summary='asn112', type='ASN'
         )
         artifact_2.create()
 
@@ -212,12 +199,7 @@ class TestIndicators(TestV3):
             'type': 'ASN',
         }
 
-        indicator = self.v3.indicator(
-            **{
-                'ip': '43.243.63.18',
-                'type': 'Address',
-            }
-        )
+        indicator = self.v3.indicator(ip='43.243.63.18', type='Address')
 
         self.v3_helper._associations(indicator, artifact, artifact_2, artifact_3)
 
@@ -229,7 +211,7 @@ class TestIndicators(TestV3):
         indicator_count = 10
         indicator_ids = []
         indicator_tag = request.node.name
-        for _ in range(0, indicator_count):
+        for _ in range(indicator_count):
             # [Create Testing] define object data
             indicator = self.v3_helper.create_indicator(
                 **{
@@ -266,7 +248,7 @@ class TestIndicators(TestV3):
         indicator_ids = []
         indicator_addresses = []
         indicator_tag = request.node.name
-        for _ in range(0, indicator_count):
+        for _ in range(indicator_count):
             # [Create Testing] define object data
             indicator = self.v3_helper.create_indicator(
                 **{
@@ -330,7 +312,7 @@ class TestIndicators(TestV3):
             'attribute': {'type': 'Description', 'value': request.node.name},
             'confidence': randint(0, 100),
             # for create indicator send value1 instead of ip
-            'value1': f'123.{randint(1,255)}.{randint(1,255)}.{randint(1,255)}',
+            'value1': f'123.{randint(1, 255)}.{randint(1, 255)}.{randint(1, 255)}',
             'owner_name': 'TCI',
             'rating': randint(1, 5),
             'security_labels': {'name': 'TLP:WHITE'},

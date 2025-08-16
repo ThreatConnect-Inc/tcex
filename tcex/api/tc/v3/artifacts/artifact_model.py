@@ -1,10 +1,12 @@
 """TcEx Framework Module"""
 
 # standard library
+from __future__ import annotations
+
 from datetime import datetime
 
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -14,240 +16,238 @@ from tcex.util import Util
 class ArtifactModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='Artifact Model',
     validate_assignment=True,
 ):
     """Artifact Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=True)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=True)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
     analytics_priority: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **analytics priority** for the Artifact.',
-        read_only=True,
+        frozen=True,
         title='analyticsPriority',
+        validate_default=True,
     )
     analytics_priority_level: int | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **analytics priority level** for the Artifact.',
-        read_only=True,
+        frozen=True,
         title='analyticsPriorityLevel',
+        validate_default=True,
     )
     analytics_score: int | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **analytics score** for the Artifact.',
-        read_only=True,
+        frozen=True,
         title='analyticsScore',
+        validate_default=True,
     )
     analytics_status: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **analytics status** for the Artifact.',
-        read_only=True,
+        frozen=True,
         title='analyticsStatus',
+        validate_default=True,
     )
     analytics_type: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **analytics type** for the Artifact.',
-        read_only=True,
+        frozen=True,
         title='analyticsType',
+        validate_default=True,
     )
-    artifact_type: 'ArtifactTypeModel' = Field(
-        None,
-        allow_mutation=False,
+    artifact_type: ArtifactTypeModel | None = Field(
+        default=None,
         description='The **artifact type** for the Artifact.',
-        read_only=True,
+        frozen=True,
         title='artifactType',
+        validate_default=True,
     )
-    associated_groups: 'GroupsModel' = Field(
-        None,
+    associated_groups: GroupsModel | None = Field(
+        default=None,
         description='A list of Groups associated with this Artifact.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedGroups',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    associated_indicators: 'IndicatorsModel' = Field(
-        None,
+    associated_indicators: IndicatorsModel | None = Field(
+        default=None,
         description='A list of Indicators associated with this Artifact.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedIndicators',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     case_id: int | None = Field(
-        None,
+        default=None,
         description='The **case id** for the Artifact.',
-        methods=['POST'],
-        read_only=False,
-        required_alt_field='caseXid',
         title='caseId',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST'], 'required_alt_field': 'caseXid'},
     )
     case_xid: str | None = Field(
-        None,
+        default=None,
         description='The **case xid** for the Artifact.',
-        methods=['POST'],
-        read_only=False,
-        required_alt_field='caseId',
         title='caseXid',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST'], 'required_alt_field': 'caseId'},
     )
     date_added: datetime | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **date added** for the Artifact.',
-        read_only=True,
+        frozen=True,
         title='dateAdded',
+        validate_default=True,
     )
-    derived_link: bool = Field(
-        None,
+    derived_link: bool | None = Field(
+        default=None,
         description=(
             'Flag to specify if this artifact should be used for potentially associated cases or '
             'not.'
         ),
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='derivedLink',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     field_name: str | None = Field(
-        None,
+        default=None,
         description='The field name for the artifact.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='fieldName',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     file_data: str | None = Field(
-        None,
+        default=None,
         description='Base64 encoded file attachment required only for certain artifact types.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='fileData',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     hash_code: str | None = Field(
-        None,
+        default=None,
         description='Hashcode of Artifact of type File.',
-        methods=['POST'],
-        read_only=False,
         title='hashCode',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST']},
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     intel_type: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **intel type** for the Artifact.',
-        read_only=True,
+        frozen=True,
         title='intelType',
+        validate_default=True,
     )
     links: dict | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **links** for the Artifact.',
-        read_only=True,
+        frozen=True,
         title='links',
+        validate_default=True,
     )
-    notes: 'NotesModel' = Field(
-        None,
+    notes: NotesModel | None = Field(
+        default=None,
         description='A list of Notes corresponding to the Artifact.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='notes',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    parent_case: 'CaseModel' = Field(
-        None,
-        allow_mutation=False,
+    parent_case: CaseModel | None = Field(
+        default=None,
         description='The **parent case** for the Artifact.',
-        read_only=True,
+        frozen=True,
         title='parentCase',
+        validate_default=True,
     )
     source: str | None = Field(
-        None,
+        default=None,
         description='The **source** for the Artifact.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='source',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     summary: str | None = Field(
-        None,
+        default=None,
         description='The **summary** for the Artifact.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='summary',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    task: 'TaskModel' = Field(
-        None,
-        allow_mutation=False,
+    task: TaskModel | None = Field(
+        default=None,
         description='The **task** for the Artifact.',
-        read_only=True,
+        frozen=True,
         title='task',
+        validate_default=True,
     )
     task_id: int | None = Field(
-        None,
+        default=None,
         description='The ID of the task which the Artifact references.',
-        methods=['POST'],
-        read_only=False,
         title='taskId',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST']},
     )
     task_xid: str | None = Field(
-        None,
+        default=None,
         description='The XID of the task which the Artifact references.',
-        methods=['POST'],
-        read_only=False,
         title='taskXid',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST']},
     )
     type: str | None = Field(
-        None,
+        default=None,
         description='The **type** for the Artifact.',
-        methods=['POST'],
-        read_only=False,
         title='type',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST']},
     )
 
-    @validator('artifact_type', always=True, pre=True)
+    @field_validator('artifact_type', mode='before')
     @classmethod
     def _validate_artifact_type(cls, v):
         if not v:
             return ArtifactTypeModel()  # type: ignore
         return v
 
-    @validator('parent_case', always=True, pre=True)
+    @field_validator('parent_case', mode='before')
     @classmethod
     def _validate_case(cls, v):
         if not v:
             return CaseModel()  # type: ignore
         return v
 
-    @validator('associated_groups', always=True, pre=True)
+    @field_validator('associated_groups', mode='before')
     @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
         return v
 
-    @validator('associated_indicators', always=True, pre=True)
+    @field_validator('associated_indicators', mode='before')
     @classmethod
     def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()  # type: ignore
         return v
 
-    @validator('notes', always=True, pre=True)
+    @field_validator('notes', mode='before')
     @classmethod
     def _validate_notes(cls, v):
         if not v:
             return NotesModel()  # type: ignore
         return v
 
-    @validator('task', always=True, pre=True)
+    @field_validator('task', mode='before')
     @classmethod
     def _validate_task(cls, v):
         if not v:
@@ -266,8 +266,8 @@ class ArtifactDataModel(
     data: list[ArtifactModel] | None = Field(
         [],
         description='The data for the Artifacts.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -279,19 +279,18 @@ class ArtifactsModel(
 ):
     """Artifacts Model"""
 
-    _mode_support = PrivateAttr(default=True)
+    _mode_support: bool = PrivateAttr(default=True)
 
     data: list[ArtifactModel] | None = Field(
         [],
         description='The data for the Artifacts.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -303,7 +302,7 @@ from tcex.api.tc.v3.indicators.indicator_model import IndicatorsModel
 from tcex.api.tc.v3.notes.note_model import NotesModel
 from tcex.api.tc.v3.tasks.task_model import TaskModel
 
-# add forward references
-ArtifactDataModel.update_forward_refs()
-ArtifactModel.update_forward_refs()
-ArtifactsModel.update_forward_refs()
+# rebuild model
+ArtifactDataModel.model_rebuild()
+ArtifactModel.model_rebuild()
+ArtifactsModel.model_rebuild()

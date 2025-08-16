@@ -18,9 +18,10 @@ class AssigneeUserGroupModel(
 
     name: str | None = Field(
         None,
-        allow_mutation=False,
+        frozen=True,
         description='The **name** for the User_Group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        # TODO: @bsummers-tc
+        # read_only=False,
         title='name',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )

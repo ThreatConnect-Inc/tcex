@@ -1,4 +1,14 @@
-"""TcEx Framework Module"""
+"""TestInputsConfig for TcEx Framework input configuration validation.
+
+This module contains test cases for the TcEx Framework input configuration functionality,
+including testing various input methods such as config kwargs, config file parsing,
+token validation, and input parameter processing for different application types.
+
+Classes:
+    TestInputsConfig: Test cases for TcEx input configuration validation
+
+TcEx Module Tested: tcex.input.config
+"""
 
 # standard library
 import json
@@ -14,11 +24,31 @@ from tests.mock_app import MockApp
 
 
 class TestInputsConfig:
-    """Test TcEx Inputs Config."""
+    """TestInputsConfig for TcEx Framework input configuration validation.
+
+    This class provides comprehensive test coverage for TcEx Framework input configuration
+    functionality including config kwargs, config file parsing, token validation, and
+    input parameter processing across different application deployment scenarios.
+
+    Fixtures:
+        playbook_app: Provides configured test application instance with MockApp
+        tcex: Provides TcEx instance for testing input configuration
+    """
 
     @staticmethod
-    def test_config_kwarg():
-        """Test config file input method of TcEx"""
+    def test_config_kwarg() -> None:
+        """Test config data input method using kwargs for TcEx initialization.
+
+        Validates that external configuration data can be passed directly as kwargs to TcEx
+        constructor and that custom configuration items are properly accessible through the
+        inputs model. Tests registry reset functionality and external config item access.
+
+        Playbook Data Type: Config kwargs with external configuration
+        Validation: External config item accessibility, registry reset functionality
+
+        Fixtures:
+            None: This test uses direct TcEx instantiation with config kwargs
+        """
         registry._reset()
         # external App config file data
         config_data = {
@@ -26,7 +56,7 @@ class TestInputsConfig:
             'tc_api_access_id': os.getenv('TC_API_ACCESS_ID'),
             'tc_api_path': os.getenv('TC_API_PATH'),
             'tc_api_secret_key': os.getenv('TC_API_SECRET_KEY'),
-            'tc_log_path': os.getcwd(),
+            'tc_log_path': Path.cwd(),
             'tc_token': None,
             'tc_expires': None,
             'tc_verify': True,
@@ -41,8 +71,22 @@ class TestInputsConfig:
         )
 
     @staticmethod
-    def test_config_file_kwarg(playbook_app: Callable[..., MockApp]):
-        """Test config file input method of TcEx"""
+    def test_config_file_kwarg(playbook_app: Callable[..., MockApp]) -> None:
+        """Test config file input method using file-based configuration for TcEx.
+
+        Validates that external configuration data can be loaded from a JSON config file
+        and properly parsed by TcEx. Tests file creation, TcEx initialization with config_file
+        parameter, and cleanup of temporary configuration files.
+
+        Playbook Data Type: Config file with JSON configuration data
+        Validation: File-based config loading, external config item access, file cleanup
+
+        Args:
+            playbook_app: Mock app fixture for creating install.json file
+
+        Fixtures:
+            playbook_app: Provides configured test application instance with MockApp
+        """
         # have mockApp create an install.json file
         _ = playbook_app()
 
@@ -57,7 +101,7 @@ class TestInputsConfig:
             'tc_api_access_id': os.getenv('TC_API_ACCESS_ID'),
             'tc_api_path': os.getenv('TC_API_PATH'),
             'tc_api_secret_key': os.getenv('TC_API_SECRET_KEY'),
-            'tc_log_path': os.getcwd(),
+            'tc_log_path': Path.cwd(),
             'tc_token': None,
             'tc_expires': None,
             'tc_verify': True,
@@ -80,8 +124,22 @@ class TestInputsConfig:
         config_file.unlink()
 
     @staticmethod
-    def test_input_token(tcex: TcEx):
-        """Test default values (e.g., token) are in args."""
+    def test_input_token(tcex: TcEx) -> None:
+        """Test default token values and API configuration are properly set.
+
+        Validates that default values including tokens, token expiration, and API organization
+        are correctly initialized and accessible through the TcEx inputs model. Tests token
+        validation and default API organization configuration.
+
+        Playbook Data Type: Token and API configuration validation
+        Validation: Token presence, token expiration, default API organization
+
+        Args:
+            tcex: TcEx instance fixture for testing token configuration
+
+        Fixtures:
+            tcex: Provides TcEx instance for testing input configuration
+        """
         # print(tcex.inputs.model.tc_token.get_secret_value())
         # print(tcex.inputs.model.tc_token_expires)
         assert tcex.inputs.model.tc_token

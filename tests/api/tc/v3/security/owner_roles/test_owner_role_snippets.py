@@ -14,7 +14,7 @@ class TestOwnerRolesSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         for owner_role in self.tcex.api.tc.v3.owner_roles():
-            print(owner_role.model.dict(exclude_none=True))
+            print(owner_role.model.model_dump(exclude_none=True))
         # End Snippet
 
     def test_owner_roles_tql_filter(self):
@@ -25,7 +25,7 @@ class TestOwnerRolesSnippets(TestV3):
         owner_roles.filter.comm_role(TqlOperator.EQ, False)
         owner_roles.filter.org_role(TqlOperator.EQ, True)
         for owner_role in owner_roles:
-            print(owner_role.model.dict(exclude_none=True))
+            print(owner_role.model.model_dump(exclude_none=True))
         # End Snippet
 
     def test_owner_role_get_by_id(self):
@@ -33,5 +33,5 @@ class TestOwnerRolesSnippets(TestV3):
         # Begin Snippet
         owner_role = self.tcex.api.tc.v3.owner_role(id=1)
         owner_role.get()
-        print(owner_role.model.dict(exclude_none=True))
+        print(owner_role.model.model_dump(exclude_none=True))
         # End Snippet

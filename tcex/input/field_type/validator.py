@@ -6,8 +6,7 @@ from collections.abc import Callable
 from typing import Any
 
 # third-party
-from pydantic import BaseModel, validator
-from pydantic.fields import ModelField  # TYPE-CHECKING
+from pydantic import BaseModel, ValidationInfo, field_validator
 
 # first-party
 from tcex.input.field_type.exception import InvalidEmptyValue, InvalidInput, InvalidType
@@ -18,7 +17,7 @@ def always_array(
     include_empty: bool = False,
     include_null: bool = False,
     split_csv: bool = False,
-) -> Callable[[Any, ModelField], list[Any]]:
+) -> Callable[[Any, ValidationInfo], list[Any]]:
     """Return customized validator that always returns a list.
 
     Args:
@@ -31,7 +30,7 @@ def always_array(
         further processing is done on result of splitting on comma
     """
 
-    def _always_array(value: Any, field: ModelField) -> list[Any]:
+    def _always_array(value: Any, info: ValidationInfo) -> list[Any]:
         """Return validator."""
 
         if split_csv and isinstance(value, str) and value:
@@ -49,7 +48,8 @@ def always_array(
             value = [value]
 
         if allow_empty is False and value == []:
-            raise InvalidEmptyValue(field_name=field.name)
+            field_name = info.field_name or '--unknown--'
+            raise InvalidEmptyValue(field_name=field_name)
 
         return value
 
@@ -67,7 +67,7 @@ def conditional_required(rules: list[dict[str, str]]) -> Any:
         severity: str  # Low, Medium, High
         action: str | None
 
-        _conditional_required = validator('action', allow_reuse=True, always=True, pre=True)(
+        _conditional_required = field_validator('action', mode='before')(
             conditional_required(
                 rules=[{'field': 'severity', 'operation': 'eq', 'value': 'High'}]
             )
@@ -93,16 +93,17 @@ def conditional_required(rules: list[dict[str, str]]) -> Any:
         }
         return operators.get(op, operator.eq)
 
-    def _conditional_required(value: str, field: ModelField, values: dict[str, Any]):
+    def _conditional_required(value: str, info: ValidationInfo):
         """Return validator."""
         for rule in rules or []:
             # the conditional field must be set above the conditionally required field
-            conditional_field = values.get(rule['field'])
+            conditional_field = info.data.get(rule['field'])
             conditional_operator = get_operator(rule.get('op', 'eq'))
             conditional_value = rule['value']
 
             if conditional_operator(conditional_field, conditional_value) is True and not value:
-                raise InvalidInput(field_name=field.name, error='input is conditionally required.')
+                field_name = info.field_name or '--unknown--'
+                raise InvalidInput(field_name=field_name, error='input is conditionally required.')
 
         return value
 
@@ -146,13 +147,14 @@ def entity_input(
     MyModel(BaseModel):
         ip_address: AddressEntity | ip_address(strip_port=True)
 
-        _entity_field = validator('ip_address', allow_reuse=True)(entity_field(only_value=True))
+        _entity_field = field_validator('ip_address')(entity_field(only_value=True))
     """
 
     def _entity_input(
-        value: BaseModel | list[BaseModel] | str | list[str], field: ModelField
+        value: BaseModel | list[BaseModel] | str | list[str], info: ValidationInfo
     ) -> list[str] | str:
         """Return value from String or TCEntity."""
+        field_name = info.field_name or '--unknown--'
 
         def _get_value(value: str | BaseModel) -> BaseModel | str | None:
             """Return value"""
@@ -166,8 +168,10 @@ def entity_input(
                     return value.value  # type: ignore
                 if only_field.lower() == 'id':
                     return value.id  # type: ignore
+
+                field_name = info.field_name or '--unknown--'
                 raise InvalidInput(
-                    field_name=field.name, error=f'Only Field {only_field} is not allowed.'
+                    field_name=field_name, error=f'Only Field {only_field} is not allowed.'
                 )
 
             return value
@@ -183,11 +187,12 @@ def entity_input(
             # TODO: [high] fix this type ignore
             value = _get_value(value)  # type: ignore
 
-        if field.allow_none is False and value is None:
-            raise InvalidInput(field_name=field.name, error='None value is not allowed.')
+        # TODO: @bsummers-tc fix this
+        # if info.config.allow_none is False and value is None:
+        #     raise InvalidInput(field_name=field.name, error='None value is not allowed.')
 
         if allow_empty is False and value in ['', []]:
-            raise InvalidInput(field_name=field.name, error='Empty value is not allowed.')
+            raise InvalidInput(field_name=field_name, error='Empty value is not allowed.')
 
         # TODO: [high] fix this type ignore
         return value  # type: ignore
@@ -204,21 +209,24 @@ def modify_advanced_settings(input_name) -> Any:
     that this validator should act on to parse the pipe-delimited string into a dictionary
     """
 
-    def _modify_advanced_settings(value: Any, field: ModelField) -> dict[str, str]:
+    # special pydantic v2, where cls will be passed when using `mode='before'`
+    # this is required to replace the old "allow_none" check with "is_required"
+    def _modify_advanced_settings(cls, value: Any, info: ValidationInfo) -> dict[str, str]:
         """Return validator."""
+        field_name = info.field_name or '--unknown--'
         settings = {}
 
         if value is None:
-            if field.allow_none:
-                return value
-            raise InvalidInput(
-                field_name=field.name,
-                error='Value for field is None (null) and field is not Optional',
-            )
+            if cls.model_fields[info.field_name].is_required():
+                raise InvalidInput(
+                    field_name=field_name,
+                    error='Value for field is None (null) and field is not Optional',
+                )
+            return value
 
         if not isinstance(value, str):
             raise InvalidType(
-                field_name=field.name, expected_types='(str)', provided_type=str(type(value))
+                field_name=field_name, expected_types='(str)', provided_type=str(type(value))
             )
 
         entries = value.split('|')
@@ -236,7 +244,7 @@ def modify_advanced_settings(input_name) -> Any:
 
             if key in settings:
                 raise InvalidInput(
-                    field_name=field.name,
+                    field_name=field_name,
                     error=f'Duplicate key "{key}" defined in Advanced Settings input.',
                 )
 
@@ -244,4 +252,4 @@ def modify_advanced_settings(input_name) -> Any:
 
         return settings
 
-    return validator(input_name, pre=True, allow_reuse=True)(_modify_advanced_settings)
+    return field_validator(input_name, mode='before')(_modify_advanced_settings)

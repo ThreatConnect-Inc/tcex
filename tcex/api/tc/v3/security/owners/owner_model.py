@@ -1,7 +1,10 @@
 """TcEx Framework Module"""
 
+# standard library
+from __future__ import annotations
+
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -11,211 +14,204 @@ from tcex.util import Util
 class OwnerModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='Owner Model',
     validate_assignment=True,
 ):
     """Owner Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     name: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The name of the owner.',
-        read_only=True,
+        frozen=True,
         title='name',
+        validate_default=True,
     )
     owner_role: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description="The user's role within the owner.",
-        read_only=True,
+        frozen=True,
         title='ownerRole',
+        validate_default=True,
     )
     perm_apps: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to run/edit Apps.',
-        read_only=True,
+        frozen=True,
         title='permApps',
+        validate_default=True,
     )
     perm_artifact: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission used to access an Artifact.',
-        read_only=True,
+        frozen=True,
         title='permArtifact',
+        validate_default=True,
     )
     perm_attribute: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to Attributes.',
-        read_only=True,
+        frozen=True,
         title='permAttribute',
+        validate_default=True,
     )
     perm_attribute_type: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to Attribute Types.',
-        read_only=True,
+        frozen=True,
         title='permAttributeType',
+        validate_default=True,
     )
     perm_case_tag: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission used to access a Tag.',
-        read_only=True,
+        frozen=True,
         title='permCaseTag',
+        validate_default=True,
     )
     perm_comment: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission used to access a Comment.',
-        read_only=True,
+        frozen=True,
         title='permComment',
+        validate_default=True,
     )
     perm_copy_data: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to Copy Data.',
-        read_only=True,
+        frozen=True,
         title='permCopyData',
+        validate_default=True,
     )
     perm_group: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to Groups.',
-        read_only=True,
+        frozen=True,
         title='permGroup',
+        validate_default=True,
     )
     perm_indicator: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to Indicators.',
-        read_only=True,
+        frozen=True,
         title='permIndicator',
+        validate_default=True,
     )
     perm_invite: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to modify friends.',
-        read_only=True,
+        frozen=True,
         title='permInvite',
+        validate_default=True,
     )
     perm_members: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to Members.',
-        read_only=True,
+        frozen=True,
         title='permMembers',
+        validate_default=True,
     )
     perm_playbooks: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission used with Playbooks.',
-        read_only=True,
+        frozen=True,
         title='permPlaybooks',
+        validate_default=True,
     )
     perm_playbooks_execute: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission used to execute Playbooks.',
-        read_only=True,
+        frozen=True,
         title='permPlaybooksExecute',
+        validate_default=True,
     )
     perm_post: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to Posts.',
-        read_only=True,
+        frozen=True,
         title='permPost',
+        validate_default=True,
     )
     perm_publish: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission used to access Publications.',
-        read_only=True,
+        frozen=True,
         title='permPublish',
+        validate_default=True,
     )
     perm_security_label: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to Security Labels.',
-        read_only=True,
+        frozen=True,
         title='permSecurityLabel',
+        validate_default=True,
     )
     perm_settings: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to Organization Settings.',
-        read_only=True,
+        frozen=True,
         title='permSettings',
+        validate_default=True,
     )
     perm_tag: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to Tags.',
-        read_only=True,
+        frozen=True,
         title='permTag',
+        validate_default=True,
     )
     perm_task: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission used to access a Task.',
-        read_only=True,
+        frozen=True,
         title='permTask',
+        validate_default=True,
     )
     perm_timeline: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission used to access a Timeline.',
-        read_only=True,
+        frozen=True,
         title='permTimeline',
-    )
-    perm_track: str | None = Field(
-        None,
-        allow_mutation=False,
-        description='Permission is used for access to Tracks.',
-        read_only=True,
-        title='permTrack',
+        validate_default=True,
     )
     perm_users: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to User Settings.',
-        read_only=True,
+        frozen=True,
         title='permUsers',
+        validate_default=True,
     )
     perm_victim: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission is used for access to Victims.',
-        read_only=True,
+        frozen=True,
         title='permVictim',
+        validate_default=True,
     )
     perm_workflow_template: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='Permission used to access a Workflow Templates.',
-        read_only=True,
+        frozen=True,
         title='permWorkflowTemplate',
+        validate_default=True,
     )
     type: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The owner type. Possible values: Organization, Community, Source.',
-        read_only=True,
+        frozen=True,
         title='type',
+        validate_default=True,
     )
 
 
@@ -230,8 +226,8 @@ class OwnerDataModel(
     data: list[OwnerModel] | None = Field(
         [],
         description='The data for the Owners.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -243,23 +239,22 @@ class OwnersModel(
 ):
     """Owners Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[OwnerModel] | None = Field(
         [],
         description='The data for the Owners.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
-# add forward references
-OwnerDataModel.update_forward_refs()
-OwnerModel.update_forward_refs()
-OwnersModel.update_forward_refs()
+# rebuild model
+OwnerDataModel.model_rebuild()
+OwnerModel.model_rebuild()
+OwnersModel.model_rebuild()

@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 # first-party
 from tcex.api.tc.v3.security.assignee_user_group_model import AssigneeUserGroupModel
@@ -21,20 +21,23 @@ class AssigneeModel(
     type: str | None = Field(
         None,
         description='The **Type** for the Assignee.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        # TODO: @bsummers-tc
+        # read_only=False,
         title='type',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
     data: AssigneeUserModel | AssigneeUserGroupModel | None = Field(
         None,
         description='The **Data** for the Assignee.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        # TODO: @bsummers-tc
+        # read_only=False,
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
-    @validator('type', always=True)
+    @field_validator('type')
     @classmethod
     def _validate_type(cls, v):
         if not v:

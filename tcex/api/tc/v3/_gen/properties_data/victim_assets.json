@@ -1,0 +1,304 @@
+[
+  {
+    "field_name": "accountName",
+    "input_data": {
+      "appliesTo": [
+        "SocialNetwork",
+        "NetworkAccount"
+      ],
+      "conditionalRequired": [
+        "SocialNetwork",
+        "NetworkAccount"
+      ],
+      "description": "the network name",
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "accountName",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "SocialNetwork",
+        "NetworkAccount"
+      ],
+      "conditionalRequired": [
+        "SocialNetwork",
+        "NetworkAccount"
+      ],
+      "description": "the network name",
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "accountName",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "address",
+    "input_data": {
+      "appliesTo": [
+        "EmailAddress"
+      ],
+      "conditionalRequired": [
+        "EmailAddress"
+      ],
+      "description": "the email address associated with the E-Mail Address asset",
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "address",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "EmailAddress"
+      ],
+      "conditionalRequired": [
+        "EmailAddress"
+      ],
+      "description": "the email address associated with the E-Mail Address asset",
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "address",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "addressType",
+    "input_data": {
+      "appliesTo": [
+        "EmailAddress"
+      ],
+      "description": "the type of the E-Mail Address asset",
+      "name": "addressType",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "EmailAddress"
+      ],
+      "description": "the type of the E-Mail Address asset",
+      "name": "addressType",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "associatedGroups",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of groups that this victim asset is associated with",
+          "name": "associatedGroups",
+          "required": false,
+          "type": "Groups"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of groups that this victim asset is associated with",
+      "name": "associatedGroups",
+      "required": false,
+      "type": "Groups"
+    }
+  },
+  {
+    "field_name": "id",
+    "input_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    },
+    "output_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    }
+  },
+  {
+    "field_name": "networkType",
+    "input_data": {
+      "appliesTo": [
+        "NetworkAccount"
+      ],
+      "conditionalRequired": [
+        "NetworkAccount"
+      ],
+      "description": "the type of network",
+      "name": "networkType",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "NetworkAccount"
+      ],
+      "conditionalRequired": [
+        "NetworkAccount"
+      ],
+      "description": "the type of network",
+      "name": "networkType",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "phone",
+    "input_data": {
+      "appliesTo": [
+        "Phone"
+      ],
+      "conditionalRequired": [
+        "Phone"
+      ],
+      "description": "the phone number of the asset",
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "phone",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "Phone"
+      ],
+      "conditionalRequired": [
+        "Phone"
+      ],
+      "description": "the phone number of the asset",
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "phone",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "socialNetwork",
+    "input_data": {
+      "appliesTo": [
+        "SocialNetwork"
+      ],
+      "conditionalRequired": [
+        "SocialNetwork"
+      ],
+      "description": "the type of social network",
+      "name": "socialNetwork",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "SocialNetwork"
+      ],
+      "conditionalRequired": [
+        "SocialNetwork"
+      ],
+      "description": "the type of social network",
+      "name": "socialNetwork",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "type",
+    "input_data": {
+      "allowableValues": [
+        "EmailAddress",
+        "SocialNetwork",
+        "NetworkAccount",
+        "WebSite",
+        "Phone"
+      ],
+      "description": "type of victim asset",
+      "minLength": 1,
+      "name": "type",
+      "required": true,
+      "type": "String",
+      "updatable": false
+    },
+    "output_data": {
+      "allowableValues": [
+        "EmailAddress",
+        "SocialNetwork",
+        "NetworkAccount",
+        "WebSite",
+        "Phone"
+      ],
+      "description": "type of victim asset",
+      "minLength": 1,
+      "name": "type",
+      "required": true,
+      "type": "String",
+      "updatable": false
+    }
+  },
+  {
+    "field_name": "victimId",
+    "input_data": {
+      "description": "victim id of victim asset",
+      "name": "victimId",
+      "required": true,
+      "type": "Long",
+      "updatable": false
+    },
+    "output_data": {
+      "description": "victim id of victim asset",
+      "name": "victimId",
+      "required": true,
+      "type": "Long",
+      "updatable": false
+    }
+  },
+  {
+    "field_name": "webLink",
+    "input_data": {
+      "description": "a link to the ThreatConnect details page for this entity",
+      "name": "webLink",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "a link to the ThreatConnect details page for this entity",
+      "name": "webLink",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "website",
+    "input_data": {
+      "appliesTo": [
+        "WebSite"
+      ],
+      "conditionalRequired": [
+        "WebSite"
+      ],
+      "description": "the website of the asset",
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "website",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "appliesTo": [
+        "WebSite"
+      ],
+      "conditionalRequired": [
+        "WebSite"
+      ],
+      "description": "the website of the asset",
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "website",
+      "required": false,
+      "type": "String"
+    }
+  }
+]

@@ -20,38 +20,50 @@ class BatchModel(BaseModel):
     #
 
     batch_action: str = Field(
-        'Create',
+        default='Create',
         description='The action for the Batch Job.',
-        inclusion_reason='runtimeLevel',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'runtimeLevel',
+            'requires_definition': True,
+        },
     )
     batch_chunk: int = Field(
-        25_000,
+        default=25_000,
         description='The maximum number of item to send in batch request.',
-        inclusion_reason='runtimeLevel',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'runtimeLevel',
+            'requires_definition': True,
+        },
     )
     batch_halt_on_error: bool = Field(
         default=False,
         description='Flag to control batch job failure behavior.',
-        inclusion_reason='runtimeLevel',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'runtimeLevel',
+            'requires_definition': True,
+        },
     )
     batch_poll_interval: int = Field(
-        15,
+        default=15,
         description='The poll interval in second for the batch job.',
-        inclusion_reason='runtimeLevel',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'runtimeLevel',
+            'requires_definition': True,
+        },
     )
     batch_poll_interval_max: int = Field(
-        3_600,
+        default=3_600,
         description='The maximum poll interval in seconds for the batch job.',
-        inclusion_reason='runtimeLevel',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'runtimeLevel',
+            'requires_definition': True,
+        },
     )
     batch_write_type: str = Field(
-        'Append',
+        default='Append',
         description='The API setting for batch to control write behavior.',
-        inclusion_reason='runtimeLevel',
-        requires_definition=True,
+        json_schema_extra={
+            'inclusion_reason': 'runtimeLevel',
+            'requires_definition': True,
+        },
     )

@@ -18,21 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class VictimAsset(ObjectABC):
-    """VictimAssets Object.
-
-    Args:
-        account_name (str, kwargs): The network name.
-        address (str, kwargs): The email address associated with the E-Mail Address asset.
-        address_type (str, kwargs): The type of the E-Mail Address asset.
-        associated_groups (Groups, kwargs): A list of groups that this victim asset is associated
-            with.
-        network_type (str, kwargs): The type of network.
-        phone (str, kwargs): The phone number of the asset.
-        social_network (str, kwargs): The type of social network.
-        type (str, kwargs): Type of victim asset.
-        victim_id (int, kwargs): Victim id of victim asset.
-        website (str, kwargs): The website of the asset.
-    """
+    """VictimAssets Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""
@@ -102,7 +88,6 @@ class VictimAsset(ObjectABC):
     @property
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
-        # first-party
         from tcex.api.tc.v3.groups.group import Groups
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore

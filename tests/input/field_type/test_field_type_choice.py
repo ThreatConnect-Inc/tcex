@@ -1,11 +1,21 @@
-"""TcEx Framework Module"""
+"""TestInputsFieldTypeChoice for Choice Field Type Testing.
+
+This module provides comprehensive test cases for the Choice field type in TcEx Apps,
+validating various input scenarios including basic functionality, optional fields,
+assignment validation, select value handling, and custom choice transformations.
+
+Classes:
+    TestInputsFieldTypeChoice: Test suite for Choice field type validation
+
+TcEx Module Tested: tcex.input.field_type.choice
+"""
 
 # standard library
 from collections.abc import Callable
 
 # third-party
 import pytest
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 # first-party
 from tcex.input.field_type import Choice, choice
@@ -16,16 +26,34 @@ from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
 class TestInputsFieldTypeChoice(InputTest):
-    """Test TcEx Inputs Config."""
+    """TestInputsFieldTypeChoice for Choice Field Type Validation.
 
-    def setup_method(self):
-        """Configure setup before all tests."""
+    This test class provides comprehensive validation of the Choice field type functionality
+    in TcEx Apps, including testing basic choice selection, optional field handling,
+    assignment validation, special value processing, and custom transformation features.
+
+    Fixtures:
+        playbook_app: MockApp fixture for creating test applications with choice field
+            configurations
+    """
+
+    def setup_method(self) -> None:
+        """Configure setup before all tests.
+
+        This method resets cached and scoped properties to ensure clean test isolation.
+        """
         scoped_property._reset()
         cached_property._reset()
 
     @staticmethod
-    def test_field_type_choice(playbook_app: Callable[..., MockApp]):
-        """Test Choice field type with string input."""
+    def test_field_type_choice(playbook_app: Callable[..., MockApp]) -> None:
+        """Test Choice field type with string input.
+
+        This test validates basic Choice field type functionality with a valid choice value.
+
+        Fixtures:
+            playbook_app: MockApp fixture for creating test applications
+        """
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
@@ -38,8 +66,14 @@ class TestInputsFieldTypeChoice(InputTest):
         assert tcex.inputs.model.my_choice == 'choice_1'  # type: ignore
 
     @staticmethod
-    def test_field_type_choice_wrapped_with_optional(playbook_app: Callable[..., MockApp]):
-        """Test Choice field type with string input."""
+    def test_field_type_choice_wrapped_with_optional(playbook_app: Callable[..., MockApp]) -> None:
+        """Test Choice field type with optional wrapper and None input.
+
+        This test validates that optional Choice fields properly handle None values.
+
+        Fixtures:
+            playbook_app: MockApp fixture for creating test applications
+        """
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
@@ -52,8 +86,15 @@ class TestInputsFieldTypeChoice(InputTest):
         assert tcex.inputs.model.my_choice is None  # type: ignore
 
     @staticmethod
-    def test_field_type_choice_error_on_none(playbook_app: Callable[..., MockApp]):
-        """Test Choice field type with string input."""
+    def test_field_type_choice_error_on_none(playbook_app: Callable[..., MockApp]) -> None:
+        """Test Choice field type validation error when None is provided to required field.
+
+        This test validates that required Choice fields properly reject None values
+        and raise appropriate validation errors.
+
+        Fixtures:
+            playbook_app: MockApp fixture for creating test applications
+        """
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
@@ -62,17 +103,27 @@ class TestInputsFieldTypeChoice(InputTest):
 
         config_data = {'my_choice': None}
         tcex = playbook_app(config_data=config_data).tcex
-        with pytest.raises(ValidationError) as exc_info:
+        with pytest.raises(ValidationError) as ex:
             tcex.inputs.add_model(PytestModel)
 
-        assert 'none is not an allowed value' in str(exc_info.value)
+        assert 'Input should be a valid string' in str(ex.value)
 
     @staticmethod
-    def test_field_type_choice_assignment_test(playbook_app: Callable[..., MockApp]):
-        """Test Choice field type with string input."""
+    def test_field_type_choice_assignment_test(playbook_app: Callable[..., MockApp]) -> None:
+        """Test Choice field type with validate_assignment enabled.
+
+        This test validates that Choice fields properly validate assignments when
+        validate_assignment=True is configured on the model, ensuring that both
+        valid and invalid assignments are handled correctly.
+
+        Fixtures:
+            playbook_app: MockApp fixture for creating test applications
+        """
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
+
+            model_config = ConfigDict(validate_assignment=True)
 
             my_choice: Choice
 
@@ -81,22 +132,21 @@ class TestInputsFieldTypeChoice(InputTest):
         tcex.inputs.add_model(PytestModel)
         assert tcex.inputs.model.my_choice == 'choice_1'  # type: ignore
 
-        tcex.inputs.model.my_choice = 'choice_2'
+        tcex.inputs.model.my_choice = 'choice_2'  # type: ignore
         assert tcex.inputs.model.my_choice == 'choice_2'  # type: ignore
 
-        tcex.inputs.model.my_choice = 'choice_3'
+        tcex.inputs.model.my_choice = 'choice_3'  # type: ignore
         assert tcex.inputs.model.my_choice == 'choice_3'  # type: ignore
 
-        with pytest.raises(ValidationError) as exc_info:
-            tcex.inputs.model.my_choice = None
+        with pytest.raises(ValidationError) as ex:
+            tcex.inputs.model.my_choice = None  # type: ignore
 
-        assert 'none' in str(exc_info.value)
+        assert 'Input should be a valid string' in str(ex.value)
 
-        with pytest.raises(ValidationError) as exc_info:
-            tcex.inputs.model.my_choice = 'Invalid Choice'
+        with pytest.raises(ValidationError) as ex:
+            tcex.inputs.model.my_choice = 'Invalid Choice'  # type: ignore
 
-        print(exc_info.value)
-        assert 'valid value' in str(exc_info.value)
+        assert 'provided value Invalid Choice' in str(ex.value)
 
     @pytest.mark.parametrize(
         ('input_value,expected,optional,fail_test'),
@@ -105,12 +155,12 @@ class TestInputsFieldTypeChoice(InputTest):
             # Pass Testing
             #
             # required, normal input
-            ('choice_1', 'choice_1', False, False),
+            pytest.param('choice_1', 'choice_1', False, False, id='pass-required-normal-input'),
             # Choice input initialized with None (can happen in optional choice fields for job apps)
-            (None, None, True, False),
+            pytest.param(None, None, True, False, id='pass-optional-none-input'),
             # Choice input initialized with -- Select -- special value
-            ('-- Select --', None, True, False),
-            ('-- Select --', None, False, True),
+            pytest.param('-- Select --', None, True, False, id='pass-optional-select-value'),
+            pytest.param('-- Select --', None, False, True, id='fail-required-select-value'),
         ],
     )
     def test_field_type_choice_select_value(
@@ -120,21 +170,32 @@ class TestInputsFieldTypeChoice(InputTest):
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
+    ) -> None:
         """Test Choice field type with string input.
 
-        -- Select -- should be converted to None when accessing choice value
+        This test case validates the Choice field type behavior with various input scenarios,
+        including the special '-- Select --' value handling for both required and optional fields.
+
+        Fixtures:
+            playbook_app: MockApp fixture for creating test applications
+
+        Args:
+            input_value: The input value to test
+            expected: The expected output value after processing
+            optional: Whether the field is optional or required
+            fail_test: Whether the test should expect a failure
+            playbook_app: MockApp fixture for creating test applications
         """
 
         class PytestModelRequired(BaseModel):
             """Test Model for Inputs"""
 
-            my_choice: Choice
+            my_choice: Choice = Field(default=...)
 
         class PytestModelOptional(BaseModel):
             """Test Model for Inputs"""
 
-            my_choice_optional: Choice | None
+            my_choice_optional: Choice | None = Field(default=None)
 
         pytest_model = PytestModelOptional
         if optional is False:
@@ -157,30 +218,60 @@ class TestInputsFieldTypeChoice(InputTest):
             # Pass Testing
             #
             # required, normal input
-            ('choice_1', 'choice_1', False, False, None),
+            pytest.param(
+                'choice_1', 'choice_1', False, False, None, id='pass-required-normal-input'
+            ),
             # Input can be transformed
-            ('choice_1', 'Choice 1', False, False, {'choice_1': 'Choice 1'}),
+            pytest.param(
+                'choice_1',
+                'Choice 1',
+                False,
+                False,
+                {'choice_1': 'Choice 1'},
+                id='pass-required-transformed-input',
+            ),
             # Input not transformed if not found in transformations
-            ('choice_1', 'choice_1', False, False, {'choice_2': 'Choice 2'}),
+            pytest.param(
+                'choice_1',
+                'choice_1',
+                False,
+                False,
+                {'choice_2': 'Choice 2'},
+                id='pass-required-no-transformation',
+            ),
             #
             # Transformations when field is optional
             # Input can be transformed
-            ('choice_1', 'Choice 1', True, False, {'choice_1': 'Choice 1'}),
+            pytest.param(
+                'choice_1',
+                'Choice 1',
+                True,
+                False,
+                {'choice_1': 'Choice 1'},
+                id='pass-optional-transformed-input',
+            ),
             # Input not transformed if not found in transformations
-            ('choice_1', 'choice_1', True, False, {'choice_2': 'Choice 2'}),
+            pytest.param(
+                'choice_1',
+                'choice_1',
+                True,
+                False,
+                {'choice_2': 'Choice 2'},
+                id='pass-optional-no-transformation',
+            ),
             #
             # Choice input initialized with None (can happen in optional choice fields for job apps)
-            (None, None, True, False, None),
+            pytest.param(None, None, True, False, None, id='pass-optional-none-input'),
             # Choice input initialized with -- Select -- special value
-            ('-- Select --', None, True, False, None),
-            ('-- Select --', None, False, True, None),
+            pytest.param('-- Select --', None, True, False, None, id='pass-optional-select-value'),
+            pytest.param('-- Select --', None, False, True, None, id='fail-required-select-value'),
             #
             # Fail Testing
             #
             # Invalid choice (should not be possible, adding for coverage)
-            ('invalid_choice', None, False, True, None),
+            pytest.param('invalid_choice', None, False, True, None, id='fail-invalid-choice'),
             # Blank choice (should never happen, adding for coverage)
-            ('', None, False, True, None),
+            pytest.param('', None, False, True, None, id='fail-empty-choice'),
         ],
     )
     def test_field_type_custom_choice(
@@ -191,10 +282,22 @@ class TestInputsFieldTypeChoice(InputTest):
         fail_test: bool,
         transformations: dict,
         playbook_app: Callable[..., MockApp],
-    ):
+    ) -> None:
         """Test Custom Choice field type with string input.
 
-        -- Select -- should be converted to None when accessing choice value
+        This test case validates the custom Choice field type behavior with value transformations
+        and various input scenarios including the special '-- Select --' value handling.
+
+        Fixtures:
+            playbook_app: MockApp fixture for creating test applications
+
+        Args:
+            input_value: The input value to test
+            expected: The expected output value after processing
+            optional: Whether the field is optional or required
+            fail_test: Whether the test should expect a failure
+            transformations: Dictionary for value transformations
+            playbook_app: MockApp fixture for creating test applications
         """
 
         class PytestModelRequired(BaseModel):

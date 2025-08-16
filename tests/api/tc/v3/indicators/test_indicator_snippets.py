@@ -571,5 +571,5 @@ class TestIndicatorSnippets(TestV3):
         for indicator in self.tcex.api.tc.v3.indicators().deleted(
             deleted_since='1 day ago', type_='Address', owner='TCI'
         ):
-            print(indicator.model.dict(exclude_none=True))
+            print(indicator.model.model_dump(exclude_none=True))
         # End Snippet

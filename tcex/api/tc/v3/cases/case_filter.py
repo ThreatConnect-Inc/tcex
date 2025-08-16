@@ -4,10 +4,9 @@
 from datetime import datetime
 from enum import Enum
 
-# third-party
+# first-party
 from arrow import Arrow
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.filter_abc import FilterABC
 from tcex.api.tc.v3.tql.tql import Tql
@@ -279,6 +278,27 @@ class CaseFilter(FilterABC):
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
+    def detection_due(self, operator: Enum, detection_due: Arrow | datetime | int | str):
+        """Filter Detection Due based on **detectionDue** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            detection_due: The date/time the case Time To Detect needs to be completed based on the
+                organization SLA settings.
+        """
+        detection_due = self.util.any_to_datetime(detection_due).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('detectionDue', operator, detection_due, TqlType.STRING)
+
+    def detection_overdue(self, operator: Enum, detection_overdue: bool):
+        """Filter Detection Overdue based on **detectionOverdue** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            detection_overdue: A boolean flag indicating that the case has exceeded the allowed
+                completion time for detection based on the organization SLA settings.
+        """
+        self._tql.add_filter('detectionOverdue', operator, detection_overdue, TqlType.BOOLEAN)
+
     @property
     def has_all_tags(self):
         """Return **TagFilter** for further filtering."""
@@ -498,6 +518,27 @@ class CaseFilter(FilterABC):
 
         self._tql.add_filter('resolution', operator, resolution, TqlType.STRING)
 
+    def response_due(self, operator: Enum, response_due: Arrow | datetime | int | str):
+        """Filter Response Due based on **responseDue** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            response_due: The date/time the case Time To Respond needs to be completed based on the
+                organization SLA settings.
+        """
+        response_due = self.util.any_to_datetime(response_due).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('responseDue', operator, response_due, TqlType.STRING)
+
+    def response_overdue(self, operator: Enum, response_overdue: bool):
+        """Filter Response Overdue based on **responseOverdue** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            response_overdue: A boolean flag indicating that the case has exceeded the allowed
+                completion time for response based on the organization SLA settings.
+        """
+        self._tql.add_filter('responseOverdue', operator, response_overdue, TqlType.BOOLEAN)
+
     def severity(self, operator: Enum, severity: list | str):
         """Filter Severity based on **severity** keyword.
 
@@ -593,6 +634,40 @@ class CaseFilter(FilterABC):
             raise RuntimeError(ex_msg)
 
         self._tql.add_filter('threatAssessScore', operator, threat_assess_score, TqlType.INTEGER)
+
+    def time_to_detect(self, operator: Enum, time_to_detect: int | list):
+        """Filter Time To Detect based on **timeToDetect** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            time_to_detect: The amount of time (in seconds) elapsed in the Time To Detect
+                calculation.
+        """
+        if isinstance(time_to_detect, list) and operator not in self.list_types:
+            ex_msg = (
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+            raise RuntimeError(ex_msg)
+
+        self._tql.add_filter('timeToDetect', operator, time_to_detect, TqlType.INTEGER)
+
+    def time_to_respond(self, operator: Enum, time_to_respond: int | list):
+        """Filter Time To Respond based on **timeToRespond** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            time_to_respond: The amount of time (in seconds) elapsed in the Time To Respond
+                calculation.
+        """
+        if isinstance(time_to_respond, list) and operator not in self.list_types:
+            ex_msg = (
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+            raise RuntimeError(ex_msg)
+
+        self._tql.add_filter('timeToRespond', operator, time_to_respond, TqlType.INTEGER)
 
     def type_name(self, operator: Enum, type_name: list | str):
         """Filter Name based on **typeName** keyword.

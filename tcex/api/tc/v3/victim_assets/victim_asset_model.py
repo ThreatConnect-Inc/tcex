@@ -1,7 +1,10 @@
 """TcEx Framework Module"""
 
+# standard library
+from __future__ import annotations
+
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -11,115 +14,126 @@ from tcex.util import Util
 class VictimAssetModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='VictimAsset Model',
     validate_assignment=True,
 ):
     """Victim_Asset Model"""
 
-    _associated_type = PrivateAttr(default=True)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=True)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
     account_name: str | None = Field(
-        None,
-        applies_to=['SocialNetwork', 'NetworkAccount'],
-        conditional_required=['SocialNetwork', 'NetworkAccount'],
+        default=None,
         description='The network name.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='accountName',
+        validate_default=True,
+        json_schema_extra={
+            'applies_to': ['SocialNetwork', 'NetworkAccount'],
+            'conditional_required': ['SocialNetwork', 'NetworkAccount'],
+            'methods': ['POST', 'PUT'],
+        },
     )
     address: str | None = Field(
-        None,
-        applies_to=['EmailAddress'],
-        conditional_required=['EmailAddress'],
+        default=None,
         description='The email address associated with the E-Mail Address asset.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='address',
+        validate_default=True,
+        json_schema_extra={
+            'applies_to': ['EmailAddress'],
+            'conditional_required': ['EmailAddress'],
+            'methods': ['POST', 'PUT'],
+        },
     )
     address_type: str | None = Field(
-        None,
-        applies_to=['EmailAddress'],
+        default=None,
         description='The type of the E-Mail Address asset.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='addressType',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['EmailAddress'], 'methods': ['POST', 'PUT']},
     )
-    associated_groups: 'GroupsModel' = Field(
-        None,
+    associated_groups: GroupsModel | None = Field(
+        default=None,
         description='A list of groups that this victim asset is associated with.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associatedGroups',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     network_type: str | None = Field(
-        None,
-        applies_to=['NetworkAccount'],
-        conditional_required=['NetworkAccount'],
+        default=None,
         description='The type of network.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='networkType',
+        validate_default=True,
+        json_schema_extra={
+            'applies_to': ['NetworkAccount'],
+            'conditional_required': ['NetworkAccount'],
+            'methods': ['POST', 'PUT'],
+        },
     )
     phone: str | None = Field(
-        None,
-        applies_to=['Phone'],
-        conditional_required=['Phone'],
+        default=None,
         description='The phone number of the asset.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='phone',
+        validate_default=True,
+        json_schema_extra={
+            'applies_to': ['Phone'],
+            'conditional_required': ['Phone'],
+            'methods': ['POST', 'PUT'],
+        },
     )
     social_network: str | None = Field(
-        None,
-        applies_to=['SocialNetwork'],
-        conditional_required=['SocialNetwork'],
+        default=None,
         description='The type of social network.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='socialNetwork',
+        validate_default=True,
+        json_schema_extra={
+            'applies_to': ['SocialNetwork'],
+            'conditional_required': ['SocialNetwork'],
+            'methods': ['POST', 'PUT'],
+        },
     )
     type: str | None = Field(
-        None,
+        default=None,
         description='Type of victim asset.',
-        methods=['POST'],
-        read_only=False,
         title='type',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST']},
     )
     victim_id: int | None = Field(
-        None,
+        default=None,
         description='Victim id of victim asset.',
-        methods=['POST'],
-        read_only=False,
         title='victimId',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST']},
     )
     web_link: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='A link to the ThreatConnect details page for this entity.',
-        read_only=True,
+        frozen=True,
         title='webLink',
+        validate_default=True,
     )
     website: str | None = Field(
-        None,
-        applies_to=['WebSite'],
-        conditional_required=['WebSite'],
+        default=None,
         description='The website of the asset.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='website',
+        validate_default=True,
+        json_schema_extra={
+            'applies_to': ['WebSite'],
+            'conditional_required': ['WebSite'],
+            'methods': ['POST', 'PUT'],
+        },
     )
 
-    @validator('associated_groups', always=True, pre=True)
+    @field_validator('associated_groups', mode='before')
     @classmethod
     def _validate_groups(cls, v):
         if not v:
@@ -138,8 +152,8 @@ class VictimAssetDataModel(
     data: list[VictimAssetModel] | None = Field(
         [],
         description='The data for the VictimAssets.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -151,26 +165,25 @@ class VictimAssetsModel(
 ):
     """Victim_Assets Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[VictimAssetModel] | None = Field(
         [],
         description='The data for the VictimAssets.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
 # first-party
 from tcex.api.tc.v3.groups.group_model import GroupsModel
 
-# add forward references
-VictimAssetDataModel.update_forward_refs()
-VictimAssetModel.update_forward_refs()
-VictimAssetsModel.update_forward_refs()
+# rebuild model
+# VictimAssetDataModel.model_rebuild()
+# VictimAssetModel.model_rebuild()
+# VictimAssetsModel.model_rebuild()

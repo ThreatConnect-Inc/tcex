@@ -31,7 +31,7 @@ class TestVictimAttributeSnippets(TestV3):
     #     """Test snippet"""
     #     # Begin Snippet
     #     for victim_attribute in self.tcex.api.tc.v3.victim_attributes():
-    #         print(victim_attribute.model.dict(exclude_none=True))
+    #         print(victim_attribute.model.model_dump(exclude_none=True))
     #     # End Snippet
 
     def test_victim_attributes_tql_filter(self):
@@ -62,7 +62,7 @@ class TestVictimAttributeSnippets(TestV3):
         victim_attributes.filter.last_modified(TqlOperator.GT, '1 day ago')
         victim_attributes.filter.type_name(TqlOperator.EQ, 'Description')
         for victim_attribute in victim_attributes:
-            print(victim_attribute.model.dict(exclude_none=True))
+            print(victim_attribute.model.model_dump(exclude_none=True))
         # End Snippet
 
     def test_victim_attribute_get_by_id(self):
@@ -85,5 +85,5 @@ class TestVictimAttributeSnippets(TestV3):
         # Begin Snippet
         victim_attribute = self.tcex.api.tc.v3.victim_attribute(id=attribute_id)
         victim_attribute.get()
-        print(victim_attribute.model.dict(exclude_none=True))
+        print(victim_attribute.model.model_dump(exclude_none=True))
         # End Snippet

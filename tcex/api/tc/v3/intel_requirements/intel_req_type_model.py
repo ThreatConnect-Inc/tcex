@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import Extra, Field
+from pydantic import Field
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -11,7 +11,7 @@ from tcex.util import Util
 class IntelReqTypeModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='Intel Requirement Type Model',
     validate_assignment=True,
 ):

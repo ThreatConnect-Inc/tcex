@@ -1,7 +1,17 @@
-"""TcEx Framework Module"""
+"""TestInputsFieldTypes for testing EditChoice field type functionality.
+
+This module contains comprehensive test cases for the EditChoice field type implementation in TcEx,
+including validation of choice inputs, transformations, and optional/required field behaviors.
+
+Classes:
+    TestInputsFieldTypes: Test class for EditChoice field type validation
+
+TcEx Module Tested: tcex.input.field_type.EditChoice
+"""
 
 # standard library
 from collections.abc import Callable
+from typing import Any
 
 # third-party
 import pytest
@@ -16,9 +26,16 @@ from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
 class TestInputsFieldTypes(InputTest):
-    """Test TcEx String Field Model Tests."""
+    """TestInputsFieldTypes for comprehensive EditChoice field type testing.
 
-    def setup_method(self):
+    This class provides extensive test coverage for the EditChoice field type, including validation
+    of choice selections, transformations, optional/required behaviors, and error conditions.
+
+    Fixtures:
+        playbook_app: Mock application fixture for testing TcEx functionality
+    """
+
+    def setup_method(self) -> None:
         """Configure setup before all tests."""
         scoped_property._reset()
         cached_property._reset()
@@ -26,38 +43,29 @@ class TestInputsFieldTypes(InputTest):
     @pytest.mark.parametrize(
         'input_value,expected,optional,fail_test',
         [
-            #
-            # Pass Testing
-            #
-            # required, normal input
-            ('choice_1', 'choice_1', False, False),
-            # optional, null input
-            (None, None, True, False),
-            #
-            # Fail Testing
-            #
-            # invalid choice
-            ('invalid_choice', None, False, True),
-            # required, empty input
-            ('', '', False, True),
-            # optional, empty input
-            ('', '', True, True),
-            # required, null input
-            (None, None, False, True),
+            pytest.param('choice_1', 'choice_1', False, False, id='pass-required-valid-choice'),
+            pytest.param(None, None, True, False, id='pass-optional-none-input'),
+            pytest.param('invalid_choice', None, False, True, id='fail-invalid-choice'),
+            pytest.param('', '', False, True, id='fail-required-empty-input'),
+            pytest.param('', '', True, True, id='fail-optional-empty-input'),
+            pytest.param(None, None, False, True, id='fail-required-none-input'),
         ],
     )
     def test_field_model_string_input(
         self,
-        input_value: str,
-        expected: str,
+        input_value: Any,
+        expected: Any,
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test EditChoice field type.
+    ) -> None:
+        """Test EditChoice field type with basic choice validation.
 
-        Playbook Data Type: String
-        Validation: Not null
+        Tests the basic EditChoice field type functionality including valid/invalid choices,
+        required vs optional field behaviors, and empty input handling.
+
+        Fixtures:
+            playbook_app: Mock application fixture for testing TcEx functionality
         """
 
         class PytestModelRequired(BaseModel):
@@ -87,69 +95,113 @@ class TestInputsFieldTypes(InputTest):
     @pytest.mark.parametrize(
         'input_value,expected,optional,fail_test,transformations,allow_additional',
         [
-            #
-            # Pass Testing
-            #
-            # required, normal input
-            ('choice_1', 'choice_1', False, False, None, False),
-            #
-            # Test magic variable expansion
-            #
-            # pass in artifact type
-            ('password', 'Password', False, False, None, False),
-            # pass in attribute
-            ('description', 'Description', False, False, None, False),
-            # pass in group type
-            ('Report', 'Report', False, False, None, False),
-            # pass in indicator type
-            ('Host', 'Host', False, False, None, False),
-            # pass in Owner
-            ('TCI', 'TCI', False, False, None, False),
-            # optional, null input
-            (None, None, True, False, None, False),
-            # pass transformations dict, valid value should be transformed
-            ('choice_1', 'Choice 1', False, False, {'choice_1': 'Choice 1'}, False),
-            # pass transformations dict, value not transformed as it is not in transformations dict
-            ('choice_1', 'choice_1', False, False, {'choice_2': 'Choice 2'}, False),
-            #
-            # Transformations when field is Optional
-            # pass transformations dict, valid value should be transformed
-            ('choice_1', 'Choice 1', True, False, {'choice_1': 'Choice 1'}, False),
-            # pass transformations dict, value not transformed as it is not in transformations dict
-            ('choice_1', 'choice_1', True, False, {'choice_2': 'Choice 2'}, False),
-            #
-            # invalid choice allowed because of allow_additional=True
-            ('invalid_choice', 'invalid_choice', False, False, None, True),
-            # same as above but with optional field
-            ('invalid_choice', 'invalid_choice', True, False, None, True),
-            #
-            #
-            # Fail Testing
-            #
-            # invalid choice
-            ('invalid_choice', None, False, True, None, False),
-            # required, empty input
-            ('', '', False, True, None, False),
-            # optional, empty input
-            ('', '', True, True, None, False),
-            # required, null input
-            (None, None, False, True, None, False),
+            pytest.param(
+                'choice_1', 'choice_1', False, False, None, False, id='pass-required-valid-choice'
+            ),
+            pytest.param(
+                'password', 'Password', False, False, None, False, id='pass-artifact-type-password'
+            ),
+            pytest.param(
+                'description',
+                'Description',
+                False,
+                False,
+                None,
+                False,
+                id='pass-attribute-description',
+            ),
+            pytest.param(
+                'Report', 'Report', False, False, None, False, id='pass-group-type-report'
+            ),
+            pytest.param('Host', 'Host', False, False, None, False, id='pass-indicator-type-host'),
+            pytest.param('TCI', 'TCI', False, False, None, False, id='pass-owner-tci'),
+            pytest.param(None, None, True, False, None, False, id='pass-optional-none-input'),
+            pytest.param(
+                'choice_1',
+                'Choice 1',
+                False,
+                False,
+                {'choice_1': 'Choice 1'},
+                False,
+                id='pass-transformations-matched',
+            ),
+            pytest.param(
+                'choice_1',
+                'choice_1',
+                False,
+                False,
+                {'choice_2': 'Choice 2'},
+                False,
+                id='pass-transformations-unmatched',
+            ),
+            pytest.param(
+                'choice_1',
+                'Choice 1',
+                True,
+                False,
+                {'choice_1': 'Choice 1'},
+                False,
+                id='pass-optional-transformations-matched',
+            ),
+            pytest.param(
+                'choice_1',
+                'choice_1',
+                True,
+                False,
+                {'choice_2': 'Choice 2'},
+                False,
+                id='pass-optional-transformations-unmatched',
+            ),
+            pytest.param(
+                'invalid_choice',
+                'invalid_choice',
+                False,
+                False,
+                None,
+                True,
+                id='pass-invalid-choice-allowed',
+            ),
+            pytest.param(
+                'invalid_choice',
+                'invalid_choice',
+                True,
+                False,
+                None,
+                True,
+                id='pass-optional-invalid-choice-allowed',
+            ),
+            pytest.param(
+                'invalid_choice',
+                None,
+                False,
+                True,
+                None,
+                False,
+                id='fail-invalid-choice-not-allowed',
+            ),
+            pytest.param('', '', False, True, None, False, id='fail-required-empty-input'),
+            pytest.param('', '', True, True, None, False, id='fail-optional-empty-input'),
+            pytest.param(None, None, False, True, None, False, id='fail-required-none-input'),
         ],
     )
     def test_custom_edit_choice_type(
         self,
-        input_value: str,
-        expected: str,
+        input_value: Any,
+        expected: Any,
         optional: bool,
         fail_test: bool,
         allow_additional: bool,
         playbook_app: Callable[..., MockApp],
-        transformations: dict,
-    ):
-        """Test Custom EditChoice field type.
+        transformations: dict[str, str] | None,
+    ) -> None:
+        """Test custom EditChoice field type with advanced features.
 
-        Playbook Data Type: String
-        Validation: Not null
+        Tests the custom EditChoice field type functionality including value transformations,
+        magic variable expansion (artifact types, attributes, group types, indicator types),
+        allow_additional option, and validation of various input combinations.
+
+        Fixtures:
+            playbook_app: Mock application fixture for testing TcEx functionality
         """
 
         class PytestModelRequired(BaseModel):

@@ -1,0 +1,287 @@
+[
+  {
+    "field_name": "assets",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of victim assets corresponding to the Victim",
+          "maxSize": 1000,
+          "name": "assets",
+          "required": false,
+          "type": "VictimAssets"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of victim assets corresponding to the Victim",
+      "maxSize": 1000,
+      "name": "assets",
+      "required": false,
+      "type": "VictimAssets"
+    }
+  },
+  {
+    "field_name": "associatedGroups",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of groups that this victim is associated with",
+          "name": "associatedGroups",
+          "required": false,
+          "type": "Groups"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of groups that this victim is associated with",
+      "name": "associatedGroups",
+      "required": false,
+      "type": "Groups"
+    }
+  },
+  {
+    "field_name": "attributes",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Attributes corresponding to the Victim",
+          "name": "attributes",
+          "required": false,
+          "type": "VictimAttributes"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Attributes corresponding to the Victim",
+      "name": "attributes",
+      "required": false,
+      "type": "VictimAttributes"
+    }
+  },
+  {
+    "field_name": "dateAdded",
+    "input_data": {
+      "description": "the date and time that the item was first created",
+      "name": "dateAdded",
+      "readOnly": true,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the date and time that the item was first created",
+      "name": "dateAdded",
+      "readOnly": true,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "description",
+    "input_data": {
+      "description": "description of the Victim",
+      "maxLength": 255,
+      "minLength": 0,
+      "name": "description",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "description of the Victim",
+      "maxLength": 255,
+      "minLength": 0,
+      "name": "description",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "id",
+    "input_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    },
+    "output_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    }
+  },
+  {
+    "field_name": "name",
+    "input_data": {
+      "description": "name of the Victim",
+      "maxLength": 100,
+      "minLength": 1,
+      "name": "name",
+      "required": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "name of the Victim",
+      "maxLength": 100,
+      "minLength": 1,
+      "name": "name",
+      "required": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "nationality",
+    "input_data": {
+      "description": "nationality of the Victim",
+      "maxLength": 100,
+      "minLength": 0,
+      "name": "nationality",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "nationality of the Victim",
+      "maxLength": 100,
+      "minLength": 0,
+      "name": "nationality",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "org",
+    "input_data": {
+      "description": "org of the Victim",
+      "maxLength": 100,
+      "minLength": 0,
+      "name": "org",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "org of the Victim",
+      "maxLength": 100,
+      "minLength": 0,
+      "name": "org",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "ownerName",
+    "input_data": {
+      "conditionalReadOnly": [
+        "Victim"
+      ],
+      "description": "the name of the Organization, Community, or Source that the item belongs to",
+      "name": "ownerName",
+      "readOnly": true,
+      "required": false,
+      "type": "String",
+      "updatable": false
+    },
+    "output_data": {
+      "conditionalReadOnly": [
+        "Victim"
+      ],
+      "description": "the name of the Organization, Community, or Source that the item belongs to",
+      "name": "ownerName",
+      "readOnly": true,
+      "required": false,
+      "type": "String",
+      "updatable": false
+    }
+  },
+  {
+    "field_name": "securityLabels",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Security Labels corresponding to the Intel item (NOTE: Setting this parameter will replace any existing tag(s) with the one(s) specified)",
+          "maxSize": 1000,
+          "name": "securityLabels",
+          "required": false,
+          "type": "SecurityLabels"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Security Labels corresponding to the Intel item (NOTE: Setting this parameter will replace any existing tag(s) with the one(s) specified)",
+      "maxSize": 1000,
+      "name": "securityLabels",
+      "required": false,
+      "type": "SecurityLabels"
+    }
+  },
+  {
+    "field_name": "suborg",
+    "input_data": {
+      "description": "suborg of the Victim",
+      "maxLength": 100,
+      "minLength": 0,
+      "name": "suborg",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "suborg of the Victim",
+      "maxLength": 100,
+      "minLength": 0,
+      "name": "suborg",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "tags",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Tags corresponding to the item (NOTE: Setting this parameter will replace any existing tag(s) with the one(s) specified)",
+          "maxSize": 1000,
+          "name": "tags",
+          "required": false,
+          "type": "Tags"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Tags corresponding to the item (NOTE: Setting this parameter will replace any existing tag(s) with the one(s) specified)",
+      "maxSize": 1000,
+      "name": "tags",
+      "required": false,
+      "type": "Tags"
+    }
+  },
+  {
+    "field_name": "webLink",
+    "input_data": {
+      "description": "a link to the ThreatConnect details page for this entity",
+      "name": "webLink",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "a link to the ThreatConnect details page for this entity",
+      "name": "webLink",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "workLocation",
+    "input_data": {
+      "description": "work location of the Victim",
+      "maxLength": 100,
+      "minLength": 0,
+      "name": "workLocation",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "work location of the Victim",
+      "maxLength": 100,
+      "minLength": 0,
+      "name": "workLocation",
+      "required": false,
+      "type": "String"
+    }
+  }
+]

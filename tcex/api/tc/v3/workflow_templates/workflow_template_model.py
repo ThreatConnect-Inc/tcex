@@ -1,7 +1,10 @@
 """TcEx Framework Module"""
 
+# standard library
+from __future__ import annotations
+
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -11,116 +14,116 @@ from tcex.util import Util
 class WorkflowTemplateModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='WorkflowTemplate Model',
     validate_assignment=True,
 ):
     """Workflow_Template Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=True)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=True)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
-    active: bool = Field(
-        None,
-        allow_mutation=False,
+    active: bool | None = Field(
+        default=None,
         description='The **active** for the Workflow_Template.',
-        read_only=True,
+        frozen=True,
         title='active',
+        validate_default=True,
     )
-    assignee: 'AssigneeModel' = Field(
-        None,
-        allow_mutation=False,
+    assignee: AssigneeModel | None = Field(
+        default=None,
         description='The **assignee** for the Workflow_Template.',
-        read_only=True,
+        frozen=True,
         title='assignee',
+        validate_default=True,
     )
-    cases: 'CasesModel' = Field(
-        None,
-        allow_mutation=False,
+    cases: CasesModel | None = Field(
+        default=None,
         description='The **cases** for the Workflow_Template.',
-        read_only=True,
+        frozen=True,
         title='cases',
+        validate_default=True,
     )
     config_artifact: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **config artifact** for the Workflow_Template.',
-        read_only=True,
+        frozen=True,
         title='configArtifact',
+        validate_default=True,
     )
     config_attribute: dict | list[dict] | None = Field(
-        None,
+        default=None,
         description='The **config attribute** for the Workflow_Template.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='configAttribute',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     config_playbook: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **config playbook** for the Workflow_Template.',
-        read_only=True,
+        frozen=True,
         title='configPlaybook',
+        validate_default=True,
     )
     config_task: dict | list[dict] | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **config task** for the Workflow_Template.',
-        read_only=True,
+        frozen=True,
         title='configTask',
+        validate_default=True,
     )
     description: str | None = Field(
-        None,
+        default=None,
         description='The **description** for the Workflow_Template.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='description',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     name: str | None = Field(
-        None,
+        default=None,
         description='The **name** for the Workflow_Template.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='name',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     owner: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The name of the Owner of the Case.',
-        read_only=True,
+        frozen=True,
         title='owner',
+        validate_default=True,
     )
     owner_id: int | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The name of the Owner of the Case.',
-        read_only=True,
+        frozen=True,
         title='ownerId',
+        validate_default=True,
     )
     version: int | None = Field(
-        None,
+        default=None,
         description='The **version** for the Workflow_Template.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='version',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
-    @validator('assignee', always=True, pre=True)
+    @field_validator('assignee', mode='before')
     @classmethod
     def _validate_assignee(cls, v):
         if not v:
             return AssigneeModel()  # type: ignore
         return v
 
-    @validator('cases', always=True, pre=True)
+    @field_validator('cases', mode='before')
     @classmethod
     def _validate_cases(cls, v):
         if not v:
@@ -139,8 +142,8 @@ class WorkflowTemplateDataModel(
     data: list[WorkflowTemplateModel] | None = Field(
         [],
         description='The data for the WorkflowTemplates.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -152,19 +155,18 @@ class WorkflowTemplatesModel(
 ):
     """Workflow_Templates Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[WorkflowTemplateModel] | None = Field(
         [],
         description='The data for the WorkflowTemplates.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -172,7 +174,7 @@ class WorkflowTemplatesModel(
 from tcex.api.tc.v3.cases.case_model import CasesModel
 from tcex.api.tc.v3.security.assignee_model import AssigneeModel
 
-# add forward references
-WorkflowTemplateDataModel.update_forward_refs()
-WorkflowTemplateModel.update_forward_refs()
-WorkflowTemplatesModel.update_forward_refs()
+# rebuild model
+# WorkflowTemplateDataModel.model_rebuild()
+# WorkflowTemplateModel.model_rebuild()
+# WorkflowTemplatesModel.model_rebuild()

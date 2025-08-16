@@ -1,0 +1,349 @@
+[
+  {
+    "field_name": "associatedArtifacts",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Artifacts associated with this Group",
+          "maxSize": 1000,
+          "name": "associatedArtifacts",
+          "required": false,
+          "type": "Artifacts"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Artifacts associated with this Group",
+      "maxSize": 1000,
+      "name": "associatedArtifacts",
+      "required": false,
+      "type": "Artifacts"
+    }
+  },
+  {
+    "field_name": "associatedCases",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Cases associated with this Group",
+          "maxSize": 1000,
+          "name": "associatedCases",
+          "required": false,
+          "type": "Cases"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Cases associated with this Group",
+      "maxSize": 1000,
+      "name": "associatedCases",
+      "required": false,
+      "type": "Cases"
+    }
+  },
+  {
+    "field_name": "associatedGroups",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of groups associated with this group",
+          "name": "associatedGroups",
+          "required": false,
+          "type": "Groups"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of groups associated with this group",
+      "name": "associatedGroups",
+      "required": false,
+      "type": "Groups"
+    }
+  },
+  {
+    "field_name": "associatedIndicators",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of indicators associated with this group",
+          "name": "associatedIndicators",
+          "required": false,
+          "type": "Indicators"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of indicators associated with this group",
+      "name": "associatedIndicators",
+      "required": false,
+      "type": "Indicators"
+    }
+  },
+  {
+    "field_name": "associatedVictimAssets",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of victim assets associated with this group",
+          "name": "associatedVictimAssets",
+          "required": false,
+          "type": "VictimAssets"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of victim assets associated with this group",
+      "name": "associatedVictimAssets",
+      "required": false,
+      "type": "VictimAssets"
+    }
+  },
+  {
+    "field_name": "category",
+    "input_data": {
+      "description": "the category of the intel requirement",
+      "name": "category",
+      "required": false,
+      "type": "IntelReqType"
+    },
+    "output_data": {
+      "description": "the category of the intel requirement",
+      "name": "category",
+      "required": false,
+      "type": "IntelReqType"
+    }
+  },
+  {
+    "field_name": "createdBy",
+    "input_data": {
+      "description": "the user who created the intel requirement",
+      "name": "createdBy",
+      "readOnly": true,
+      "type": "User"
+    },
+    "output_data": {
+      "description": "the user who created the intel requirement",
+      "name": "createdBy",
+      "readOnly": true,
+      "type": "User"
+    }
+  },
+  {
+    "field_name": "dateAdded",
+    "input_data": {
+      "description": "the date and time that the item was first created",
+      "name": "dateAdded",
+      "readOnly": true,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the date and time that the item was first created",
+      "name": "dateAdded",
+      "readOnly": true,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "description",
+    "input_data": {
+      "description": "the description of the intel requirement",
+      "name": "description",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "the description of the intel requirement",
+      "name": "description",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "id",
+    "input_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    },
+    "output_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    }
+  },
+  {
+    "field_name": "keywordSections",
+    "input_data": [
+      {
+        "description": "the section of the intel requirement that contains the keywords",
+        "name": "keywordSections",
+        "required": true,
+        "type": "KeywordSection"
+      }
+    ],
+    "output_data": {
+      "description": "the section of the intel requirement that contains the keywords",
+      "name": "keywordSections",
+      "required": true,
+      "type": "KeywordSection"
+    }
+  },
+  {
+    "field_name": "lastModified",
+    "input_data": {
+      "description": "the date and time that the Entity was last modified",
+      "name": "lastModified",
+      "readOnly": true,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the date and time that the Entity was last modified",
+      "name": "lastModified",
+      "readOnly": true,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "lastRetrievedDate",
+    "input_data": {
+      "description": "the last date the results were retrieved for the intel requirement",
+      "name": "lastRetrievedDate",
+      "readOnly": true,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the last date the results were retrieved for the intel requirement",
+      "name": "lastRetrievedDate",
+      "readOnly": true,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "requirementText",
+    "input_data": {
+      "description": "the detailed text of the intel requirement",
+      "name": "requirementText",
+      "required": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "the detailed text of the intel requirement",
+      "name": "requirementText",
+      "required": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "resetResults",
+    "input_data": {
+      "description": "flag to reset results when updating keywords",
+      "name": "resetResults",
+      "required": false,
+      "type": "Boolean"
+    },
+    "output_data": {
+      "description": "flag to reset results when updating keywords",
+      "name": "resetResults",
+      "required": false,
+      "type": "Boolean"
+    }
+  },
+  {
+    "field_name": "resultsLink",
+    "input_data": {
+      "description": "a link to the results for the intel requirement",
+      "name": "resultsLink",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "a link to the results for the intel requirement",
+      "name": "resultsLink",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "subtype",
+    "input_data": {
+      "description": "the subtype of the intel requirement",
+      "name": "subtype",
+      "required": true,
+      "type": "IntelReqType"
+    },
+    "output_data": {
+      "description": "the subtype of the intel requirement",
+      "name": "subtype",
+      "required": true,
+      "type": "IntelReqType"
+    }
+  },
+  {
+    "field_name": "tags",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Tags corresponding to the item (NOTE: Setting this parameter will replace any existing tag(s) with the one(s) specified)",
+          "maxSize": 1000,
+          "name": "tags",
+          "required": false,
+          "type": "Tags"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Tags corresponding to the item (NOTE: Setting this parameter will replace any existing tag(s) with the one(s) specified)",
+      "maxSize": 1000,
+      "name": "tags",
+      "required": false,
+      "type": "Tags"
+    }
+  },
+  {
+    "field_name": "uniqueId",
+    "input_data": {
+      "description": "the unique id of the intel requirement",
+      "name": "uniqueId",
+      "required": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "the unique id of the intel requirement",
+      "name": "uniqueId",
+      "required": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "webLink",
+    "input_data": {
+      "description": "a link to the ThreatConnect details page for this entity",
+      "name": "webLink",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "a link to the ThreatConnect details page for this entity",
+      "name": "webLink",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "xid",
+    "input_data": {
+      "description": "the xid of the item",
+      "name": "xid",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "the xid of the item",
+      "name": "xid",
+      "required": false,
+      "type": "String"
+    }
+  }
+]

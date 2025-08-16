@@ -32,37 +32,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Case(ObjectABC):
-    """Cases Object.
-
-    Args:
-        artifacts (Artifacts, kwargs): A list of Artifacts corresponding to the Case.
-        assignee (Assignee, kwargs): The user or group Assignee object for the Case.
-        associated_cases (Cases, kwargs): A list of Cases associated with this Case.
-        associated_groups (Groups, kwargs): A list of Groups associated with this Case.
-        associated_indicators (Indicators, kwargs): A list of Indicators associated with this Case.
-        attributes (CaseAttributes, kwargs): A list of Attributes corresponding to the Case.
-        case_close_time (str, kwargs): The date and time that the Case was closed.
-        case_detection_time (str, kwargs): The date and time that ends the user initiated Case
-            duration.
-        case_occurrence_time (str, kwargs): The date and time that starts the user initiated Case
-            duration.
-        case_open_time (str, kwargs): The date and time that the Case was first opened.
-        description (str, kwargs): The description of the Case.
-        name (str, kwargs): The name of the Case.
-        notes (Notes, kwargs): A list of Notes corresponding to the Case.
-        resolution (str, kwargs): The Case resolution.
-        severity (str, kwargs): The Case severity.
-        status (str, kwargs): The Case status.
-        tags (Tags, kwargs): A list of Tags corresponding to the Case (NOTE: Setting this parameter
-            will replace any existing tag(s) with the one(s) specified).
-        tasks (Tasks, kwargs): A list of Tasks corresponding to the Case.
-        user_access (Users, kwargs): A list of Users that, when defined, are the only ones allowed
-            to view or edit the Case.
-        workflow_events (WorkflowEvents, kwargs): A list of workflowEvents (timeline) corresponding
-            to the Case.
-        workflow_template (WorkflowTemplate, kwargs): The Template that the Case is populated by.
-        xid (str, kwargs): The **xid** for the Case.
-    """
+    """Cases Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""
@@ -107,7 +77,6 @@ class Case(ObjectABC):
     @property
     def artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
-        # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
 
         yield from self._iterate_over_sublist(Artifacts)  # type: ignore
@@ -124,7 +93,6 @@ class Case(ObjectABC):
     @property
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
-        # first-party
         from tcex.api.tc.v3.groups.group import Groups
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
@@ -132,7 +100,6 @@ class Case(ObjectABC):
     @property
     def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
-        # first-party
         from tcex.api.tc.v3.indicators.indicator import Indicators
 
         yield from self._iterate_over_sublist(Indicators)  # type: ignore
@@ -140,7 +107,6 @@ class Case(ObjectABC):
     @property
     def attributes(self) -> Generator['CaseAttribute', None, None]:
         """Yield Attribute from Attributes."""
-        # first-party
         from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttributes
 
         yield from self._iterate_over_sublist(CaseAttributes)  # type: ignore
@@ -148,7 +114,6 @@ class Case(ObjectABC):
     @property
     def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
-        # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)  # type: ignore
@@ -156,7 +121,6 @@ class Case(ObjectABC):
     @property
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
-        # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore
@@ -164,7 +128,6 @@ class Case(ObjectABC):
     @property
     def tasks(self) -> Generator['Task', None, None]:
         """Yield Task from Tasks."""
-        # first-party
         from tcex.api.tc.v3.tasks.task import Tasks
 
         yield from self._iterate_over_sublist(Tasks)  # type: ignore

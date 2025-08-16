@@ -15,12 +15,7 @@ from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 
 
 class Category(ObjectABC):
-    """Categories Object.
-
-    Args:
-        description (str, kwargs): The description of the subtype/category.
-        name (str, kwargs): The details of the subtype/category.
-    """
+    """Categories Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""

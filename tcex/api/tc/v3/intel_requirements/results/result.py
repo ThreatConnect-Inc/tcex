@@ -12,13 +12,7 @@ from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 
 
 class Result(ObjectABC):
-    """Results Object.
-
-    Args:
-        archived (bool, kwargs): Has the result been archived?
-        associated (bool, kwargs): Has the result been associated to an entity within Threatconnect?
-        false_positive (bool, kwargs): Is the result declared false positive?
-    """
+    """Results Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""

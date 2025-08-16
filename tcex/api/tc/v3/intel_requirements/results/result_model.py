@@ -1,10 +1,12 @@
 """TcEx Framework Module"""
 
 # standard library
+from __future__ import annotations
+
 from datetime import datetime
 
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -14,127 +16,127 @@ from tcex.util import Util
 class ResultModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='Result Model',
     validate_assignment=True,
 ):
     """Result Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
-    archived: bool = Field(
-        None,
+    archived: bool | None = Field(
+        default=None,
         description='Has the result been archived?',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='archived',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     archived_date: datetime | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The date and time that the Entity was archived.',
-        read_only=True,
+        frozen=True,
         title='archivedDate',
+        validate_default=True,
     )
-    associated: bool = Field(
-        None,
+    associated: bool | None = Field(
+        default=None,
         description='Has the result been associated to an entity within Threatconnect?',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='associated',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    false_positive: bool = Field(
-        None,
+    false_positive: bool | None = Field(
+        default=None,
         description='Is the result declared false positive?',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='falsePositive',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     intel_req_id: int | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The id of the intel requirement that the result is associated.',
-        read_only=True,
+        frozen=True,
         title='intelReqId',
+        validate_default=True,
     )
     intel_requirement: dict | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The intel requirement associated to the result.',
-        read_only=True,
+        frozen=True,
         title='intelRequirement',
+        validate_default=True,
     )
-    internal: bool = Field(
-        None,
-        allow_mutation=False,
+    internal: bool | None = Field(
+        default=None,
         description='Is the result sourced internally from Threatconnect.',
-        read_only=True,
+        frozen=True,
         title='internal',
+        validate_default=True,
     )
     item_id: int | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The id of the entity that matched the result.',
-        read_only=True,
+        frozen=True,
         title='itemId',
+        validate_default=True,
     )
     item_type: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The type of the entity that matched the result.',
-        read_only=True,
+        frozen=True,
         title='itemType',
+        validate_default=True,
     )
     matched_date: datetime | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The date and time that the result last matched with the intel requirement.',
-        read_only=True,
+        frozen=True,
         title='matchedDate',
+        validate_default=True,
     )
     name: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The name of the result.',
-        read_only=True,
+        frozen=True,
         title='name',
+        validate_default=True,
     )
     origin: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The origin of the result if derived from an internal or external source.',
-        read_only=True,
+        frozen=True,
         title='origin',
+        validate_default=True,
     )
     owner_id: int | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The organization id that the result belongs.',
-        read_only=True,
+        frozen=True,
         title='ownerId',
+        validate_default=True,
     )
     owner_name: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The organization name that the result belongs.',
-        read_only=True,
+        frozen=True,
         title='ownerName',
+        validate_default=True,
     )
     score: int | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The relevancy score.',
-        read_only=True,
+        frozen=True,
         title='score',
+        validate_default=True,
     )
 
 
@@ -149,8 +151,8 @@ class ResultDataModel(
     data: list[ResultModel] | None = Field(
         [],
         description='The data for the Results.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -162,23 +164,22 @@ class ResultsModel(
 ):
     """Results Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[ResultModel] | None = Field(
         [],
         description='The data for the Results.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
-# add forward references
-ResultDataModel.update_forward_refs()
-ResultModel.update_forward_refs()
-ResultsModel.update_forward_refs()
+# rebuild model
+ResultDataModel.model_rebuild()
+ResultModel.model_rebuild()
+ResultsModel.model_rebuild()

@@ -940,7 +940,7 @@ class GenerateObjectABC(GenerateABC, ABC):
             _code += self._gen_code_group_methods()
 
         # get NON read-only properties of endpoint (OPTIONS: /v3/<object>)
-        add_properties = [prop.name for prop in self._prop_models if prop.read_only is False]
+        add_properties = [prop.name for prop in self.content_models if prop.read_only is False]
 
         # generate artifacts property method
         if 'artifacts' in add_properties:

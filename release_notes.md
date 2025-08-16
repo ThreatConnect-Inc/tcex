@@ -1,5 +1,8 @@
 # Release Notes
 
+## 5.0.0
+-   APP-???? - Update to use pydantic v2
+
 
 ## 4.0.8
 -   APP-4733 - Migrated to "uv" for package management

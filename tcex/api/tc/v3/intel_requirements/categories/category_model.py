@@ -1,7 +1,10 @@
 """TcEx Framework Module"""
 
+# standard library
+from __future__ import annotations
+
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -11,36 +14,36 @@ from tcex.util import Util
 class CategoryModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='Category Model',
     validate_assignment=True,
 ):
     """Category Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
     description: str | None = Field(
-        None,
+        default=None,
         description='The description of the subtype/category.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='description',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     name: str | None = Field(
-        None,
+        default=None,
         description='The details of the subtype/category.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='name',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -55,8 +58,8 @@ class CategoryDataModel(
     data: list[CategoryModel] | None = Field(
         [],
         description='The data for the Categories.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -68,23 +71,22 @@ class CategoriesModel(
 ):
     """Categories Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[CategoryModel] | None = Field(
         [],
         description='The data for the Categories.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
-# add forward references
-CategoryDataModel.update_forward_refs()
-CategoryModel.update_forward_refs()
-CategoriesModel.update_forward_refs()
+# rebuild model
+CategoryDataModel.model_rebuild()
+CategoryModel.model_rebuild()
+CategoriesModel.model_rebuild()

@@ -4,8 +4,8 @@
 from typing import ClassVar
 
 # third-party
-from pydantic import create_model, validator
-from pydantic.fields import ModelField  # TYPE-CHECKING
+from pydantic import create_model, field_validator
+from pydantic_core import core_schema
 
 # first-party
 from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
@@ -19,23 +19,25 @@ class IndicatorEntity(TCEntity):
 
     indicator_types: ClassVar[list[str]] = []
 
-    @validator('type', allow_reuse=True)
+    @field_validator('type')
     @classmethod
-    def is_empty(cls, value: str, field: ModelField) -> str:
+    def is_empty(cls, value: str, info: core_schema.ValidationInfo) -> str:
         """Validate that the value is a non-empty string."""
+        field_name = info.field_name or '--unknown--'
         if isinstance(value, str) and value.replace(' ', '') == '':
-            raise InvalidEmptyValue(field_name=field.name)
+            raise InvalidEmptyValue(field_name=field_name)
         return value
 
-    @validator('type', allow_reuse=True)
+    @field_validator('type')
     @classmethod
-    def is_type(cls, value: str, field: ModelField) -> str:
+    def is_type(cls, value: str, info: core_schema.ValidationInfo) -> str:
         """Validate that the entity is of a specific Indicator type."""
+        field_name = info.field_name or '--unknown--'
         ti_utils = ThreatIntelUtil(session_tc=registry.session_tc)
         indicator_types = cls.indicator_types or ti_utils.indicator_types
         if value.lower() not in [i.lower() for i in indicator_types]:
             raise InvalidEntityType(
-                field_name=field.name, entity_type=str(indicator_types), value=value
+                field_name=field_name, entity_type=str(indicator_types), value=value
             )
         return value
 

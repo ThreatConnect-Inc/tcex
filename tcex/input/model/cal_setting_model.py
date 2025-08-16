@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 
 # first-party
 from tcex.input.field_type.sensitive import Sensitive
@@ -26,15 +26,24 @@ class CalSettingModel(BaseModel):
     tc_cal_host: str = Field(
         ...,
         description='The hostname for CAL.',
-        inclusion_reason='feature (CALSettings)',
+        json_schema_extra={'inclusion_reason': 'feature (CALSettings)'},
     )
     tc_cal_token: Sensitive = Field(
         ...,
         description='The token for CAL.',
-        inclusion_reason='feature (CALSettings)',
+        json_schema_extra={
+            'inclusion_reason': 'feature (CALSettings)',
+        },
     )
     tc_cal_timestamp: int = Field(
         ...,
         description='The expiration timestamp in epoch for tc_cal_token.',
-        inclusion_reason='feature (CALSettings)',
+        json_schema_extra={
+            'inclusion_reason': 'feature (CALSettings)',
+        },
     )
+
+    @field_serializer('tc_cal_token', when_used='json')
+    def convert_sensitive_to_str(self, value: Sensitive | None):
+        """."""
+        return str(value)

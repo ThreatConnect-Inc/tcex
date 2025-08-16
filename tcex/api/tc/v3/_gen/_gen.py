@@ -1,5 +1,12 @@
 """TcEx Framework Module"""
 
+# # third-party
+# import debugpy
+#
+# debugpy.listen(5678)
+# print('Waiting for debugger attach')
+# debugpy.wait_for_client()
+
 # standard library
 import os
 from enum import Enum
@@ -25,7 +32,7 @@ util = Util()
 
 def log_server():
     """Log server."""
-    _api_server = os.getenv('TC_API_PATH')
+    _api_server = os.getenv('TC_API_PATH', default=None)
     Render.panel.info(f'Using server {_api_server}')
 
 

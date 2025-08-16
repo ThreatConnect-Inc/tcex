@@ -17,6 +17,7 @@ class BaseValueError(ValueError):
         """Customize the exception message."""
         # when a union of types are provided, this logs for each type that's doesn't match
         _logger.trace(f'Checking value for field {field_name}: {message}')
+        message = f'Error with field "{field_name}": {message}'
         super().__init__(message)
 
 
@@ -27,6 +28,7 @@ class BaseTypeError(TypeError):
         """Customize the exception message."""
         # when a union of types are provided, this logs for each type that's doesn't match
         _logger.trace(f'Checking type for field {field_name}: {message}')
+        message = f'Error with field "{field_name}": {message}'
         super().__init__(message)
 
 

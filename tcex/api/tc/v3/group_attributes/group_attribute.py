@@ -21,20 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class GroupAttribute(ObjectABC):
-    """GroupAttributes Object.
-
-    Args:
-        default (bool, kwargs): A flag indicating that this is the default attribute of its type
-            within the object. Only applies to certain attribute and data types.
-        group_id (int, kwargs): Group associated with attribute.
-        pinned (bool, kwargs): A flag indicating that the attribute has been noted for importance.
-        security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
-            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
-            the one(s) specified).
-        source (str, kwargs): The attribute source.
-        type (str, kwargs): The attribute type.
-        value (str, kwargs): The attribute value.
-    """
+    """GroupAttributes Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""
@@ -72,7 +59,6 @@ class GroupAttribute(ObjectABC):
     @property
     def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
-        # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
 
         yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore

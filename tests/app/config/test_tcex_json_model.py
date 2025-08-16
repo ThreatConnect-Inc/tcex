@@ -119,7 +119,7 @@ class TestTcexJson:
             tj.update.multiple(template='service_api')
             # print(tj.model.schema_json())
             print(
-                tj.model.json(exclude_defaults=False, exclude_none=True, indent=2, sort_keys=True)
+                tj.model.model_dump_json(exclude_defaults=False, exclude_none=True, indent=2)
             )
             assert True
         except Exception as ex:

@@ -1,10 +1,12 @@
 """TcEx Framework Module"""
 
 # standard library
+from __future__ import annotations
+
 from datetime import datetime
 
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -14,132 +16,130 @@ from tcex.util import Util
 class WorkflowEventModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='WorkflowEvent Model',
     validate_assignment=True,
 ):
     """Workflow_Event Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=True)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=True)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
     case_id: int | None = Field(
-        None,
+        default=None,
         description='The **case id** for the Workflow_Event.',
-        methods=['POST'],
-        read_only=False,
-        required_alt_field='caseXid',
         title='caseId',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST'], 'required_alt_field': 'caseXid'},
     )
     case_xid: str | None = Field(
-        None,
+        default=None,
         description='The **case xid** for the Workflow_Event.',
-        methods=['POST'],
-        read_only=False,
-        required_alt_field='caseId',
         title='caseXid',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST'], 'required_alt_field': 'caseId'},
     )
     date_added: datetime | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **date added** for the Workflow_Event.',
-        read_only=True,
+        frozen=True,
         title='dateAdded',
+        validate_default=True,
     )
-    deleted: bool = Field(
-        None,
-        allow_mutation=False,
+    deleted: bool | None = Field(
+        default=None,
         description='The **deleted** for the Workflow_Event.',
-        read_only=True,
+        frozen=True,
         title='deleted',
+        validate_default=True,
     )
     deleted_reason: str | None = Field(
-        None,
+        default=None,
         description='The reason for deleting the event (required input for DELETE operation only).',
-        methods=['DELETE'],
-        read_only=False,
         title='deletedReason',
+        validate_default=True,
+        json_schema_extra={'methods': ['DELETE']},
     )
     event_date: datetime | None = Field(
-        None,
+        default=None,
         description='The time that the Event is logged.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='eventDate',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     link: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **link** for the Workflow_Event.',
-        read_only=True,
+        frozen=True,
         title='link',
+        validate_default=True,
     )
     link_text: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **link text** for the Workflow_Event.',
-        read_only=True,
+        frozen=True,
         title='linkText',
+        validate_default=True,
     )
-    notes: 'NotesModel' = Field(
-        None,
+    notes: NotesModel | None = Field(
+        default=None,
         description='A list of Notes corresponding to the Event.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='notes',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    parent_case: 'CaseModel' = Field(
-        None,
-        allow_mutation=False,
+    parent_case: CaseModel | None = Field(
+        default=None,
         description='The **parent case** for the Workflow_Event.',
-        read_only=True,
+        frozen=True,
         title='parentCase',
+        validate_default=True,
     )
     summary: str | None = Field(
-        None,
+        default=None,
         description='The **summary** for the Workflow_Event.',
-        methods=['POST', 'PUT'],
-        read_only=False,
         title='summary',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
-    system_generated: bool = Field(
-        None,
-        allow_mutation=False,
+    system_generated: bool | None = Field(
+        default=None,
         description='The **system generated** for the Workflow_Event.',
-        read_only=True,
+        frozen=True,
         title='systemGenerated',
+        validate_default=True,
     )
-    user: 'UserModel' = Field(
-        None,
-        allow_mutation=False,
+    user: UserModel | None = Field(
+        default=None,
         description='The **user** for the Workflow_Event.',
-        read_only=True,
+        frozen=True,
         title='user',
+        validate_default=True,
     )
 
-    @validator('parent_case', always=True, pre=True)
+    @field_validator('parent_case', mode='before')
     @classmethod
     def _validate_case(cls, v):
         if not v:
             return CaseModel()  # type: ignore
         return v
 
-    @validator('notes', always=True, pre=True)
+    @field_validator('notes', mode='before')
     @classmethod
     def _validate_notes(cls, v):
         if not v:
             return NotesModel()  # type: ignore
         return v
 
-    @validator('user', always=True, pre=True)
+    @field_validator('user', mode='before')
     @classmethod
     def _validate_user(cls, v):
         if not v:
@@ -158,8 +158,8 @@ class WorkflowEventDataModel(
     data: list[WorkflowEventModel] | None = Field(
         [],
         description='The data for the WorkflowEvents.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -171,19 +171,18 @@ class WorkflowEventsModel(
 ):
     """Workflow_Events Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[WorkflowEventModel] | None = Field(
         [],
         description='The data for the WorkflowEvents.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -192,7 +191,7 @@ from tcex.api.tc.v3.cases.case_model import CaseModel
 from tcex.api.tc.v3.notes.note_model import NotesModel
 from tcex.api.tc.v3.security.users.user_model import UserModel
 
-# add forward references
-WorkflowEventDataModel.update_forward_refs()
-WorkflowEventModel.update_forward_refs()
-WorkflowEventsModel.update_forward_refs()
+# rebuild model
+# WorkflowEventDataModel.model_rebuild()
+# WorkflowEventModel.model_rebuild()
+# WorkflowEventsModel.model_rebuild()

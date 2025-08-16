@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import Extra
+from pydantic import ConfigDict
 
 # first-party
 from tcex.input.model.api_model import ApiModel
@@ -21,7 +21,4 @@ class ModuleAppModel(
     This model provides all the inputs required by the "tcex.app" module.
     """
 
-    class Config:
-        """Model Config"""
-
-        extra = Extra.ignore
+    model_config = ConfigDict(extra='ignore')

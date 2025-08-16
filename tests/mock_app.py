@@ -5,6 +5,7 @@ import json
 import os
 import sys
 import uuid
+from pathlib import Path
 from typing import Any
 
 # third-party
@@ -237,24 +238,26 @@ class MockApp:
         """Write the App encrypted fileParams file."""
         config_data = json.dumps(config).encode()
         config_key = self.util.random_string(16)
-        config_file = 'app_params.aes'
+        config_file = Path('app_params.aes')
 
         # encrypt the serialized config data
         encrypted_contents = self.util.encrypt_aes_cbc(config_key, config_data)
 
         # write the config data to disk
-        with open(config_file, 'wb') as fh:
+        with config_file.open(mode='wb') as fh:
             fh.write(encrypted_contents)
 
         # set the environment variables for tcex input module.
-        os.environ['TC_APP_PARAM_FILE'] = config_file
+        os.environ['TC_APP_PARAM_FILE'] = config_file.absolute().as_posix()
         os.environ['TC_APP_PARAM_KEY'] = config_key
 
     @staticmethod
     def _write_install_json(data: dict):
         """Write the App install.json file."""
-        with open('install.json', 'w') as fh:
+        install_json_file = Path('install.json')
+        with install_json_file.open('w') as fh:
             json.dump(data, fh, indent=2, sort_keys=True)
+        os.environ['TCEX_TESTING_INSTALL_JSON'] = install_json_file.absolute().as_posix()
 
     @property
     def api_token(self) -> str:

@@ -1,0 +1,216 @@
+[
+  {
+    "field_name": "caseId",
+    "input_data": {
+      "name": "caseId",
+      "required": true,
+      "requiredAltField": "caseXid",
+      "type": "Long",
+      "updatable": false
+    },
+    "output_data": {
+      "name": "caseId",
+      "required": true,
+      "requiredAltField": "caseXid",
+      "type": "Long",
+      "updatable": false
+    }
+  },
+  {
+    "field_name": "caseXid",
+    "input_data": {
+      "name": "caseXid",
+      "required": true,
+      "requiredAltField": "caseId",
+      "type": "String",
+      "updatable": false
+    },
+    "output_data": {
+      "name": "caseXid",
+      "required": true,
+      "requiredAltField": "caseId",
+      "type": "String",
+      "updatable": false
+    }
+  },
+  {
+    "field_name": "dateAdded",
+    "input_data": {
+      "name": "dateAdded",
+      "readOnly": true,
+      "type": "Date"
+    },
+    "output_data": {
+      "name": "dateAdded",
+      "readOnly": true,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "deleted",
+    "input_data": {
+      "name": "deleted",
+      "readOnly": true,
+      "type": "Boolean"
+    },
+    "output_data": {
+      "name": "deleted",
+      "readOnly": true,
+      "type": "Boolean"
+    }
+  },
+  {
+    "field_name": "deletedReason",
+    "input_data": {
+      "description": "the reason for deleting the event (required input for DELETE operation only)",
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "deletedReason",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "the reason for deleting the event (required input for DELETE operation only)",
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "deletedReason",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "eventDate",
+    "input_data": {
+      "default": "current date and time",
+      "description": "the time that the Event is logged",
+      "name": "eventDate",
+      "required": false,
+      "type": "Date"
+    },
+    "output_data": {
+      "default": "current date and time",
+      "description": "the time that the Event is logged",
+      "name": "eventDate",
+      "required": false,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "id",
+    "input_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    },
+    "output_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    }
+  },
+  {
+    "field_name": "link",
+    "input_data": {
+      "name": "link",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "name": "link",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "linkText",
+    "input_data": {
+      "name": "linkText",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "name": "linkText",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "notes",
+    "input_data": {
+      "data": [
+        {
+          "description": "a list of Notes corresponding to the Event",
+          "maxSize": 1000,
+          "name": "notes",
+          "required": false,
+          "type": "Notes"
+        }
+      ]
+    },
+    "output_data": {
+      "description": "a list of Notes corresponding to the Event",
+      "maxSize": 1000,
+      "name": "notes",
+      "required": false,
+      "type": "Notes"
+    }
+  },
+  {
+    "field_name": "parentCase",
+    "input_data": {
+      "name": "parentCase",
+      "readOnly": true,
+      "type": "Case"
+    },
+    "output_data": {
+      "name": "parentCase",
+      "readOnly": true,
+      "type": "Case"
+    }
+  },
+  {
+    "field_name": "summary",
+    "input_data": {
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "summary",
+      "required": true,
+      "type": "String"
+    },
+    "output_data": {
+      "maxLength": 255,
+      "minLength": 1,
+      "name": "summary",
+      "required": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "systemGenerated",
+    "input_data": {
+      "name": "systemGenerated",
+      "readOnly": true,
+      "type": "Boolean"
+    },
+    "output_data": {
+      "name": "systemGenerated",
+      "readOnly": true,
+      "type": "Boolean"
+    }
+  },
+  {
+    "field_name": "user",
+    "input_data": {
+      "name": "user",
+      "readOnly": true,
+      "type": "User"
+    },
+    "output_data": {
+      "name": "user",
+      "readOnly": true,
+      "type": "User"
+    }
+  }
+]

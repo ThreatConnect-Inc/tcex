@@ -15,7 +15,7 @@ class TestGroupAttributeSnippets(TestV3):
     #     """Test snippet"""
     #     # Begin Snippet
     #     for group_attribute in self.tcex.api.tc.v3.group_attributes():
-    #         print(group_attribute.model.dict(exclude_none=True))
+    #         print(group_attribute.model.model_dump(exclude_none=True))
     #     # End Snippet
 
     def test_group_attributes_tql_filter(self):
@@ -45,7 +45,7 @@ class TestGroupAttributeSnippets(TestV3):
         group_attributes.filter.last_modified(TqlOperator.GT, '1 day ago')
         group_attributes.filter.type_name(TqlOperator.EQ, 'Description')
         for group_attribute in group_attributes:
-            print(group_attribute.model.dict(exclude_none=True))
+            print(group_attribute.model.model_dump(exclude_none=True))
         # End Snippet
 
     def test_group_attribute_get_by_id(self):

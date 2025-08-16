@@ -22,27 +22,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Artifact(ObjectABC):
-    """Artifacts Object.
-
-    Args:
-        associated_groups (Groups, kwargs): A list of Groups associated with this Artifact.
-        associated_indicators (Indicators, kwargs): A list of Indicators associated with this
-            Artifact.
-        case_id (int, kwargs): The **case id** for the Artifact.
-        case_xid (str, kwargs): The **case xid** for the Artifact.
-        derived_link (bool, kwargs): Flag to specify if this artifact should be used for potentially
-            associated cases or not.
-        field_name (str, kwargs): The field name for the artifact.
-        file_data (str, kwargs): Base64 encoded file attachment required only for certain artifact
-            types.
-        hash_code (str, kwargs): Hashcode of Artifact of type File.
-        notes (Notes, kwargs): A list of Notes corresponding to the Artifact.
-        source (str, kwargs): The **source** for the Artifact.
-        summary (str, kwargs): The **summary** for the Artifact.
-        task_id (int, kwargs): The ID of the task which the Artifact references.
-        task_xid (str, kwargs): The XID of the task which the Artifact references.
-        type (str, kwargs): The **type** for the Artifact.
-    """
+    """Artifacts Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""
@@ -87,7 +67,6 @@ class Artifact(ObjectABC):
     @property
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
-        # first-party
         from tcex.api.tc.v3.groups.group import Groups
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
@@ -95,7 +74,6 @@ class Artifact(ObjectABC):
     @property
     def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
-        # first-party
         from tcex.api.tc.v3.indicators.indicator import Indicators
 
         yield from self._iterate_over_sublist(Indicators)  # type: ignore
@@ -103,7 +81,6 @@ class Artifact(ObjectABC):
     @property
     def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
-        # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)  # type: ignore

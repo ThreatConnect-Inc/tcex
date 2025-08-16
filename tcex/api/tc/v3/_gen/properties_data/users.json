@@ -1,0 +1,30 @@
+[
+  {
+    "field_name": "id",
+    "input_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    },
+    "output_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    }
+  },
+  {
+    "field_name": "userName",
+    "input_data": {
+      "name": "userName",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "name": "userName",
+      "readOnly": true,
+      "type": "String"
+    }
+  }
+]

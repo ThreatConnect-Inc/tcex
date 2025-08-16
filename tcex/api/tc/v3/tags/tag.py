@@ -13,15 +13,7 @@ from tcex.api.tc.v3.tags.tag_model import TagModel, TagsModel
 
 
 class Tag(ObjectABC):
-    """Tags Object.
-
-    Args:
-        description (str, kwargs): A brief description of the Tag.
-        name (str, kwargs): The **name** for the Tag.
-        owner (str, kwargs): The name of the Owner of the Tag.
-        security_coverage (object, kwargs): For ATT&CK-based tags, this is the security coverage
-            level assigned to the tag.
-    """
+    """Tags Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""

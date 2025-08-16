@@ -221,7 +221,7 @@ class TestVictimSnippets(TestV3):
         victims = self.tcex.api.tc.v3.victims()
         victims.filter.name(TqlOperator.EQ, 'MyVictim-06')
         for victim in victims:
-            print(victim.model.dict(exclude_none=True))
+            print(victim.model.model_dump(exclude_none=True))
         # End Snippet
 
     #

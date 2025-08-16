@@ -5,21 +5,12 @@
 from typing import Any
 
 # third-party
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 # first-party
-from tcex.input.field_type import (
-    Choice,
-    KeyValue,
-    Sensitive,
-    String,
-    TCEntity,
-    always_array,
-    binary,
-    entity_input,
-    sensitive,
-    string,
-)
+from tcex.input.field_type import (Choice, KeyValue, Sensitive, String,
+                                   TCEntity, always_array, binary,
+                                   entity_input, sensitive, string)
 from tcex.input.input import Input
 
 
@@ -39,10 +30,10 @@ class AppBaseModel(BaseModel):
     username: string(allow_empty=False)  # type: ignore
 
     # ensure inputs that take single and array types always return an array
-    _always_array = validator('string_advanced', allow_reuse=True)(always_array())
+    _always_array = field_validator('string_advanced')(always_array())
 
     # add entity_input validator for supported types
-    _entity_input = validator('string_advanced', allow_reuse=True)(
+    _entity_input = field_validator('string_advanced')(
         entity_input(only_field='value')  # type: ignore
     )
 
@@ -71,10 +62,10 @@ class Action1Model(AppBaseModel):
     )
 
     # ensure inputs that take single and array types always return an array
-    _always_array = validator('string_required', allow_reuse=True)(always_array())
+    _always_array = field_validator('string_required')(always_array())
 
     # add entity_input validator for supported types
-    _entity_input = validator('string_required', allow_reuse=True)(
+    _entity_input = field_validator('string_required')(
         entity_input(only_field='value')  # type: ignore
     )
 
@@ -120,7 +111,7 @@ class Action4Model(AppBaseModel):
     string_intel_type: String | None
 
     # ensure inputs that take single and array types always return an array
-    _always_array = validator('string_allow_multiple', allow_reuse=True)(always_array())
+    _always_array = field_validator('string_allow_multiple')(always_array())
 
 
 class AppInputs:

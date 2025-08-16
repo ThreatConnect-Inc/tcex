@@ -1,0 +1,82 @@
+[
+  {
+    "field_name": "dataType",
+    "input_data": {
+      "name": "dataType",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "name": "dataType",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "derivedLink",
+    "input_data": {
+      "name": "derivedLink",
+      "readOnly": true,
+      "type": "Boolean"
+    },
+    "output_data": {
+      "name": "derivedLink",
+      "readOnly": true,
+      "type": "Boolean"
+    }
+  },
+  {
+    "field_name": "description",
+    "input_data": {
+      "name": "description",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "name": "description",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "id",
+    "input_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    },
+    "output_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    }
+  },
+  {
+    "field_name": "intelType",
+    "input_data": {
+      "name": "intelType",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "name": "intelType",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "name",
+    "input_data": {
+      "name": "name",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "name": "name",
+      "readOnly": true,
+      "type": "String"
+    }
+  }
+]

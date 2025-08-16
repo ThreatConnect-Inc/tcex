@@ -52,6 +52,7 @@ class GenerateArgsABC(GenerateABC, ABC):
         updatable: bool = True,
     ) -> str:
         """Model Map"""
+        return ''
         i1 = i1 or self.i1
         i2 = i2 or self.i2
 
@@ -62,13 +63,13 @@ class GenerateArgsABC(GenerateABC, ABC):
         _doc_string = [f'{i1}Args:']
 
         # get properties from schema
-        schema = model.schema(by_alias=False)
+        schema = model.model_json_schema(by_alias=False)
         properties = {}
         if '$ref' in schema:
-            model_name = schema.get('$ref').split('/')[-1]
-            properties = schema.get('definitions').get(model_name).get('properties')
+            model_name = schema['$ref'].split('/')[-1]
+            properties = schema['$defs'][model_name]['properties']
         elif 'properties' in schema:
-            properties = schema.get('properties')
+            properties = schema['properties']
         else:
             Render.panel.failure(model.schema_json(by_alias=False))
 

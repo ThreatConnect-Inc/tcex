@@ -4,7 +4,7 @@
 from datetime import datetime
 
 # third-party
-from pydantic import BaseModel, Extra, Field
+from pydantic import BaseModel, Field
 
 # first-party
 from tcex.util import Util
@@ -14,47 +14,52 @@ class AttributeModel(
     BaseModel,
     title='Attribute Model',
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     validate_assignment=True,
 ):
     """Attribute Model"""
 
     date_added: datetime | None = Field(
         None,
-        allow_mutation=False,
+        frozen=True,
         description='The date and time that the Attribute was added.',
-        read_only=True,
+        # TODO: @bsummers-tc
+        # read_only=True,
         title='dateAdded',
     )
     id: int = Field(
-        None,
-        allow_mutation=False,
+        ...,
+        frozen=True,
         description='The **attribute** Id.',
-        read_only=True,
+        # TODO: @bsummers-tc
+        # read_only=True,
         title='id',
     )
     last_modified: datetime | None = Field(
         None,
-        allow_mutation=False,
+        frozen=True,
         description='The date and time that the Attribute was last modified.',
-        read_only=True,
+        # TODO: @bsummers-tc
+        # read_only=True,
         title='lastUsed',
     )
     type: str = Field(
-        None,
+        ...,
         description='The defined attribute type.',
-        methods=['POST', 'PUT'],
         max_length=255,
         min_length=0,
-        read_only=False,
+        # TODO: @bsummers-tc
+        # read_only=False,
         title='type',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     value: str | None = Field(
-        None,
+        ...,
         description='The attribute value.',
-        methods=['POST', 'PUT'],
-        read_only=True,
+        # TODO: @bsummers-tc
+        # read_only=True,
         title='value',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -69,8 +74,8 @@ class AttributeData(
     data: AttributeModel | None = Field(
         None,
         description='The data for the Attribute.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -85,12 +90,12 @@ class AttributesModel(
     data: list[AttributeModel] | None = Field(
         [],
         description='The data for the Attribute.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
 # add forward references
-AttributeData.update_forward_refs()
-AttributeModel.update_forward_refs()
-AttributesModel.update_forward_refs()
+AttributeData.model_rebuild()
+AttributeModel.model_rebuild()
+AttributesModel.model_rebuild()

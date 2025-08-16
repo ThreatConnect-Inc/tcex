@@ -1,7 +1,10 @@
 """TcEx Framework Module"""
 
+# standard library
+from __future__ import annotations
+
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -11,57 +14,57 @@ from tcex.util import Util
 class ArtifactTypeModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='ArtifactType Model',
     validate_assignment=True,
 ):
     """Artifact_Type Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=True)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=True)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
     data_type: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **data type** for the Artifact_Type.',
-        read_only=True,
+        frozen=True,
         title='dataType',
+        validate_default=True,
     )
-    derived_link: bool = Field(
-        None,
-        allow_mutation=False,
+    derived_link: bool | None = Field(
+        default=None,
         description='The **derived link** for the Artifact_Type.',
-        read_only=True,
+        frozen=True,
         title='derivedLink',
+        validate_default=True,
     )
     description: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **description** for the Artifact_Type.',
-        read_only=True,
+        frozen=True,
         title='description',
+        validate_default=True,
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     intel_type: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **intel type** for the Artifact_Type.',
-        read_only=True,
+        frozen=True,
         title='intelType',
+        validate_default=True,
     )
     name: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **name** for the Artifact_Type.',
-        read_only=True,
+        frozen=True,
         title='name',
+        validate_default=True,
     )
 
 
@@ -76,8 +79,8 @@ class ArtifactTypeDataModel(
     data: list[ArtifactTypeModel] | None = Field(
         [],
         description='The data for the ArtifactTypes.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -89,23 +92,22 @@ class ArtifactTypesModel(
 ):
     """Artifact_Types Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[ArtifactTypeModel] | None = Field(
         [],
         description='The data for the ArtifactTypes.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
-# add forward references
-ArtifactTypeDataModel.update_forward_refs()
-ArtifactTypeModel.update_forward_refs()
-ArtifactTypesModel.update_forward_refs()
+# rebuild model
+ArtifactTypeDataModel.model_rebuild()
+ArtifactTypeModel.model_rebuild()
+ArtifactTypesModel.model_rebuild()

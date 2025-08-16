@@ -31,7 +31,7 @@ class TestIndicatorAttributeSnippets(TestV3):
     #     """Test snippet"""
     #     # Begin Snippet
     #     for indicator_attribute in self.tcex.api.tc.v3.indicator_attributes():
-    #         print(indicator_attribute.model.dict(exclude_none=True))
+    #         print(indicator_attribute.model.model_dump(exclude_none=True))
     #     # End Snippet
 
     def test_indicator_attributes_tql_filter(self, request: FixtureRequest):
@@ -65,7 +65,7 @@ class TestIndicatorAttributeSnippets(TestV3):
         indicator_attributes.filter.last_modified(TqlOperator.GT, '1 day ago')
         indicator_attributes.filter.type_name(TqlOperator.EQ, 'Description')
         for indicator_attribute in indicator_attributes:
-            print(indicator_attribute.model.dict(exclude_none=True))
+            print(indicator_attribute.model.model_dump(exclude_none=True))
         # End Snippet
 
     def test_indicator_attribute_get_by_id(self):
@@ -88,5 +88,5 @@ class TestIndicatorAttributeSnippets(TestV3):
         # Begin Snippet
         indicator_attribute = self.tcex.api.tc.v3.indicator_attribute(id=attribute_id)
         indicator_attribute.get()
-        print(indicator_attribute.model.dict(exclude_none=True))
+        print(indicator_attribute.model.model_dump(exclude_none=True))
         # End Snippet

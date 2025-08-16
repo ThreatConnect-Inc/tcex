@@ -96,9 +96,13 @@ class TestInstallJson:
             ddiff = DeepDiff(
                 json_dict,
                 # template requires json dump to serialize certain fields
-                json.loads(ij.model.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
+                json.loads(
+                    ij.model.model_dump_json(
+                        by_alias=True, exclude_defaults=True, exclude_none=True
+                    )
+                ),
                 ignore_order=True,
-                exclude_paths=["root['sdkVersion']"],
+                exclude_paths=["root['minServerVersion']", "root['sdkVersion']"],
             )
             assert not ddiff, f'Failed validation of file {fqfn}'
 

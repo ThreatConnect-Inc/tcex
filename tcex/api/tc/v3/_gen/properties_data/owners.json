@@ -1,0 +1,669 @@
+[
+  {
+    "field_name": "id",
+    "input_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    },
+    "output_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    }
+  },
+  {
+    "field_name": "name",
+    "input_data": {
+      "description": "The name of the owner",
+      "name": "name",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "The name of the owner",
+      "name": "name",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "ownerRole",
+    "input_data": {
+      "description": "The user's role within the owner",
+      "name": "ownerRole",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "The user's role within the owner",
+      "name": "ownerRole",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permApps",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "RELEASE",
+        "BUILD"
+      ],
+      "description": "Permission is used for access to run/edit Apps",
+      "name": "permApps",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "RELEASE",
+        "BUILD"
+      ],
+      "description": "Permission is used for access to run/edit Apps",
+      "name": "permApps",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permArtifact",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE_ASSIGNED",
+        "FULL_ASSIGNED",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission used to access an Artifact",
+      "name": "permArtifact",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE_ASSIGNED",
+        "FULL_ASSIGNED",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission used to access an Artifact",
+      "name": "permArtifact",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permAttribute",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Attributes",
+      "name": "permAttribute",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Attributes",
+      "name": "permAttribute",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permAttributeType",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Attribute Types",
+      "name": "permAttributeType",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Attribute Types",
+      "name": "permAttributeType",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permCaseTag",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "FULL_ASSIGNED",
+        "FULL"
+      ],
+      "description": "Permission used to access a Tag",
+      "name": "permCaseTag",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "FULL_ASSIGNED",
+        "FULL"
+      ],
+      "description": "Permission used to access a Tag",
+      "name": "permCaseTag",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permComment",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission used to access a Comment",
+      "name": "permComment",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission used to access a Comment",
+      "name": "permComment",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permCopyData",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Copy Data",
+      "name": "permCopyData",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Copy Data",
+      "name": "permCopyData",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permGroup",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Groups",
+      "name": "permGroup",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Groups",
+      "name": "permGroup",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permIndicator",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Indicators",
+      "name": "permIndicator",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Indicators",
+      "name": "permIndicator",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permInvite",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to modify friends",
+      "name": "permInvite",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to modify friends",
+      "name": "permInvite",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permMembers",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Members",
+      "name": "permMembers",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Members",
+      "name": "permMembers",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permPlaybooks",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "ACTIVATE",
+        "FULL"
+      ],
+      "description": "Permission used with Playbooks",
+      "name": "permPlaybooks",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "ACTIVATE",
+        "FULL"
+      ],
+      "description": "Permission used with Playbooks",
+      "name": "permPlaybooks",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permPlaybooksExecute",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "FULL"
+      ],
+      "description": "Permission used to execute Playbooks",
+      "name": "permPlaybooksExecute",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "FULL"
+      ],
+      "description": "Permission used to execute Playbooks",
+      "name": "permPlaybooksExecute",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permPost",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Posts",
+      "name": "permPost",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Posts",
+      "name": "permPost",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permPublish",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "FULL"
+      ],
+      "description": "Permission used to access Publications",
+      "name": "permPublish",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "FULL"
+      ],
+      "description": "Permission used to access Publications",
+      "name": "permPublish",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permSecurityLabel",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Security Labels",
+      "name": "permSecurityLabel",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Security Labels",
+      "name": "permSecurityLabel",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permSettings",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Organization Settings",
+      "name": "permSettings",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Organization Settings",
+      "name": "permSettings",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permTag",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Tags",
+      "name": "permTag",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Tags",
+      "name": "permTag",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permTask",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "EDIT_ASSIGNED",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission used to access a Task",
+      "name": "permTask",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "EDIT_ASSIGNED",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission used to access a Task",
+      "name": "permTask",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permTimeline",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission used to access a Timeline",
+      "name": "permTimeline",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission used to access a Timeline",
+      "name": "permTimeline",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permUsers",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to User Settings",
+      "name": "permUsers",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to User Settings",
+      "name": "permUsers",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permVictim",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Victims",
+      "name": "permVictim",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission is used for access to Victims",
+      "name": "permVictim",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "permWorkflowTemplate",
+    "input_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission used to access a Workflow Templates",
+      "name": "permWorkflowTemplate",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "allowableValues": [
+        "NONE",
+        "READ",
+        "CREATE",
+        "FULL"
+      ],
+      "description": "Permission used to access a Workflow Templates",
+      "name": "permWorkflowTemplate",
+      "readOnly": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "type",
+    "input_data": {
+      "description": "The owner type. Possible values: Organization, Community, Source",
+      "name": "type",
+      "readOnly": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "The owner type. Possible values: Organization, Community, Source",
+      "name": "type",
+      "readOnly": true,
+      "type": "String"
+    }
+  }
+]

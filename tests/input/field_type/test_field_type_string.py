@@ -1,23 +1,42 @@
-"""TcEx Framework Module"""
+"""TestInputsFieldTypes for String field type validation.
+
+This module contains comprehensive test cases for the String field type functionality
+within the TcEx Framework, including validation of single strings, arrays, custom
+configurations, and complex nested reference resolution scenarios.
+
+Classes:
+    TestInputsFieldTypes: Test cases for String field type validation
+
+TcEx Module Tested: tcex.input.field_type.string
+"""
 
 # standard library
 from collections.abc import Callable
 
 # third-party
 import pytest
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 # first-party
-from tcex.input.field_type import String, always_array, conditional_required, string
+from tcex.input.field_type import (String, always_array, conditional_required,
+                                   string)
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_type.util import InputTest
 from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
 class TestInputsFieldTypes(InputTest):
-    """Test TcEx String Field Model Tests."""
+    """TestInputsFieldTypes for String field type validation.
 
-    def setup_method(self):
+    This class provides comprehensive test coverage for String field types including
+    validation of single strings, arrays, custom configurations with constraints,
+    union types, and complex nested reference resolution scenarios.
+
+    Fixtures:
+        playbook_app: MockApp instance for testing field validation
+    """
+
+    def setup_method(self) -> None:
         """Configure setup before all tests."""
         scoped_property._reset()
 
@@ -28,18 +47,18 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, normal input
-            ('string', 'string', False, False),
+            pytest.param('string', 'string', False, False, id='pass-required-normal-string'),
             # required, empty input
-            ('', '', False, False),
+            pytest.param('', '', False, False, id='pass-required-empty-string'),
             # optional, empty input
-            ('', '', True, False),
+            pytest.param('', '', True, False, id='pass-optional-empty-string'),
             # optional, null input
-            (None, None, True, False),
+            pytest.param(None, None, True, False, id='pass-optional-null-input'),
             #
             # Fail Testing
             #
             # required, null input
-            (None, None, False, True),
+            pytest.param(None, None, False, True, id='fail-required-null-input'),
         ],
     )
     def test_field_model_string_input(
@@ -49,11 +68,14 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test Binary field type.
+    ) -> None:
+        """Test String field type with basic validation scenarios.
 
-        Playbook Data Type: String
-        Validation: Not null
+        This test validates the String field type with various input scenarios including
+        normal strings, empty strings, and null values for both required and optional fields.
+
+        Fixtures:
+            playbook_app: MockApp instance for testing field validation
         """
 
         class PytestModelRequired(BaseModel):
@@ -90,25 +112,115 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, normal input
-            ('string', 'string', True, None, None, None, None, False, False),
+            pytest.param(
+                'string',
+                'string',
+                True,
+                None,
+                None,
+                None,
+                None,
+                False,
+                False,
+                id='pass-required-normal-string',
+            ),
             # required, empty input
-            ('', '', True, None, None, None, None, False, False),
+            pytest.param(
+                '',
+                '',
+                True,
+                None,
+                None,
+                None,
+                None,
+                False,
+                False,
+                id='pass-required-empty-allow-empty',
+            ),
             # optional, empty input
-            ('', '', True, None, None, None, None, True, False),
+            pytest.param(
+                '',
+                '',
+                True,
+                None,
+                None,
+                None,
+                None,
+                True,
+                False,
+                id='pass-optional-empty-allow-empty',
+            ),
             # optional, null input
-            (None, None, True, None, None, None, None, True, False),
+            pytest.param(
+                None, None, True, None, None, None, None, True, False, id='pass-optional-null-input'
+            ),
             # required, normal input, max_length=10
-            ('string', 'string', True, None, 10, None, None, False, False),
+            pytest.param(
+                'string',
+                'string',
+                True,
+                None,
+                10,
+                None,
+                None,
+                False,
+                False,
+                id='pass-required-max-length-valid',
+            ),
             # optional, normal input, max_length=10
-            ('string', 'string', True, None, 10, None, None, True, False),
+            pytest.param(
+                'string',
+                'string',
+                True,
+                None,
+                10,
+                None,
+                None,
+                True,
+                False,
+                id='pass-optional-max-length-valid',
+            ),
             # required, normal input, min_length=2
-            ('string', 'string', True, None, None, 2, None, False, False),
+            pytest.param(
+                'string',
+                'string',
+                True,
+                None,
+                None,
+                2,
+                None,
+                False,
+                False,
+                id='pass-required-min-length-valid',
+            ),
             # optional, normal input, min_length=2
-            ('string', 'string', True, None, None, 2, None, True, False),
+            pytest.param(
+                'string',
+                'string',
+                True,
+                None,
+                None,
+                2,
+                None,
+                True,
+                False,
+                id='pass-optional-min-length-valid',
+            ),
             # required, normal input, regex=string
-            ('string', 'string', True, None, None, None, r'^string$', True, False),
+            pytest.param(
+                'string',
+                'string',
+                True,
+                None,
+                None,
+                None,
+                r'^string$',
+                True,
+                False,
+                id='pass-required-regex-match',
+            ),
             # optional, null input, conditional_required=True
-            (
+            pytest.param(
                 None,
                 None,
                 True,
@@ -118,16 +230,30 @@ class TestInputsFieldTypes(InputTest):
                 None,
                 True,
                 False,
+                id='pass-optional-conditional-not-required',
             ),
             #
             # Fail Testing
             #
             # required, null input
-            (None, None, True, None, None, None, None, False, True),
+            pytest.param(
+                None, None, True, None, None, None, None, False, True, id='fail-required-null-input'
+            ),
             # required, empty input, allow_empty=False
-            ('', None, False, None, None, None, None, False, True),
+            pytest.param(
+                '',
+                None,
+                False,
+                None,
+                None,
+                None,
+                None,
+                False,
+                True,
+                id='fail-required-empty-disallow-empty',
+            ),
             # required, empty input, conditional_required=True
-            (
+            pytest.param(
                 '',
                 'string',
                 True,
@@ -137,9 +263,10 @@ class TestInputsFieldTypes(InputTest):
                 None,
                 False,
                 True,
+                id='fail-required-empty-conditional-required',
             ),
             # required, null input, conditional_required=True
-            (
+            pytest.param(
                 None,
                 'string',
                 True,
@@ -149,17 +276,73 @@ class TestInputsFieldTypes(InputTest):
                 None,
                 False,
                 True,
+                id='fail-required-null-conditional-required',
             ),
             # required, normal input, max_length=2
-            ('string', 'string', True, None, 2, None, None, False, True),
+            pytest.param(
+                'string',
+                'string',
+                True,
+                None,
+                2,
+                None,
+                None,
+                False,
+                True,
+                id='fail-required-max-length-exceeded',
+            ),
             # optional, normal input, max_length=2
-            ('string', 'string', True, None, 2, None, None, True, True),
+            pytest.param(
+                'string',
+                'string',
+                True,
+                None,
+                2,
+                None,
+                None,
+                True,
+                True,
+                id='fail-optional-max-length-exceeded',
+            ),
             # required, normal input, min_length=10
-            ('string', 'string', True, None, None, 10, None, False, True),
+            pytest.param(
+                'string',
+                'string',
+                True,
+                None,
+                None,
+                10,
+                None,
+                False,
+                True,
+                id='fail-required-min-length-not-met',
+            ),
             # optional, normal input, min_length=10
-            ('string', 'string', True, None, None, 10, None, True, True),
+            pytest.param(
+                'string',
+                'string',
+                True,
+                None,
+                None,
+                10,
+                None,
+                True,
+                True,
+                id='fail-optional-min-length-not-met',
+            ),
             # required, normal input, regex=string
-            ('string', 'string', True, None, None, None, r'^string-extra$', True, True),
+            pytest.param(
+                'string',
+                'string',
+                True,
+                None,
+                None,
+                None,
+                r'^string-extra$',
+                True,
+                True,
+                id='fail-required-regex-no-match',
+            ),
         ],
     )
     def test_field_model_string_custom_input(
@@ -174,11 +357,15 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test Binary field type.
+    ) -> None:
+        """Test String field type with custom configuration options.
 
-        Playbook Data Type: String
-        Validation: Not null
+        This test validates the String field type with custom configuration options including
+        allow_empty, conditional_required rules, max_length, min_length, and regex constraints
+        for both required and optional fields.
+
+        Fixtures:
+            playbook_app: MockApp instance for testing field validation
         """
 
         class PytestModelRequired(BaseModel):
@@ -192,8 +379,8 @@ class TestInputsFieldTypes(InputTest):
                 regex=regex,
             )  # type: ignore
 
-            _conditional_required = validator('my_data', allow_reuse=True, always=True, pre=True)(
-                conditional_required(rules=conditional_required_rules)  # type: ignore
+            _conditional_required = field_validator('my_data', mode='before')(
+                conditional_required(rules=conditional_required_rules or [])
             )
 
         class PytestModelOptional(BaseModel):
@@ -209,13 +396,14 @@ class TestInputsFieldTypes(InputTest):
                 )
             )  # type: ignore
 
-            _conditional_required = validator('my_data', allow_reuse=True, always=True, pre=True)(
-                conditional_required(rules=conditional_required_rules)  # type: ignore
+            _conditional_required = field_validator('my_data', mode='before')(
+                conditional_required(rules=conditional_required_rules or [])
             )
 
-        pytest_model = PytestModelOptional
         if optional is False:
             pytest_model = PytestModelRequired
+        else:
+            pytest_model = PytestModelOptional
 
         self._type_validation(
             pytest_model,
@@ -234,18 +422,18 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, normal input
-            (['string'], ['string'], False, False),
+            pytest.param(['string'], ['string'], False, False, id='pass-required-string-array'),
             # required, empty input
-            ([], [], False, False),
+            pytest.param([], [], False, False, id='pass-required-empty-array'),
             # optional, empty input
-            ([], [], True, False),
+            pytest.param([], [], True, False, id='pass-optional-empty-array'),
             # optional, null input
-            (None, None, True, False),
+            pytest.param(None, None, True, False, id='pass-optional-null-input'),
             #
             # Fail Testing
             #
             # required, null input
-            (None, None, False, True),
+            pytest.param(None, None, False, True, id='fail-required-null-input'),
         ],
     )
     def test_field_model_string_array_input(
@@ -255,11 +443,15 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test Binary field type.
+    ) -> None:
+        """Test String field type with array validation.
 
-        Playbook Data Type: String
-        Validation: Not null
+        This test validates the String field type in array format, testing scenarios
+        with valid string arrays, empty arrays, and null values for both required
+        and optional fields.
+
+        Fixtures:
+            playbook_app: MockApp instance for testing field validation
         """
 
         class PytestModelRequired(BaseModel):
@@ -293,24 +485,28 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, string input
-            ('string', ['string'], 'String', False, False),
+            pytest.param(
+                'string', ['string'], 'String', False, False, id='pass-required-string-to-array'
+            ),
             # required, array input
-            (['string'], ['string'], 'StringArray', False, False),
+            pytest.param(
+                ['string'], ['string'], 'StringArray', False, False, id='pass-required-array-input'
+            ),
             # required, empty string input
-            ('', [], 'String', False, False),
+            pytest.param('', [], 'String', False, False, id='pass-required-empty-string-to-array'),
             # required, empty array input
-            ([], [], 'StringArray', False, False),
+            pytest.param([], [], 'StringArray', False, False, id='pass-required-empty-array'),
             # optional, empty string input
-            ('', [], 'String', True, False),
+            pytest.param('', [], 'String', True, False, id='pass-optional-empty-string-to-array'),
             # optional, empty array input
-            ([], [], 'StringArray', True, False),
+            pytest.param([], [], 'StringArray', True, False, id='pass-optional-empty-array'),
             # optional, null input
-            (None, [], 'String', True, False),
+            pytest.param(None, [], 'String', True, False, id='pass-optional-null-to-array'),
             #
             # Fail Testing
             #
             # required, null input
-            (None, None, 'String', False, True),
+            pytest.param(None, None, 'String', False, True, id='fail-required-null-input'),
         ],
     )
     def test_field_model_string_union_input(
@@ -321,11 +517,14 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test Binary field type.
+    ) -> None:
+        """Test String field type with union type and always_array validation.
 
-        Playbook Data Type: String
-        Validation: Not null
+        This test validates String union types that can accept both single strings and
+        arrays, with always_array validation ensuring consistent array output format.
+
+        Fixtures:
+            playbook_app: MockApp instance for testing field validation
         """
 
         class PytestModelRequired(BaseModel):
@@ -333,14 +532,14 @@ class TestInputsFieldTypes(InputTest):
 
             my_data: String | list[String]
 
-            _always_array = validator('my_data', allow_reuse=True)(always_array())
+            _always_array = field_validator('my_data')(always_array())
 
         class PytestModelOptional(BaseModel):
             """Test Model for Inputs"""
 
             my_data: String | list[String] | None
 
-            _always_array = validator('my_data', allow_reuse=True)(always_array())
+            _always_array = field_validator('my_data')(always_array())
 
         pytest_model = PytestModelOptional
         if optional is False:
@@ -359,59 +558,68 @@ class TestInputsFieldTypes(InputTest):
     @pytest.mark.parametrize(
         ('nested_reference,nested_value,value,expected_value'),
         [
-            (
+            pytest.param(
                 '#App:1234:my_ref!String',
                 'nested string',
                 'string with nested string: #App:1234:my_ref!String',
                 'string with nested string: nested string',
+                id='pass-embedded-string-reference',
             ),
-            (
+            pytest.param(
                 '#App:1234:my_ref!StringArray',
                 ['nested string'],
                 'string with nested value: #App:1234:my_ref!StringArray',
                 'string with nested value: ["nested string"]',
+                id='pass-embedded-string-array-reference',
             ),
-            (
+            pytest.param(
                 '#App:1234:my_ref!Binary',
                 b'nested string',
                 'string with nested string: #App:1234:my_ref!Binary',
                 'string with nested string: <binary>',
+                id='pass-embedded-binary-reference',
             ),
-            (
+            pytest.param(
                 '#App:1234:my_ref!BinaryArray',
                 [b'nested string'],
                 'string with nested string: #App:1234:my_ref!BinaryArray',
                 'string with nested string: <binary>',
+                id='pass-embedded-binary-array-reference',
             ),
-            (
+            pytest.param(
                 '#App:1234:my_ref!KeyValue',
                 {'key': 'key', 'value': 'value', 'type': 'any'},
                 'string with nested string: #App:1234:my_ref!KeyValue',
                 'string with nested string: {"key": "key", "value": "value", "type": "any"}',
+                id='pass-embedded-key-value-reference',
             ),
-            (
+            pytest.param(
                 '#App:1234:my_ref!KeyValueArray',
                 [{'key': 'key', 'value': 'value', 'type': 'any'}],
                 'string with nested string: #App:1234:my_ref!KeyValueArray',
                 'string with nested string: [{"key": "key", "value": "value", "type": "any"}]',
+                id='pass-embedded-key-value-array-reference',
             ),
-            (
+            pytest.param(
                 '#App:1234:my_ref!TCEntity',
                 {'id': '1', 'value': '1.1.1.1', 'type': 'Address'},
                 'string with nested string: #App:1234:my_ref!TCEntity',
                 'string with nested string: {"id": "1", "value": "1.1.1.1", "type": "Address"}',
+                id='pass-embedded-tc-entity-reference',
             ),
-            (
+            pytest.param(
                 '#App:1234:my_ref!TCEntityArray',
                 [{'id': '1', 'value': '1.1.1.1', 'type': 'Address'}],
                 'string with nested string: #App:1234:my_ref!TCEntityArray',
                 'string with nested string: [{"id": "1", "value": "1.1.1.1", "type": "Address"}]',
+                id='pass-embedded-tc-entity-array-reference',
             ),
-            (
+            pytest.param(
                 '#App:1234:my_ref!String',
                 None,
                 'string with nested string: #App:1234:my_ref!String',
                 'string with nested string: <null>',
+                id='pass-embedded-null-reference',
             ),
         ],
     )
@@ -422,8 +630,16 @@ class TestInputsFieldTypes(InputTest):
         value,
         expected_value,
         playbook_app: Callable[..., MockApp],
-    ):
-        """Test String field type with nested reference."""
+    ) -> None:
+        """Test String field type with complex nested reference resolution.
+
+        This test validates the String field type with nested variable references embedded
+        within strings, testing various data types including strings, arrays, binary data,
+        KeyValues, TCEntities, and null reference handling.
+
+        Fixtures:
+            playbook_app: MockApp instance for testing field validation
+        """
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""

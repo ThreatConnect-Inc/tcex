@@ -32,27 +32,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class IntelRequirement(ObjectABC):
-    """IntelRequirements Object.
-
-    Args:
-        associated_artifacts (Artifacts, kwargs): A list of Artifacts associated with this Group.
-        associated_cases (Cases, kwargs): A list of Cases associated with this Group.
-        associated_groups (Groups, kwargs): A list of groups associated with this group.
-        associated_indicators (Indicators, kwargs): A list of indicators associated with this group.
-        associated_victim_assets (VictimAssets, kwargs): A list of victim assets associated with
-            this group.
-        category (IntelReqType, kwargs): The category of the intel requirement.
-        description (str, kwargs): The description of the intel requirement.
-        keyword_sections (array, kwargs): The section of the intel requirement that contains the
-            keywords.
-        requirement_text (str, kwargs): The detailed text of the intel requirement.
-        reset_results (bool, kwargs): Flag to reset results when updating keywords.
-        subtype (IntelReqType, kwargs): The subtype of the intel requirement.
-        tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this parameter
-            will replace any existing tag(s) with the one(s) specified).
-        unique_id (str, kwargs): The unique id of the intel requirement.
-        xid (str, kwargs): The xid of the item.
-    """
+    """IntelRequirements Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""
@@ -97,7 +77,6 @@ class IntelRequirement(ObjectABC):
     @property
     def associated_artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
-        # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
 
         yield from self._iterate_over_sublist(Artifacts)  # type: ignore
@@ -105,7 +84,6 @@ class IntelRequirement(ObjectABC):
     @property
     def associated_cases(self) -> Generator['Case', None, None]:
         """Yield Case from Cases."""
-        # first-party
         from tcex.api.tc.v3.cases.case import Cases
 
         yield from self._iterate_over_sublist(Cases)  # type: ignore
@@ -113,7 +91,6 @@ class IntelRequirement(ObjectABC):
     @property
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
-        # first-party
         from tcex.api.tc.v3.groups.group import Groups
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
@@ -121,7 +98,6 @@ class IntelRequirement(ObjectABC):
     @property
     def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
-        # first-party
         from tcex.api.tc.v3.indicators.indicator import Indicators
 
         yield from self._iterate_over_sublist(Indicators)  # type: ignore
@@ -129,7 +105,6 @@ class IntelRequirement(ObjectABC):
     @property
     def associated_victim_assets(self) -> Generator['VictimAsset', None, None]:
         """Yield VictimAsset from VictimAssets."""
-        # first-party
         from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
 
         yield from self._iterate_over_sublist(VictimAssets)  # type: ignore
@@ -137,7 +112,6 @@ class IntelRequirement(ObjectABC):
     @property
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
-        # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore

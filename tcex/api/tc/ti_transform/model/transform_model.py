@@ -3,9 +3,10 @@
 # standard library
 from collections.abc import Callable
 
+from pydantic import BaseModel, Field, field_validator, model_validator
+
 # third-party
 from jmespath import compile as jmespath_compile
-from pydantic import BaseModel, Extra, Field, root_validator, validator
 
 
 # reusable validator
@@ -16,14 +17,14 @@ def _always_array(value: list | str) -> list[str]:
     return value
 
 
-class PredefinedFunctionModel(BaseModel, extra=Extra.forbid):
+class PredefinedFunctionModel(BaseModel, extra='forbid'):
     """Model Definitions"""
 
     name: str = Field(..., description='The name of the static method.')
     params: dict | None = Field({}, description='The parameters for the static method.')
 
 
-class TransformModel(BaseModel, extra=Extra.forbid):
+class TransformModel(BaseModel, extra='forbid'):
     """Model Definition"""
 
     filter_map: dict | None = Field(None, description='')
@@ -32,7 +33,7 @@ class TransformModel(BaseModel, extra=Extra.forbid):
     for_each: Callable | PredefinedFunctionModel | None = Field(None, description='')
     static_map: dict | None = Field(None, description='')
 
-    @validator('filter_map', 'static_map', pre=True)
+    @field_validator('filter_map', 'static_map', mode='before')
     @classmethod
     def _lower_map_keys(cls, v):
         """Validate static_map."""
@@ -41,7 +42,7 @@ class TransformModel(BaseModel, extra=Extra.forbid):
         return v
 
     # root validator that ensure at least one indicator value/summary is set
-    @root_validator()
+    @model_validator(mode='before')
     @classmethod
     def _required_transform(cls, v: dict):
         """Validate either static_map or method is defined."""
@@ -58,13 +59,13 @@ class TransformModel(BaseModel, extra=Extra.forbid):
         return v
 
 
-class PathTransformModel(BaseModel, extra=Extra.forbid):
+class PathTransformModel(BaseModel, extra='forbid'):
     """."""
 
     default: str | None = Field(None, description='')
     path: str | None = Field(None, description='')
 
-    @validator('path')
+    @field_validator('path')
     @classmethod
     def _validate_path(cls, v):
         """Validate path."""
@@ -77,7 +78,7 @@ class PathTransformModel(BaseModel, extra=Extra.forbid):
         return v
 
     # root validator that ensure at least one indicator value/summary is set
-    @root_validator()
+    @model_validator(mode='before')
     @classmethod
     def _default_or_path(cls, values):
         """Validate either default or path is defined."""
@@ -87,22 +88,22 @@ class PathTransformModel(BaseModel, extra=Extra.forbid):
         return values
 
 
-class MetadataTransformModel(PathTransformModel, extra=Extra.forbid):
+class MetadataTransformModel(PathTransformModel, extra='forbid'):
     """."""
 
     transform: list[TransformModel] | None = Field(None, description='')
 
     # validators
-    _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
+    _transform_array = field_validator('transform', mode='before')(_always_array)
 
 
-class ValueTransformModel(BaseModel, extra=Extra.forbid):
+class ValueTransformModel(BaseModel, extra='forbid'):
     """."""
 
     value: str | MetadataTransformModel
 
 
-class FileOccurrenceTransformModel(BaseModel, extra=Extra.forbid):
+class FileOccurrenceTransformModel(BaseModel, extra='forbid'):
     """."""
 
     file_name: str | MetadataTransformModel | None = Field(None, description='')
@@ -110,15 +111,15 @@ class FileOccurrenceTransformModel(BaseModel, extra=Extra.forbid):
     date: str | MetadataTransformModel | None = Field(None, description='')
 
 
-class DatetimeTransformModel(PathTransformModel, extra=Extra.forbid):
+class DatetimeTransformModel(PathTransformModel, extra='forbid'):
     """."""
 
 
-class AssociatedGroupTransform(ValueTransformModel, extra=Extra.forbid):
+class AssociatedGroupTransform(ValueTransformModel, extra='forbid'):
     """."""
 
 
-class AttributeTransformModel(ValueTransformModel, extra=Extra.forbid):
+class AttributeTransformModel(ValueTransformModel, extra='forbid'):
     """."""
 
     displayed: bool | MetadataTransformModel = Field(default=False, description='')
@@ -127,18 +128,18 @@ class AttributeTransformModel(ValueTransformModel, extra=Extra.forbid):
     pinned: bool | MetadataTransformModel = Field(default=False, description='')
 
 
-class SecurityLabelTransformModel(ValueTransformModel, extra=Extra.forbid):
+class SecurityLabelTransformModel(ValueTransformModel, extra='forbid'):
     """."""
 
     color: MetadataTransformModel | None = Field(None, description='')
     description: MetadataTransformModel | None = Field(None, description='')
 
 
-class TagTransformModel(ValueTransformModel, extra=Extra.forbid):
+class TagTransformModel(ValueTransformModel, extra='forbid'):
     """."""
 
 
-class TiTransformModel(BaseModel, extra=Extra.forbid):
+class TiTransformModel(BaseModel, extra='forbid'):
     """."""
 
     applies: Callable | None = Field(None, description='')
@@ -157,7 +158,7 @@ class TiTransformModel(BaseModel, extra=Extra.forbid):
     xid: MetadataTransformModel | None = Field(None, description='')
 
 
-class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
+class GroupTransformModel(TiTransformModel, extra='forbid'):
     """."""
 
     name: MetadataTransformModel = Field(..., description='')
@@ -183,7 +184,7 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
     file_name: MetadataTransformModel | None = Field(None, description='')
 
 
-class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
+class IndicatorTransformModel(TiTransformModel, extra='forbid'):
     """."""
 
     confidence: MetadataTransformModel | None = Field(None, description='')
@@ -201,7 +202,7 @@ class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
     active: MetadataTransformModel | None = Field(None, description='')
 
     # root validator that ensure at least one indicator value/summary is set
-    @root_validator()
+    @model_validator(mode='before')
     @classmethod
     def _one_indicator_value(cls, values):
         """Validate that one set of credentials is provided for the TC API."""

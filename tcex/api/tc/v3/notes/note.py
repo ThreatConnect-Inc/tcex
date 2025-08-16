@@ -12,17 +12,7 @@ from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 
 
 class Note(ObjectABC):
-    """Notes Object.
-
-    Args:
-        artifact_id (int, kwargs): The ID of the Artifact on which to apply the Note.
-        case_id (int, kwargs): The **case id** for the Note.
-        case_xid (str, kwargs): The **case xid** for the Note.
-        task_id (int, kwargs): The ID of the Task on which to apply the Note.
-        task_xid (str, kwargs): The XID of the Task on which to apply the Note.
-        text (str, kwargs): The **text** for the Note.
-        workflow_event_id (int, kwargs): The ID of the Event on which to apply the Note.
-    """
+    """Notes Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""

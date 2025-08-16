@@ -267,7 +267,7 @@ class TestCaseSnippets(TestV3):
 
         # Begin Snippet
         for case in self.tcex.api.tc.v3.cases():
-            print(case.model.dict(exclude_none=True))
+            print(case.model.model_dump(exclude_none=True))
 
     def test_case_get_by_name(self):
         """Test snippet"""
@@ -278,7 +278,7 @@ class TestCaseSnippets(TestV3):
         cases.filter.name(TqlOperator.EQ, 'MyCase-13')
         for case in cases:
             # IMPORTANT: this will return all cases with the name "MyCase-13"
-            print(case.model.json(exclude_none=True))
+            print(case.model.model_dump_json(exclude_none=True))
         # End Snippet
 
     def test_case_update(self):

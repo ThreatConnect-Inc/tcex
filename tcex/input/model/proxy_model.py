@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 
 # first-party
 from tcex.input.field_type.sensitive import Sensitive
@@ -21,30 +21,35 @@ class ProxyModel(BaseModel):
     tc_proxy_host: str | None = Field(
         None,
         description='The proxy hostname.',
-        inclusion_reason='runtimeLevel',
+        json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
     tc_proxy_port: int | None = Field(
         None,
         description='The proxy port number.',
-        inclusion_reason='runtimeLevel',
+        json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
     tc_proxy_username: str | None = Field(
         None,
         description='The proxy username.',
-        inclusion_reason='runtimeLevel',
+        json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
     tc_proxy_password: Sensitive | None = Field(
         None,
         description='The proxy password',
-        inclusion_reason='runtimeLevel',
+        json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
     tc_proxy_external: bool = Field(
         default=False,
         description='Flag to enable proxy for external connections.',
-        inclusion_reason='runtimeLevel',
+        json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
     tc_proxy_tc: bool = Field(
         default=False,
         description='Flag to enable proxy for ThreatConnect connection.',
-        inclusion_reason='runtimeLevel',
+        json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
+
+    @field_serializer('tc_proxy_password', when_used='json')
+    def convert_sensitive_to_str(self, value: Sensitive | None):
+        """."""
+        return str(value)

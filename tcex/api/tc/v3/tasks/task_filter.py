@@ -4,10 +4,9 @@
 from datetime import datetime
 from enum import Enum
 
-# third-party
+# first-party
 from arrow import Arrow
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.filter_abc import FilterABC
 from tcex.api.tc.v3.tql.tql import Tql

@@ -5,10 +5,9 @@ import json
 from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING, Self
 
-# third-party
+# first-party
 from requests import Response
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
 from tcex.api.tc.v3.cases.case_model import CaseModel
@@ -34,56 +33,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Group(ObjectABC):
-    """Groups Object.
-
-    Args:
-        assignments (TaskAssignees, kwargs): A list of assignees and escalatees associated with this
-            group (Task specific).
-        associated_artifacts (Artifacts, kwargs): A list of Artifacts associated with this Group.
-        associated_cases (Cases, kwargs): A list of Cases associated with this Group.
-        associated_groups (Groups, kwargs): A list of groups associated with this group.
-        associated_indicators (Indicators, kwargs): A list of indicators associated with this group.
-        associated_victim_assets (VictimAssets, kwargs): A list of victim assets associated with
-            this group.
-        attributes (GroupAttributes, kwargs): A list of Attributes corresponding to the Group.
-        body (str, kwargs): The email Body.
-        due_date (str, kwargs): The date and time that the Task is due.
-        escalation_date (str, kwargs): The escalation date and time.
-        event_date (str, kwargs): The date and time that the incident or event was first created.
-        event_type (str, kwargs): The identification of an event type.
-        external_date_added (str, kwargs): The date and time that the item was first created
-            externally.
-        external_date_expires (str, kwargs): The date and time the item expires externally.
-        external_last_modified (str, kwargs): The date and time the item was modified externally.
-        file_name (str, kwargs): The document or signature file name.
-        file_text (str, kwargs): The signature file text.
-        file_type (str, kwargs): The signature file type.
-        first_seen (str, kwargs): The date and time that the item was first seen.
-        from_ (str, kwargs): The email From field.
-        header (str, kwargs): The email Header field.
-        last_seen (str, kwargs): The date and time that the item was last seen.
-        malware (bool, kwargs): Is the document malware?
-        name (str, kwargs): The name of the group.
-        owner_id (int, kwargs): The id of the Organization, Community, or Source that the item
-            belongs to.
-        owner_name (str, kwargs): The name of the Organization, Community, or Source that the item
-            belongs to.
-        password (str, kwargs): The password associated with the document (Required if Malware is
-            true).
-        publish_date (str, kwargs): The date and time that the report was first created.
-        reminder_date (str, kwargs): The reminder date and time.
-        reviews (object, kwargs): A list of reviews corresponding to the Group.
-        security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
-            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
-            the one(s) specified).
-        status (str, kwargs): The status associated with this document, event, task, or incident
-            (read only for task, document, and report).
-        subject (str, kwargs): The email Subject section.
-        tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this parameter
-            will replace any existing tag(s) with the one(s) specified).
-        type (str, kwargs): The **type** for the Group.
-        xid (str, kwargs): The xid of the item.
-    """
+    """Groups Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""
@@ -196,7 +146,6 @@ class Group(ObjectABC):
     @property
     def associated_artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
-        # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
 
         yield from self._iterate_over_sublist(Artifacts)  # type: ignore
@@ -204,7 +153,6 @@ class Group(ObjectABC):
     @property
     def associated_cases(self) -> Generator['Case', None, None]:
         """Yield Case from Cases."""
-        # first-party
         from tcex.api.tc.v3.cases.case import Cases
 
         yield from self._iterate_over_sublist(Cases)  # type: ignore
@@ -221,7 +169,6 @@ class Group(ObjectABC):
     @property
     def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
-        # first-party
         from tcex.api.tc.v3.indicators.indicator import Indicators
 
         yield from self._iterate_over_sublist(Indicators)  # type: ignore
@@ -229,7 +176,6 @@ class Group(ObjectABC):
     @property
     def associated_victim_assets(self) -> Generator['VictimAsset', None, None]:
         """Yield VictimAsset from VictimAssets."""
-        # first-party
         from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
 
         yield from self._iterate_over_sublist(VictimAssets)  # type: ignore
@@ -237,7 +183,6 @@ class Group(ObjectABC):
     @property
     def attributes(self) -> Generator['GroupAttribute', None, None]:
         """Yield Attribute from Attributes."""
-        # first-party
         from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttributes
 
         yield from self._iterate_over_sublist(GroupAttributes)  # type: ignore
@@ -245,7 +190,6 @@ class Group(ObjectABC):
     @property
     def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
-        # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
 
         yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
@@ -253,7 +197,6 @@ class Group(ObjectABC):
     @property
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
-        # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore

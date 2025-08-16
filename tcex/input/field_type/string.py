@@ -2,86 +2,72 @@
 
 # standard library
 import re
-from collections.abc import Generator
+from typing import Any, ClassVar
 
 # third-party
-from pydantic.fields import ModelField  # TYPE-CHECKING
+from pydantic.annotated_handlers import GetCoreSchemaHandler
+from pydantic_core import core_schema  # TYPE-CHECKING
 
 # first-party
-from tcex.input.field_type.exception import (
-    InvalidEmptyValue,
-    InvalidLengthValue,
-    InvalidPatternValue,
-    InvalidType,
-)
+from tcex.input.field_type.exception import InvalidEmptyValue, InvalidPatternValue, InvalidType
 
 
 class String(str):
     """String Field Type"""
 
-    allow_empty: bool = True
-    max_length: int | None = None
-    min_length: int | None = None
-    regex: str | None = None
-    strip: bool = False
+    allow_empty: ClassVar[bool] = True
+    max_length: ClassVar[int | None] = None
+    min_length: ClassVar[int | None] = None
+    regex: ClassVar[str | None] = None
+    strip: ClassVar[bool] = False
 
     @classmethod
-    def __get_validators__(cls) -> Generator:
+    def _validate(cls, value: str, info: core_schema.ValidationInfo) -> str:
+        """."""
+        field_name = info.field_name or '--unknown--'
+        value = cls.validate_type(value, field_name)
+        value = cls.validate_regex(value, field_name)
+        value = cls.validate_strip(value)
+        value = cls.validate_allow_empty(value, field_name)
+        return value  # noqa: RET504
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source: type[Any], handler: GetCoreSchemaHandler
+    ) -> core_schema.AfterValidatorFunctionSchema:
         """Run validators / modifiers on input."""
-        yield cls.validate_type
-        yield cls.validate_strip
-        yield cls.validate_allow_empty
-        yield cls.validate_max_length
-        yield cls.validate_min_length
-        yield cls.validate_regex
+        return core_schema.with_info_after_validator_function(
+            cls._validate,
+            core_schema.str_schema(max_length=cls.max_length, min_length=cls.min_length),
+            field_name=handler.field_name,
+        )
 
     @classmethod
-    def validate_allow_empty(cls, value: str, field: ModelField) -> str:
+    def validate_allow_empty(cls, value: str, field_name: str) -> str:
         """Raise exception if value is empty and allow_empty is False."""
-        if cls.allow_empty is False and isinstance(value, str) and value == '':
-            raise InvalidEmptyValue(field_name=field.name)
-
+        if cls.allow_empty is False and value in (b'', ''):
+            raise InvalidEmptyValue(field_name)
         return value
 
     @classmethod
-    def validate_max_length(cls, value: str, field: ModelField) -> str:
-        """Raise exception if value does not match pattern."""
-        if cls.max_length is not None and len(value) > cls.max_length:
-            raise InvalidLengthValue(
-                field_name=field.name, constraint=cls.max_length, operation='max'
-            )
-        return value
-
-    @classmethod
-    def validate_min_length(cls, value: str, field: ModelField) -> str:
-        """Raise exception if value does not match pattern."""
-        if cls.min_length is not None and len(value) < cls.min_length:
-            raise InvalidLengthValue(
-                field_name=field.name, constraint=cls.min_length, operation='min'
-            )
-        return value
-
-    @classmethod
-    def validate_regex(cls, value: str, field: ModelField) -> str:
+    def validate_regex(cls, value: str, field_name: str) -> str:
         """Raise exception if value does not match pattern."""
         if isinstance(cls.regex, str) and not re.compile(cls.regex).match(value):
-            raise InvalidPatternValue(field_name=field.name, pattern=cls.regex)
+            raise InvalidPatternValue(field_name=field_name, pattern=cls.regex)
         return value
 
     @classmethod
     def validate_strip(cls, value: str) -> str:
         """Raise exception if value is not a Binary type."""
-        if cls.strip is True:
+        if value is not None and cls.strip is True:
             value = value.strip()
         return value
 
     @classmethod
-    def validate_type(cls, value: str, field: ModelField) -> str:
-        """Raise exception if value is not a String type."""
+    def validate_type(cls, value: str, field_name: str) -> str:
+        """Raise exception if value is not a Binary type."""
         if not isinstance(value, str):
-            raise InvalidType(
-                field_name=field.name, expected_types='(str)', provided_type=type(value)
-            )
+            raise InvalidType(field_name, type(value))
         return value
 
 

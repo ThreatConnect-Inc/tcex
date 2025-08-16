@@ -21,17 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class WorkflowEvent(ObjectABC):
-    """WorkflowEvents Object.
-
-    Args:
-        case_id (int, kwargs): The **case id** for the Workflow_Event.
-        case_xid (str, kwargs): The **case xid** for the Workflow_Event.
-        deleted_reason (str, kwargs): The reason for deleting the event (required input for DELETE
-            operation only).
-        event_date (str, kwargs): The time that the Event is logged.
-        notes (Notes, kwargs): A list of Notes corresponding to the Event.
-        summary (str, kwargs): The **summary** for the Workflow_Event.
-    """
+    """WorkflowEvents Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""
@@ -76,7 +66,6 @@ class WorkflowEvent(ObjectABC):
     @property
     def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
-        # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)  # type: ignore

@@ -320,7 +320,7 @@ class TestGroupSnippets(TestV3):
         groups.filter.owner_name(TqlOperator.EQ, 'TCI')
         groups.filter.type_name(TqlOperator.EQ, 'Adversary')
         for group in groups:
-            print(group.model.dict(exclude_none=True))
+            print(group.model.model_dump(exclude_none=True))
         # End Snippet
 
     #

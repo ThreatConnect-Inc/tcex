@@ -65,7 +65,7 @@ class GenerateFilterABC(GenerateABC, ABC):
         """
         _properties = []
         try:
-            r = self.session.options(f'{self.api_url}/tql', params={})
+            r = self.options_data.session.options(f'{self.api_url}/tql', params={})
             # print(r.request.method, r.request.url, r.text)
             if r.ok:
                 _properties = r.json().get('data', [])
@@ -106,7 +106,10 @@ class GenerateFilterABC(GenerateABC, ABC):
             try:
                 yield FilterModel(**field_data)
             except ValidationError as ex:
-                Render.panel.failure(f'Failed generating filter model: data={field_data} ({ex}).')
+                Render.panel.failure(
+                    f'Failed generating filter model: data={field_data} ({ex}). '
+                    'Likely a new field needs to be added to FilterModel in _filter_model.py.'
+                )
 
     def _gen_code_generic_method(self, filter_data: FilterModel) -> list:
         """Return code for generic TQL filter methods."""

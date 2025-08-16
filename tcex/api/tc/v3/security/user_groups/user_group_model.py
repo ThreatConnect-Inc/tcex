@@ -1,7 +1,10 @@
 """TcEx Framework Module"""
 
+# standard library
+from __future__ import annotations
+
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
+from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -11,46 +14,46 @@ from tcex.util import Util
 class UserGroupModel(
     V3ModelABC,
     alias_generator=Util().snake_to_camel,
-    extra=Extra.allow,
+    extra='allow',
     title='UserGroup Model',
     validate_assignment=True,
 ):
     """User_Group Model"""
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
     description: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **description** for the User_Group.',
-        read_only=True,
+        frozen=True,
         title='description',
+        validate_default=True,
     )
     id: int | None = Field(  # type: ignore
-        None,
+        default=None,
         description='The ID of the item.',
-        read_only=True,
         title='id',
+        validate_default=True,
     )
     name: str | None = Field(
-        None,
-        allow_mutation=False,
+        default=None,
         description='The **name** for the User_Group.',
-        read_only=True,
+        frozen=True,
         title='name',
+        validate_default=True,
     )
-    users: 'UsersModel' = Field(
-        None,
-        allow_mutation=False,
+    users: UsersModel | None = Field(
+        default=None,
         description='The **users** for the User_Group.',
-        read_only=True,
+        frozen=True,
         title='users',
+        validate_default=True,
     )
 
-    @validator('users', always=True, pre=True)
+    @field_validator('users', mode='before')
     @classmethod
     def _validate_users(cls, v):
         if not v:
@@ -69,8 +72,8 @@ class UserGroupDataModel(
     data: list[UserGroupModel] | None = Field(
         [],
         description='The data for the UserGroups.',
-        methods=['POST', 'PUT'],
         title='data',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
@@ -82,26 +85,25 @@ class UserGroupsModel(
 ):
     """User_Groups Model"""
 
-    _mode_support = PrivateAttr(default=False)
+    _mode_support: bool = PrivateAttr(default=False)
 
     data: list[UserGroupModel] | None = Field(
         [],
         description='The data for the UserGroups.',
-        methods=['POST', 'PUT'],
         title='data',
     )
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
         title='append',
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
 
 
 # first-party
 from tcex.api.tc.v3.security.users.user_model import UsersModel
 
-# add forward references
-UserGroupDataModel.update_forward_refs()
-UserGroupModel.update_forward_refs()
-UserGroupsModel.update_forward_refs()
+# rebuild model
+UserGroupDataModel.model_rebuild()
+UserGroupModel.model_rebuild()
+UserGroupsModel.model_rebuild()

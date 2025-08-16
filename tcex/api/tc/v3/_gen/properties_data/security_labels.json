@@ -1,0 +1,106 @@
+[
+  {
+    "field_name": "color",
+    "input_data": {
+      "description": "color of the security label",
+      "maxLength": 10,
+      "minLength": 1,
+      "name": "color",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "color of the security label",
+      "maxLength": 10,
+      "minLength": 1,
+      "name": "color",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "dateAdded",
+    "input_data": {
+      "description": "the date and time that the label was added",
+      "name": "dateAdded",
+      "readOnly": true,
+      "type": "Date"
+    },
+    "output_data": {
+      "description": "the date and time that the label was added",
+      "name": "dateAdded",
+      "readOnly": true,
+      "type": "Date"
+    }
+  },
+  {
+    "field_name": "description",
+    "input_data": {
+      "description": "description of the security label",
+      "maxLength": 400,
+      "minLength": 1,
+      "name": "description",
+      "required": false,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "description of the security label",
+      "maxLength": 400,
+      "minLength": 1,
+      "name": "description",
+      "required": false,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "id",
+    "input_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    },
+    "output_data": {
+      "description": "the ID of the item",
+      "name": "id",
+      "readOnly": true,
+      "type": "Long"
+    }
+  },
+  {
+    "field_name": "name",
+    "input_data": {
+      "description": "name of the security label",
+      "maxLength": 50,
+      "minLength": 1,
+      "name": "name",
+      "required": true,
+      "type": "String"
+    },
+    "output_data": {
+      "description": "name of the security label",
+      "maxLength": 50,
+      "minLength": 1,
+      "name": "name",
+      "required": true,
+      "type": "String"
+    }
+  },
+  {
+    "field_name": "owner",
+    "input_data": {
+      "description": "the name of the Owner of the Label",
+      "name": "owner",
+      "required": false,
+      "type": "String",
+      "updatable": false
+    },
+    "output_data": {
+      "description": "the name of the Owner of the Label",
+      "name": "owner",
+      "required": false,
+      "type": "String",
+      "updatable": false
+    }
+  }
+]

@@ -15,17 +15,7 @@ from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 
 
 class AttributeType(ObjectABC):
-    """AttributeTypes Object.
-
-    Args:
-        allow_markdown (bool, kwargs): Flag that enables markdown feature in the attribute value
-            field.
-        description (str, kwargs): The description of the attribute type.
-        error_message (str, kwargs): The error message displayed.
-        max_size (int, kwargs): The maximum size of the attribute value.
-        name (str, kwargs): The name of the attribute type.
-        validation_rule (object, kwargs): The validation rule that governs the attribute value.
-    """
+    """AttributeTypes Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""

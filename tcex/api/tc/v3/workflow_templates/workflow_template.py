@@ -15,14 +15,7 @@ from tcex.api.tc.v3.workflow_templates.workflow_template_model import (
 
 
 class WorkflowTemplate(ObjectABC):
-    """WorkflowTemplates Object.
-
-    Args:
-        config_attribute (None, kwargs): The **config attribute** for the Workflow_Template.
-        description (str, kwargs): The **description** for the Workflow_Template.
-        name (str, kwargs): The **name** for the Workflow_Template.
-        version (int, kwargs): The **version** for the Workflow_Template.
-    """
+    """WorkflowTemplates Object."""
 
     def __init__(self, **kwargs):
         """Initialize instance properties."""

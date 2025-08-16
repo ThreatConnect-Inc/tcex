@@ -1,55 +1,53 @@
 """TcEx Framework Module"""
 
+from __future__ import annotations
+
 # standard library
-from collections.abc import Generator
+from dataclasses import dataclass
+from typing import Any, ClassVar
 
 # third-party
-from pydantic.fields import ModelField  # TYPE-CHECKING
+from pydantic.annotated_handlers import GetCoreSchemaHandler  # noqa: TC002
+from pydantic_core import core_schema  # TYPE-CHECKING
 
 # first-party
-from tcex.input.field_type.exception import InvalidEmptyValue, InvalidLengthValue, InvalidType
+from tcex.input.field_type.exception import InvalidEmptyValue, InvalidType
 
 
+@dataclass(frozen=True)
 class Binary(bytes):
     """Binary Field Type"""
 
-    allow_empty: bool = True
-    max_length: int | None = None
-    min_length: int | None = None
-    strip: bool = False
+    allow_empty: ClassVar[bool] = True
+    max_length: ClassVar[int | None] = None
+    min_length: ClassVar[int | None] = None
+    strip: ClassVar[bool] = False
 
     @classmethod
-    def __get_validators__(cls) -> Generator:
+    def _validate(cls, value: bytes, info: core_schema.ValidationInfo) -> bytes:
+        """."""
+        field_name = info.field_name or '--unknown--'
+        value = cls.validate_type(value, field_name)
+        value = cls.validate_strip(value)
+        value = cls.validate_allow_empty(value, field_name)
+        return value  # noqa: RET504
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source: type[Any], handler: GetCoreSchemaHandler
+    ) -> core_schema.AfterValidatorFunctionSchema:
         """Run validators / modifiers on input."""
-        yield cls.validate_type
-        yield cls.validate_strip
-        yield cls.validate_allow_empty
-        yield cls.validate_max_length
-        yield cls.validate_min_length
+        return core_schema.with_info_after_validator_function(
+            cls._validate,
+            core_schema.bytes_schema(max_length=cls.max_length, min_length=cls.min_length),
+            field_name=handler.field_name,
+        )
 
     @classmethod
-    def validate_allow_empty(cls, value: bytes, field: ModelField) -> bytes:
+    def validate_allow_empty(cls, value: bytes, field_name: str) -> bytes:
         """Raise exception if value is empty and allow_empty is False."""
         if cls.allow_empty is False and value == b'':
-            raise InvalidEmptyValue(field_name=field.name)
-        return value
-
-    @classmethod
-    def validate_max_length(cls, value: bytes, field: ModelField) -> bytes:
-        """Raise exception if value does not match pattern."""
-        if cls.max_length is not None and len(value) > cls.max_length:
-            raise InvalidLengthValue(
-                field_name=field.name, constraint=cls.max_length, operation='max'
-            )
-        return value
-
-    @classmethod
-    def validate_min_length(cls, value: bytes, field: ModelField) -> bytes:
-        """Raise exception if value does not match pattern."""
-        if cls.min_length is not None and len(value) < cls.min_length:
-            raise InvalidLengthValue(
-                field_name=field.name, constraint=cls.min_length, operation='min'
-            )
+            raise InvalidEmptyValue(field_name)
         return value
 
     @classmethod
@@ -60,12 +58,10 @@ class Binary(bytes):
         return value
 
     @classmethod
-    def validate_type(cls, value: bytes, field: ModelField) -> bytes:
+    def validate_type(cls, value: bytes, field_name: str) -> bytes:
         """Raise exception if value is not a Binary type."""
         if not isinstance(value, bytes):
-            raise InvalidType(
-                field_name=field.name, expected_types='(bytes)', provided_type=str(type(value))
-            )
+            raise InvalidType(field_name, type(value))
         return value
 
 

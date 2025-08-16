@@ -74,7 +74,7 @@ class TestUtils:
     # )
     # def test_playbook_string_array_string(self, variable: str, value: Str, playbook: Playbook):
     #     """Test playbook variables."""
-    #     with pytest.raises(RuntimeError) as exc_info:
+    #     with pytest.raises(RuntimeError) as ex:
     #         playbook.create.string_array(variable, value, when_requested=False)
 
     #     assert True

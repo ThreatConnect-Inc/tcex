@@ -1,46 +1,23 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic import BaseModel, Field, field_validator
+from pydantic.alias_generators import to_camel
 
 # first-party
+from tcex.api.tc.v3._gen.model._extra_model import ExtraModel
 from tcex.pleb.cached_property import cached_property
 from tcex.util import Util
 from tcex.util.render.render import Render
 from tcex.util.string_operation import CamelString
 
 
-class ExtraModel(
-    BaseModel,
-    extra=Extra.forbid,
-    title='Extra Model',
-    validate_assignment=True,
-):
-    """Model Definition"""
-
-    alias: CamelString = Field(..., description='Field alias.')
-    import_data: str | None = Field(None, description='The import data.')
-    import_source: str | None = Field(
-        None, description='The source of the import: standard library, first-party, etc.'
-    )
-    methods: list[str] = Field([], description='Field methods.')
-    model: str | None = Field(None, description='The type model.')
-    type: CamelString = Field(..., description='The type of the property.')
-    typing_type: str = Field(..., description='The Python typing hint type.')
-
-    @validator('alias', 'type', always=True, pre=True)
-    @classmethod
-    def _camel_string(cls, v):
-        """Convert to CamelString."""
-        return CamelString(v)
-
-
 class PropertyModel(
     BaseModel,
-    alias_generator=Util().snake_to_camel,
+    alias_generator=to_camel,
     arbitrary_types_allowed=True,
-    extra=Extra.forbid,
-    keep_untouched=(cached_property,),
+    extra='forbid',
+    ignored_types=(cached_property,),
     title='Property Model',
     validate_assignment=True,
 ):
@@ -57,7 +34,9 @@ class PropertyModel(
     conditional_required: list[str] | None = Field(
         None, description='Conditionally required property.'
     )
-    default: str | None = Field(default=None, description='Default value of the property value.')
+    default: str | None = Field(
+        default=None, description='Default value of the property value.', validate_default=True
+    )
     description: str | None = Field(default=None, description='Description of the property.')
     max_size: int | None = Field(default=None, description='Maximum size of the property value.')
     max_length: int | None = Field(
@@ -68,14 +47,16 @@ class PropertyModel(
         default=None, description='Minimum length of the property value.'
     )
     min_value: int | None = Field(default=None, description='Minimum value of the property value.')
-    name: CamelString = Field(default=None, description='Name of the property.')
+    name: CamelString = Field(
+        default=..., description='Name of the property.', validate_default=True
+    )
     read_only: bool = Field(default=False, description='Read only property.')
     required: bool = Field(default=False, description='Required property.')
     required_alt_field: str | None = Field(None, description='Required alternative field property.')
-    type: CamelString = Field(..., description='The defined property type.')
+    type: CamelString = Field(..., description='The defined property type.', validate_default=True)
     updatable: bool = Field(default=True, description='Updatable property.')
 
-    @validator('name', 'type', always=True, pre=True)
+    @field_validator('name', 'type', mode='before')
     @classmethod
     def _came_string(cls, v):
         """Convert to CamelString."""
@@ -84,7 +65,7 @@ class PropertyModel(
             raise ValueError(ex_msg)
         return CamelString(v)
 
-    @validator('description', always=True, pre=True)
+    @field_validator('description', mode='before')
     @classmethod
     def _fix_first_letter_of_sentence(cls, v):
         """Convert to CamelString."""
@@ -166,7 +147,7 @@ class PropertyModel(
         """Process standard type."""
         types = ['boolean']
         if pm.type.lower() in types:
-            extra.update({'typing_type': 'bool'})
+            extra.update({'typing_type': 'bool | None'})
 
     @classmethod
     def __process_dict_types(cls, pm: 'PropertyModel', extra: dict[str, str]):
@@ -175,8 +156,10 @@ class PropertyModel(
             'AiInsights',
             'AttackSecurityCoverage',
             'AttributeSource',
+            'CommonGroup',
             'DNSResolutions',
             'Enrichments',
+            'AttackFinancialImpact',
             'GeoLocation',
             'InvestigationLinks',
             'IntelligenceReviews',
@@ -223,7 +206,7 @@ class PropertyModel(
                     'import_data': f'{bi} import AssigneeModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type),
+                    'typing_type': cls.__extra_format_type_model(pm.type, True),
                 }
             )
         elif pm.type == 'AttributeDatas':
@@ -242,7 +225,7 @@ class PropertyModel(
                     'import_data': f'{bi} import CaseAttributesModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type),
+                    'typing_type': cls.__extra_format_type_model(pm.type, True),
                 }
             )
         elif pm.type == 'Date':
@@ -260,7 +243,7 @@ class PropertyModel(
                     'import_data': f'{bi} import GroupModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type),
+                    'typing_type': cls.__extra_format_type_model(pm.type, True),
                 }
             )
         elif pm.type == 'GroupAttributes':
@@ -270,7 +253,7 @@ class PropertyModel(
                     'import_data': f'{bi} import GroupAttributesModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type),
+                    'typing_type': cls.__extra_format_type_model(pm.type, True),
                 }
             )
         elif pm.type == 'Indicator':
@@ -280,7 +263,7 @@ class PropertyModel(
                     'import_data': f'{bi} import IndicatorModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type),
+                    'typing_type': cls.__extra_format_type_model(pm.type, True),
                 }
             )
         elif pm.type == 'IntelReqType':
@@ -290,7 +273,7 @@ class PropertyModel(
                     'import_data': f'{bi} import IntelReqTypeModel',
                     'import_source': 'first-party-forward-reference',
                     'model': 'IntelReqTypeModel',
-                    'typing_type': cls.__extra_format_type_model(pm.type),
+                    'typing_type': cls.__extra_format_type_model(pm.type, True),
                 }
             )
         elif pm.type == 'IndicatorAttributes':
@@ -300,7 +283,7 @@ class PropertyModel(
                     'import_data': f'{bi} import IndicatorAttributesModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type),
+                    'typing_type': cls.__extra_format_type_model(pm.type, True),
                 }
             )
         elif pm.type == 'JsonNode':
@@ -317,13 +300,13 @@ class PropertyModel(
                     'import_data': f'{bi} import KeywordSectionModel',
                     'import_source': 'first-party-forward-reference',
                     'model': 'KeywordSectionModel',
-                    'typing_type': f'list[{cls.__extra_format_type_model(pm.type)}]',
+                    'typing_type': f'list[{cls.__extra_format_type_model(pm.type, True)}] | None',
                 }
             )
         elif pm.name == 'customAssociationNames':
             extra.update(
                 {
-                    'typing_type': 'list[str]',
+                    'typing_type': 'list[str] | None',
                 }
             )
         elif pm.type == 'TaskAssignees':
@@ -332,7 +315,7 @@ class PropertyModel(
                     'import_data': (f'{bi}security.task_assignee_model import TaskAssigneesModel'),
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type),
+                    'typing_type': cls.__extra_format_type_model(pm.type, True),
                 }
             )
         elif pm.type == 'VictimAttributes':
@@ -342,7 +325,7 @@ class PropertyModel(
                     'import_data': f'{bi} import VictimAttributesModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type),
+                    'typing_type': cls.__extra_format_type_model(pm.type, True),
                 }
             )
 
@@ -390,7 +373,7 @@ class PropertyModel(
         if pm.type in types:
             extra.update(cls.__extra_gen_req_code(pm.type))
             extra['model'] = f'{pm.type}Model'
-            extra['typing_type'] = cls.__extra_format_type_model(pm.type)
+            extra['typing_type'] = cls.__extra_format_type_model(pm.type, True)
 
     @classmethod
     def __extra_gen_req_code(cls, type_: CamelString) -> dict[str, str]:
