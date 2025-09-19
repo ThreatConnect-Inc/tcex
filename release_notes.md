@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.0.10
+
+-   APP-4969 - [Util] Updated regex patterns for playbook to support "Global" app type
+
 ## 4.0.9
 
 -   APP-4825 - [Token] Updated token logic to handle new long-lived tokens
