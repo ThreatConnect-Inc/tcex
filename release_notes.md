@@ -3,6 +3,7 @@
 ## 4.0.10
 
 -   APP-4969 - [Util] Updated regex patterns for playbook to support "Global" app type
+-   APP-4974 - [Transform] Updated transform lastSeen mapping to look for appropriate field
 
 ## 4.0.9
 

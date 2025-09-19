@@ -174,21 +174,14 @@ class TransformABC(ABC):
 
         # date fields
         self._process_metadata_datetime('dateAdded', self.transform.date_added)
+        self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
+        self._process_metadata_datetime('externalDateExpires', self.transform.external_date_expires)
+        self._process_metadata_datetime(
+            'externalLastModified', self.transform.external_last_modified
+        )
+        self._process_metadata_datetime('firstSeen', self.transform.first_seen)
+        self._process_metadata_datetime('lastSeen', self.transform.last_seen)
         self._process_metadata_datetime('lastModified', self.transform.last_modified)
-        self._process_metadata_datetime('firstSeen', self.transform.first_seen)
-        self._process_metadata_datetime('lastSeen', self.transform.first_seen)
-        self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
-        self._process_metadata_datetime('externalDateExpires', self.transform.external_date_expires)
-        self._process_metadata_datetime(
-            'externalLastModified', self.transform.external_last_modified
-        )
-        self._process_metadata_datetime('firstSeen', self.transform.first_seen)
-        self._process_metadata_datetime('lastSeen', self.transform.first_seen)
-        self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
-        self._process_metadata_datetime('externalDateExpires', self.transform.external_date_expires)
-        self._process_metadata_datetime(
-            'externalLastModified', self.transform.external_last_modified
-        )
 
     def _process_custom_association(
         self, associations: list[AssociatedIndicatorFromIndicatorTransform]
