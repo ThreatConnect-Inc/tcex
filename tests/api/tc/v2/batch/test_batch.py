@@ -1,13 +1,13 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import os
 from datetime import datetime, timedelta
 
-# third-party
+
 from _pytest.fixtures import FixtureRequest
 
-# first-party
+
 from tcex import TcEx
 
 

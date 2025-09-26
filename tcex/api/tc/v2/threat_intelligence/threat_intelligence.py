@@ -1,14 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 from functools import lru_cache
 from typing import cast
 
-# third-party
 from requests import Response, Session  # TYPE-CHECKING
 
-# first-party
 from tcex.api.tc.v2.threat_intelligence.mapping.filters import Filters
 from tcex.api.tc.v2.threat_intelligence.mapping.group.group import Group
 from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.adversary import Adversary

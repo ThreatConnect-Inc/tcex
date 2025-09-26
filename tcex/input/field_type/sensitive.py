@@ -1,14 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 from typing import Any, ClassVar, Self
 
-# third-party
 from pydantic.annotated_handlers import GetCoreSchemaHandler
 from pydantic_core import core_schema
 
-# first-party
 from tcex.input.field_type.exception import InvalidEmptyValue, InvalidType
 from tcex.logger.sensitive_filter import SensitiveFilter
 from tcex.logger.trace_logger import TraceLogger

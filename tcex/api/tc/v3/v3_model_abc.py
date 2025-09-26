@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import datetime
 import hashlib
 import json
@@ -9,10 +8,8 @@ from abc import ABC
 from json import JSONEncoder
 from typing import Any, Self
 
-# third-party
 from pydantic import BaseModel, PrivateAttr
 
-# first-party
 from tcex.logger.trace_logger import TraceLogger
 
 # get tcex logger
@@ -59,7 +56,7 @@ class V3ModelABC(BaseModel, ABC, populate_by_name=True):
             kwargs
             and hasattr(self, 'id')
             and self.id is None
-            and self.__config__.title != 'Keyword Section Model'
+            and self.model_config.get('title') != 'Keyword Section Model'
         ):
             self._staged = True
 
@@ -76,7 +73,7 @@ class V3ModelABC(BaseModel, ABC, populate_by_name=True):
         #     Since Note model CAN update the `text` field we need to specifically state
         #     that this test is for the `Indicator Model` only.
         if (
-            self.__config__.title == 'Indicator Model'
+            self.model_config.get('title') == 'Indicator Model'
             and self.id is not None
             and field
             in [
@@ -329,10 +326,10 @@ class V3ModelABC(BaseModel, ABC, populate_by_name=True):
 
     def _properties(self) -> dict[str, dict[str, str]]:
         """Return properties of the current model."""
-        schema = self.schema(by_alias=False)
+        schema = self.model_json_schema(by_alias=False)
         if schema.get('properties') is not None:
             return schema.get('properties', {})
-        return schema.get('definitions', {}).get(self.__class__.__name__, {}).get('properties', {})
+        return schema.get('$defs', {}).get(self.__class__.__name__, {}).get('properties', {})
 
     @staticmethod
     def gen_model_hash(json_: str) -> str:

@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from requests import Session
 
-# first-party
 from tcex.api.tc.v3.intel_requirements.categories.category import Categories, Category
 from tcex.api.tc.v3.intel_requirements.intel_requirement import IntelRequirement, IntelRequirements
 from tcex.api.tc.v3.intel_requirements.results.result import Result, Results

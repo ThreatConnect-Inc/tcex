@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from datetime import datetime
 from enum import Enum
 
-# first-party
 from arrow import Arrow
 
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -45,8 +43,8 @@ class ResultFilter(FilterABC):
     @property
     def has_intel_requirement(self):
         """Return **IntelRequirementFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.intel_requirements.intel_requirement_filter import (
+
+        from tcex.api.tc.v3.intel_requirements.intel_requirement_filter import (  # noqa: PLC0415
             IntelRequirementFilter,
         )
 

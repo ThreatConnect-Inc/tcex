@@ -1,12 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import time
 
-# third-party
+
 import pytest
 
-# first-party
+
 from tcex import TcEx
 
 

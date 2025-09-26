@@ -1,15 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
 
-# third-party
 import arrow
 from requests import Session
 
-# first-party
 from tcex.api.tc.v2.datastore.datastore import DataStore
 from tcex.logger.trace_logger import TraceLogger
 from tcex.util import Util

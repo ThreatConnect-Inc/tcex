@@ -1,15 +1,14 @@
 """TcEx Framework Module"""
 
-# standard library
 from typing import Any
 
-# third-party
 from pydantic.annotated_handlers import GetCoreSchemaHandler
 from pydantic.dataclasses import dataclass
 from pydantic_core import core_schema
 
-# first-party
+from tcex.app.config.install_json import InstallJson
 from tcex.input.field_type.edit_choice import EditChoice
+from tcex.input.field_type.exception import InvalidInput
 
 
 @dataclass(frozen=True, init=False)
@@ -17,63 +16,45 @@ class Choice(EditChoice):
     """Choice Field Type"""
 
     @classmethod
-    def _validate(cls, value: str, info: core_schema.ValidationInfo) -> str | None:
-        """Run validators / modifiers on input."""
-        if info.field_name is None:
-            return value
-
-        field_name = info.field_name
-
-        # First run the parent EditChoice validation
-        value = super()._validate(value, info)
-
-        # Then apply the choice-specific modifier
-        return cls.modifier_select(value, field_name)
-
-    @classmethod
     def __get_pydantic_core_schema__(
         cls, source: type[Any], handler: GetCoreSchemaHandler
     ) -> core_schema.ChainSchema:
-        #  ) -> core_schema.AfterValidatorFunctionSchema:
         """Run validators / modifiers on input."""
-        _ = core_schema.no_info_before_validator_function(
-            function=cls.update_select,
-            schema=core_schema.str_schema(),
+
+        base_validate = core_schema.with_info_plain_validator_function(
+            function=super()._validate, field_name=handler.field_name
         )
-        fn_schema = core_schema.with_info_plain_validator_function(function=cls.modifier_select)
+        modifier_select = core_schema.with_info_plain_validator_function(
+            function=cls.modifier_select, field_name=handler.field_name
+        )
         return core_schema.chain_schema(
             [
-                core_schema.str_schema(),
-                fn_schema,
+                modifier_select,
+                base_validate,
             ]
         )
-        # return schema
-        # return core_schema.with_info_after_validator_function(
-        #     cls._validate,
-        #     core_schema.str_schema(),
-        #     field_name=handler.field_name,
-        # )
-
-    @staticmethod
-    def update_select(value: str) -> str | None:
-        """."""
-        return None if value == '-- Select --' else value
 
     @classmethod
-    # def modifier_select(cls, value: str, field_name: str) -> str | None:
-    def modifier_select(cls, value: str, _info: core_schema.ValidationInfo) -> str | None:
+    def modifier_select(cls, value: str, info: core_schema.ValidationInfo) -> str | None:
         """Modify value if -- Select -- option is selected.
 
         Job Apps: If not selection None is sent.
         PB Apps: '-- Select --' has to be added to validValues by developer.
         """
+        if info.field_name is None:
+            return value
+
         _value = value
         if _value == '-- Select --':
-            # TODO: [high] figure out what this did before
-            # if cls.model_fields[info.field_name].is_required():
-            #     raise InvalidInput(field_name, f'{_value} is not a valid choice.')
-            # if field_name.allow_none is False:
-            #     raise InvalidInput(field_name, f'{_value} is not a valid choice.')
+            ij = InstallJson()
+            param = ij.model.get_param(info.field_name)
+
+            if param is None:
+                ex_msg = f'Install.json does not contain a parameter for {info.field_name}.'
+                raise ValueError(ex_msg)
+
+            if param.required is True:
+                raise InvalidInput(info.field_name, f'{_value} is not a valid choice.')
             _value = None
 
         return _value

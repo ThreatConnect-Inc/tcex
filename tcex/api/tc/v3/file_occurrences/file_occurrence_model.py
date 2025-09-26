@@ -1,12 +1,9 @@
 """TcEx Framework Module"""
 
-# standard library
 from datetime import datetime
 
-# third-party
 from pydantic import BaseModel, Field, PrivateAttr
 
-# first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
@@ -22,17 +19,17 @@ class FileOccurrenceModel(
 
     date: datetime | None = Field(
         None,
-        methods=['POST', 'PUT'],
+        json_schema_extra={'methods': ['POST']},
         title='date',
     )
     file_name: str | None = Field(
         None,
-        methods=['POST', 'PUT'],
+        json_schema_extra={'methods': ['POST', 'PUT']},
         title='fileName',
     )
     path: str | None = Field(
         None,
-        methods=['POST', 'PUT'],
+        json_schema_extra={'methods': ['POST', 'PUT']},
         title='path',
     )
     id: int | None = Field(  # type: ignore
@@ -49,20 +46,20 @@ class FileOccurrencesModel(
 ):
     """File Occurrences Data Model"""
 
-    _mode_support = PrivateAttr(default=True)
+    _mode_support: bool = PrivateAttr(default=True)
 
     count: int | None = Field(None, description='The number of occurrences.')
 
     data: list[FileOccurrenceModel] | None = Field(
         [],
-        methods=['POST', 'PUT'],
+        json_schema_extra={'methods': ['POST', 'PUT']},
         title='data',
     )
 
     mode: str = Field(
         'append',
         description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
+        json_schema_extra={'methods': ['POST', 'PUT']},
         title='append',
     )
 

@@ -1,13 +1,10 @@
 """TcEx Framework Module"""
 
-# standard library
 import json
 import logging
 
-# third-party
 from requests import Session
 
-# first-party
 from tcex.exit.error_code import handle_error
 from tcex.logger.trace_logger import TraceLogger
 

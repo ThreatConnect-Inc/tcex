@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from pydantic import BaseModel, Field, field_serializer
 
-# first-party
 from tcex.input.field_type.sensitive import Sensitive
 
 

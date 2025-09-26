@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import json
 import logging
 import os
@@ -8,10 +7,8 @@ import re
 from base64 import b64decode
 from pathlib import Path
 
-# third-party
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-# first-party
 from tcex.app.config.install_json import InstallJson
 from tcex.input.field_type import Sensitive
 from tcex.input.model.advanced_request_model import AdvancedRequestModel

@@ -1,14 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-# third-party
 from pydantic.annotated_handlers import GetCoreSchemaHandler
 from pydantic_core import core_schema
 
-# first-party
 from tcex.input.field_type.exception import InvalidType
 
 
@@ -20,21 +17,6 @@ class Integer(int):
     gt: ClassVar[int | None] = None
     le: ClassVar[int | None] = None
     lt: ClassVar[int | None] = None
-
-    # @classmethod
-    # def __modify_schema__(cls, field_schema: dict[str, Any]):
-    #     """Modify the field schema."""
-
-    #     def update_not_none(mapping: dict[Any, Any], **update: Any):
-    #         mapping.update({k: v for k, v in update.items() if v is not None})
-
-    #     update_not_none(
-    #         field_schema,
-    #         exclusiveMinimum=cls.gt,
-    #         exclusiveMaximum=cls.lt,
-    #         minimum=cls.ge,
-    #         maximum=cls.le,
-    #     )
 
     @classmethod
     def _validate(cls, value: int | str, info: core_schema.ValidationInfo) -> int:

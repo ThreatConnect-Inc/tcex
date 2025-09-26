@@ -1,12 +1,9 @@
 """TcEx Framework Module"""
 
-# standard library
 from __future__ import annotations
 
-# third-party
 from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
-# first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
@@ -180,10 +177,4 @@ class VictimAssetsModel(
     )
 
 
-# first-party
 from tcex.api.tc.v3.groups.group_model import GroupsModel
-
-# rebuild model
-# VictimAssetDataModel.model_rebuild()
-# VictimAssetModel.model_rebuild()
-# VictimAssetsModel.model_rebuild()

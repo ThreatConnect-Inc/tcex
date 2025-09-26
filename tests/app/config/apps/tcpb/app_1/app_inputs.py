@@ -1,16 +1,24 @@
 """TcEx Framework Module"""
 
 
-# standard library
 from typing import Any
 
-# third-party
+
 from pydantic import BaseModel, field_validator
 
-# first-party
-from tcex.input.field_type import (Choice, KeyValue, Sensitive, String,
-                                   TCEntity, always_array, binary,
-                                   entity_input, sensitive, string)
+
+from tcex.input.field_type import (
+    Choice,
+    KeyValue,
+    Sensitive,
+    String,
+    TCEntity,
+    always_array,
+    binary,
+    entity_input,
+    sensitive,
+    string,
+)
 from tcex.input.input import Input
 
 
@@ -43,7 +51,8 @@ class Action1Model(AppBaseModel):
 
     boolean_input_required: bool = False
     # vv: Option 1|Option 2|Option 3
-    choice_required: Choice
+    choice_required: Choice = Field(...)
+    choice_optional: Choice | None = Field(None)
     # pbd: String, vv: ${TEXT}
     key_value_list_required: list[KeyValue]
     # vv: Option 1|Option 2|Option 3

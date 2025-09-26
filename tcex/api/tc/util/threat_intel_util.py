@@ -1,15 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 import re
 from urllib.parse import quote
 
-# third-party
-import jmespath
 from requests import Session
 
-# first-party
+import jmespath
 from tcex.exit.error_code import handle_error
 from tcex.logger.trace_logger import TraceLogger
 from tcex.pleb.cached_property import cached_property

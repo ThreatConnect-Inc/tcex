@@ -1,14 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 from __future__ import annotations
 
 from datetime import datetime
 
-# third-party
 from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
-# first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
@@ -178,12 +175,6 @@ class IndicatorAttributesModel(
     )
 
 
-# first-party
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorModel
 from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
-
-# rebuild model
-# IndicatorAttributeDataModel.model_rebuild()
-# IndicatorAttributeModel.model_rebuild()
-# IndicatorAttributesModel.model_rebuild()

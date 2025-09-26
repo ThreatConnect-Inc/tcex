@@ -1,14 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 from __future__ import annotations
 
 from datetime import datetime
 
-# third-party
 from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
-# first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
@@ -294,7 +291,6 @@ class ArtifactsModel(
     )
 
 
-# first-party
 from tcex.api.tc.v3.artifact_types.artifact_type_model import ArtifactTypeModel
 from tcex.api.tc.v3.cases.case_model import CaseModel
 from tcex.api.tc.v3.groups.group_model import GroupsModel

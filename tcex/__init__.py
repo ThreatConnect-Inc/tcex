@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 import contextlib
 import logging
 
-# first-party
 from tcex.__metadata__ import __license__, __version__
 from tcex.logger.cache_handler import CacheHandler
 from tcex.logger.trace_logger import TraceLogger
@@ -33,9 +31,6 @@ def initialize_logger():
 # init logger before instantiating tcex
 initialize_logger()
 
-# first-party
-# TODO: Fix this
-# with contextlib.suppress(ImportError):
-#     # first-party
-#     from tcex.tcex import TcEx
-from tcex.tcex import TcEx
+
+with contextlib.suppress(ImportError):
+    from tcex.tcex import TcEx

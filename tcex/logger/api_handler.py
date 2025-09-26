@@ -1,11 +1,9 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 import threading
 import time
 
-# third-party
 from requests import Session
 
 

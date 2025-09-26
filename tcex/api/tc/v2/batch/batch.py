@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import gzip
 import json
 import os
@@ -12,10 +11,8 @@ from collections import deque
 from collections.abc import Callable
 from typing import Any
 
-# third-party
 from requests import Response, Session
 
-# first-party
 from tcex.api.tc.v2.batch.batch_submit import BatchSubmit
 from tcex.api.tc.v2.batch.batch_writer import BatchWriter, GroupType, IndicatorType
 from tcex.exit.error_code import handle_error

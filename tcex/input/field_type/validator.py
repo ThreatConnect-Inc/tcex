@@ -1,14 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 import operator
 from collections.abc import Callable
 from typing import Any
 
-# third-party
 from pydantic import BaseModel, ValidationInfo, field_validator
 
-# first-party
 from tcex.input.field_type.exception import InvalidEmptyValue, InvalidInput, InvalidType
 
 

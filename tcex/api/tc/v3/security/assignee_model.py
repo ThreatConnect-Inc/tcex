@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from pydantic import Field, field_validator
 
-# first-party
 from tcex.api.tc.v3.security.assignee_user_group_model import AssigneeUserGroupModel
 from tcex.api.tc.v3.security.assignee_user_model import AssigneeUserModel
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC

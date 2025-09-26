@@ -1,16 +1,16 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import os
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from random import randint
 from typing import cast
 
-# third-party
+
 from _pytest.fixtures import FixtureRequest
 
-# first-party
+
 from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.file import File
 from tcex.tcex import TcEx
 from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
@@ -131,7 +131,7 @@ class TestFileIndicators(TestThreatIntelligence):
     def tests_ti_file_add_observation(self):
         """Test adding observation."""
         file = cast(File, self.ti_helper.create_indicator())
-        now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        now = datetime.now(UTC).strftime('%Y-%m-%d %H:%M:%S')
         response = file.add_observers(2, now)
         assert response.ok
 

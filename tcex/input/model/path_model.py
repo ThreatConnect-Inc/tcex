@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 import tempfile
 from pathlib import Path
 
-# third-party
 from pydantic import BaseModel, Field
 
 

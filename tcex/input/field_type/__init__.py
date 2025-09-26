@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# first-party
 from tcex.input.field_type.binary import Binary, binary
 from tcex.input.field_type.case_management_entity import (
     ArtifactEntity,

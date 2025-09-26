@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from requests import Session
 
-# first-party
 from tcex.api.tc.v3.security.owner_roles.owner_role import OwnerRole, OwnerRoles
 from tcex.api.tc.v3.security.owners.owner import Owner, Owners
 from tcex.api.tc.v3.security.system_roles.system_role import SystemRole, SystemRoles

@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING, Self
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
 from tcex.api.tc.v3.case_attributes.case_attribute_model import CaseAttributeModel
@@ -21,7 +19,6 @@ from tcex.api.tc.v3.tags.tag_model import TagModel
 from tcex.api.tc.v3.tasks.task_model import TaskModel
 
 if TYPE_CHECKING:  # pragma: no cover
-    # first-party
     from tcex.api.tc.v3.artifacts.artifact import Artifact  # CIRCULAR-IMPORT
     from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute  # CIRCULAR-IMPORT
     from tcex.api.tc.v3.groups.group import Group  # CIRCULAR-IMPORT
@@ -77,7 +74,7 @@ class Case(ObjectABC):
     @property
     def artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
-        from tcex.api.tc.v3.artifacts.artifact import Artifacts
+        from tcex.api.tc.v3.artifacts.artifact import Artifacts  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Artifacts)  # type: ignore
 
@@ -93,42 +90,42 @@ class Case(ObjectABC):
     @property
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
-        from tcex.api.tc.v3.groups.group import Groups
+        from tcex.api.tc.v3.groups.group import Groups  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
 
     @property
     def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
-        from tcex.api.tc.v3.indicators.indicator import Indicators
+        from tcex.api.tc.v3.indicators.indicator import Indicators  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Indicators)  # type: ignore
 
     @property
     def attributes(self) -> Generator['CaseAttribute', None, None]:
         """Yield Attribute from Attributes."""
-        from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttributes
+        from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttributes  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(CaseAttributes)  # type: ignore
 
     @property
     def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
-        from tcex.api.tc.v3.notes.note import Notes
+        from tcex.api.tc.v3.notes.note import Notes  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Notes)  # type: ignore
 
     @property
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
-        from tcex.api.tc.v3.tags.tag import Tags
+        from tcex.api.tc.v3.tags.tag import Tags  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore
 
     @property
     def tasks(self) -> Generator['Task', None, None]:
         """Yield Task from Tasks."""
-        from tcex.api.tc.v3.tasks.task import Tasks
+        from tcex.api.tc.v3.tasks.task import Tasks  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Tasks)  # type: ignore
 
@@ -162,8 +159,8 @@ class Case(ObjectABC):
             ex_msg = 'Invalid type passed in to stage_assignee'
             raise RuntimeError(ex_msg)  # noqa: TRY004
         data._staged = True  # noqa: SLF001
-        self.model.assignee._staged = True  # noqa: SLF001
-        self.model.assignee.type = type
+        self.model.assignee._staged = True  # noqa: SLF001  # type: ignore
+        self.model.assignee.type = type  # type: ignore
         self.model.assignee.data = data  # type: ignore
 
     def stage_associated_case(self, data: dict | ObjectABC | CaseModel):

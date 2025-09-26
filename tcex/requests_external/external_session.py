@@ -1,22 +1,19 @@
 """TcEx Framework Module"""
 
-# standard library
 import contextlib
 import logging
 import time
 from collections.abc import Callable
 from typing import ClassVar
 
-# third-party
-import urllib3
 from requests import Response, Session, adapters, exceptions
 from requests.adapters import DEFAULT_POOLBLOCK, DEFAULT_POOLSIZE, DEFAULT_RETRIES
-from urllib3.util.retry import Retry
 
-# first-party
+import urllib3
 from tcex.requests_external.rate_limit_handler import RateLimitHandler
 from tcex.util.requests_to_curl import RequestsToCurl
 from tcex.util.util import Util
+from urllib3.util.retry import Retry
 
 # get logger
 _logger = logging.getLogger(__name__.split('.', maxsplit=1)[0])

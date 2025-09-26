@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from pydantic import Field
 
-# first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
@@ -19,20 +17,19 @@ class IntelReqTypeModel(
 
     id: int | None = Field(  # pyright: ignore [reportGeneralTypeIssues]
         None,
-        methods=['POST', 'PUT'],
+        json_schema_extra={'methods': ['POST', 'PUT'], 'read_only': True},
         description='The ID of the item.',
-        read_only=True,
         title='id',
     )
     name: str | None = Field(
         None,
         description='Name of the Intel Requirement Type.',
-        read_only=True,
+        json_schema_extra={'methods': ['POST', 'PUT'], 'read_only': True},
         title='name',
     )
     description: str | None = Field(
         None,
         description='Description of the Intel Requirement Type.',
-        read_only=True,
+        json_schema_extra={'methods': ['POST', 'PUT'], 'read_only': True},
         title='description',
     )

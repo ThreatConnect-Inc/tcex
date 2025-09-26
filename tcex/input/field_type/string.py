@@ -1,14 +1,11 @@
-"""TcEx Framework Module"""  # noqa: A005
+"""TcEx Framework Module"""
 
-# standard library
 import re
 from typing import Any, ClassVar
 
-# third-party
 from pydantic.annotated_handlers import GetCoreSchemaHandler
 from pydantic_core import core_schema  # TYPE-CHECKING
 
-# first-party
 from tcex.input.field_type.exception import InvalidEmptyValue, InvalidPatternValue, InvalidType
 
 

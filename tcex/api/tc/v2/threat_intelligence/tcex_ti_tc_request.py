@@ -1,15 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
 import hashlib
 import logging
 from functools import lru_cache
 from urllib.parse import quote
 
-# third-party
 from requests import Session
 
-# first-party
 from tcex.exit.error_code import TcExErrorCode
 from tcex.logger.trace_logger import TraceLogger
 

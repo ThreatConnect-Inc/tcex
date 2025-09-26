@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.groups.group_model import GroupModel
 from tcex.api.tc.v3.object_abc import ObjectABC
@@ -13,7 +11,6 @@ from tcex.api.tc.v3.victim_assets.victim_asset_filter import VictimAssetFilter
 from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetModel, VictimAssetsModel
 
 if TYPE_CHECKING:  # pragma: no cover
-    # first-party
     from tcex.api.tc.v3.groups.group import Group  # CIRCULAR-IMPORT
 
 
@@ -88,7 +85,7 @@ class VictimAsset(ObjectABC):
     @property
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
-        from tcex.api.tc.v3.groups.group import Groups
+        from tcex.api.tc.v3.groups.group import Groups  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
 

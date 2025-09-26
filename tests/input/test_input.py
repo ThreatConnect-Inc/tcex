@@ -10,14 +10,14 @@ Classes:
 TcEx Module Tested: tcex.input.config
 """
 
-# standard library
+
 import json
 import os
 from collections.abc import Callable
 from pathlib import Path
 from uuid import uuid4
 
-# first-party
+
 from tcex import TcEx
 from tcex.registry import registry
 from tests.mock_app import MockApp

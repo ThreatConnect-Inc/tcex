@@ -1,11 +1,9 @@
 """TcEx Framework Module"""
 
-# standard library
 import importlib
 from abc import ABC
 from typing import Any
 
-# first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
 from tcex.util.render.render import Render
 

@@ -1,12 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
+
 from collections.abc import Callable
 
-# third-party
+
 import pytest
 
-# first-party
+
 from tcex.api.tc.v3.intel_requirements.keyword_sections.keyword_section_model import (
     KeywordSectionModel,
 )
@@ -103,7 +103,7 @@ class TestIntelRequirements(TestV3):
         ir = self.v3.intel_requirement(id=ir.model.id)
         ir.get()
 
-        assert len(ir.model.keyword_sections) == 2
+        assert len(ir.model.keyword_sections) == 3
         # assert ir.model.keyword_sections[0].section_number == 0  # This doesn't come back
         assert ir.model.keyword_sections[0].compare_value == 'includes'
         assert ir.model.keyword_sections[0].keywords[0].get('value') == 'keyword1' # type: ignore

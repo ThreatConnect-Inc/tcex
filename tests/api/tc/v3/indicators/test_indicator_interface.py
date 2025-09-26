@@ -1,14 +1,14 @@
 """TcEx Framework Module"""
 
-# standard library
+
 from collections.abc import Callable
 from random import randint, sample
 
-# third-party
+
 import pytest
 from _pytest.fixtures import FixtureRequest
 
-# first-party
+
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 

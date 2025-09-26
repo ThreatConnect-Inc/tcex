@@ -1,11 +1,9 @@
 """Model Definition"""
 
-# standard library
 from collections.abc import Callable
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-# third-party
 from jmespath import compile as jmespath_compile
 
 
@@ -62,7 +60,7 @@ class TransformModel(BaseModel, extra='forbid'):
 class PathTransformModel(BaseModel, extra='forbid'):
     """."""
 
-    default: str | None = Field(None, description='')
+    default: int | str | None = Field(None, description='')
     path: str | None = Field(None, description='')
 
     @field_validator('path')

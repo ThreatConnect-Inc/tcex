@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# standard library
 from collections.abc import Iterator
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.attribute_types.attribute_type_filter import AttributeTypeFilter
 from tcex.api.tc.v3.attribute_types.attribute_type_model import (

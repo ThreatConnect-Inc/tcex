@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from abc import ABC
 from textwrap import TextWrapper
 
-# first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
 from tcex.util.string_operation import SnakeString
 
@@ -55,7 +53,7 @@ class GenerateModelABC(GenerateABC, ABC):
         """
         type_ = self.util.camel_string(type_)
         fields = data['fields']
-        typing_type = data['typing_type'].strip("'").strip(' | None')
+        typing_type = data['typing_type'].strip("'").removesuffix(' | None')
 
         fields_string = ', '.join(f"'{field}'" for field in fields)
         return '\n'.join(
@@ -458,13 +456,29 @@ class GenerateModelABC(GenerateABC, ABC):
             if libs:
                 _libs.append('')  # add newline
                 _libs.append('')  # add newline
-                _libs.append('# first-party')
+                _libs.append('')
                 for lib in sorted(libs):
                     _libs.append(lib)
         return '\n'.join(_libs)
 
     def gen_forward_reference(self):
         """Generate first-party forward reference, imported at the bottom of the file."""
+        if self.type_ in [
+            'cases',
+            'group_attributes',
+            'groups',
+            'indicator_attributes',
+            'indicators',
+            'notes',
+            'tags',
+            'tasks',
+            'victim_assets',
+            'victims',
+            'workflow_events',
+            'workflow_templates',
+        ]:
+            return ''
+
         return '\n'.join(
             [
                 '',

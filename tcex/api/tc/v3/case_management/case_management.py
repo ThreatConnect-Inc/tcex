@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from requests import Session
 
-# first-party
 from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute, CaseAttributes
 
 
@@ -515,7 +513,6 @@ class CaseManagement:
         return WorkflowTemplates(session=self.session, **kwargs)
 
 
-# first-party
 from tcex.api.tc.v3.artifact_types.artifact_type import ArtifactType, ArtifactTypes
 from tcex.api.tc.v3.artifacts.artifact import Artifact, Artifacts
 from tcex.api.tc.v3.cases.case import Case, Cases

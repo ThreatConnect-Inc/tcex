@@ -1,12 +1,9 @@
 """TcEx Framework Module"""
 
-# standard library
 from typing import Any
 
-# third-party
 from pydantic import BaseModel, Field, field_validator
 
-# first-party
 from tcex.input.field_type import EditChoice
 
 

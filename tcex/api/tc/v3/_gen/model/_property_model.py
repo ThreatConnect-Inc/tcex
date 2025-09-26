@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# third-party
 from pydantic import BaseModel, Field, field_validator
 from pydantic.alias_generators import to_camel
 
-# first-party
 from tcex.api.tc.v3._gen.model._extra_model import ExtraModel
 from tcex.pleb.cached_property import cached_property
 from tcex.util import Util
@@ -206,7 +204,7 @@ class PropertyModel(
                     'import_data': f'{bi} import AssigneeModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type, True),
+                    'typing_type': cls.__extra_format_type_model(pm.type, optional=True),
                 }
             )
         elif pm.type == 'AttributeDatas':
@@ -225,7 +223,7 @@ class PropertyModel(
                     'import_data': f'{bi} import CaseAttributesModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type, True),
+                    'typing_type': cls.__extra_format_type_model(pm.type, optional=True),
                 }
             )
         elif pm.type == 'Date':
@@ -243,7 +241,7 @@ class PropertyModel(
                     'import_data': f'{bi} import GroupModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type, True),
+                    'typing_type': cls.__extra_format_type_model(pm.type, optional=True),
                 }
             )
         elif pm.type == 'GroupAttributes':
@@ -253,7 +251,7 @@ class PropertyModel(
                     'import_data': f'{bi} import GroupAttributesModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type, True),
+                    'typing_type': cls.__extra_format_type_model(pm.type, optional=True),
                 }
             )
         elif pm.type == 'Indicator':
@@ -263,7 +261,7 @@ class PropertyModel(
                     'import_data': f'{bi} import IndicatorModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type, True),
+                    'typing_type': cls.__extra_format_type_model(pm.type, optional=True),
                 }
             )
         elif pm.type == 'IntelReqType':
@@ -273,7 +271,7 @@ class PropertyModel(
                     'import_data': f'{bi} import IntelReqTypeModel',
                     'import_source': 'first-party-forward-reference',
                     'model': 'IntelReqTypeModel',
-                    'typing_type': cls.__extra_format_type_model(pm.type, True),
+                    'typing_type': cls.__extra_format_type_model(pm.type, optional=True),
                 }
             )
         elif pm.type == 'IndicatorAttributes':
@@ -283,7 +281,7 @@ class PropertyModel(
                     'import_data': f'{bi} import IndicatorAttributesModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type, True),
+                    'typing_type': cls.__extra_format_type_model(pm.type, optional=True),
                 }
             )
         elif pm.type == 'JsonNode':
@@ -300,7 +298,9 @@ class PropertyModel(
                     'import_data': f'{bi} import KeywordSectionModel',
                     'import_source': 'first-party-forward-reference',
                     'model': 'KeywordSectionModel',
-                    'typing_type': f'list[{cls.__extra_format_type_model(pm.type, True)}] | None',
+                    'typing_type': (
+                        f'list[{cls.__extra_format_type_model(pm.type, optional=True)}] | None'
+                    ),
                 }
             )
         elif pm.name == 'customAssociationNames':
@@ -315,7 +315,7 @@ class PropertyModel(
                     'import_data': (f'{bi}security.task_assignee_model import TaskAssigneesModel'),
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type, True),
+                    'typing_type': cls.__extra_format_type_model(pm.type, optional=True),
                 }
             )
         elif pm.type == 'VictimAttributes':
@@ -325,7 +325,7 @@ class PropertyModel(
                     'import_data': f'{bi} import VictimAttributesModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
-                    'typing_type': cls.__extra_format_type_model(pm.type, True),
+                    'typing_type': cls.__extra_format_type_model(pm.type, optional=True),
                 }
             )
 
@@ -373,7 +373,7 @@ class PropertyModel(
         if pm.type in types:
             extra.update(cls.__extra_gen_req_code(pm.type))
             extra['model'] = f'{pm.type}Model'
-            extra['typing_type'] = cls.__extra_format_type_model(pm.type, True)
+            extra['typing_type'] = cls.__extra_format_type_model(pm.type, optional=True)
 
     @classmethod
     def __extra_gen_req_code(cls, type_: CamelString) -> dict[str, str]:

@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from datetime import datetime
 from enum import Enum
 
-# first-party
 from arrow import Arrow
 
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints

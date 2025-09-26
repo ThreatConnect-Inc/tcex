@@ -29,15 +29,12 @@ Usage Examples:
     ) = Field(...)
 """
 
-# standard library
 from typing import Any, ClassVar
 
-# third-party
 from pydantic.annotated_handlers import GetCoreSchemaHandler
 from pydantic.dataclasses import dataclass
 from pydantic_core import core_schema
 
-# first-party
 from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
 from tcex.app.config.install_json import InstallJson
 from tcex.input.field_type.exception import InvalidEmptyValue, InvalidInput, InvalidType

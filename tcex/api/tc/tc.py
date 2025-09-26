@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from requests import Session  # TYPE-CHECKING
 
-# first-party
 from tcex.api.tc.ti_transform import TiTransform, TiTransforms
 from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
 from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil

@@ -9,15 +9,15 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.Binary
 """
 
-# standard library
+
 from collections.abc import Callable
 from typing import Any
 
-# third-party
+
 import pytest
 from pydantic import BaseModel, field_validator
 
-# first-party
+
 from tcex.input.field_type import (Binary, always_array, binary,
                                    conditional_required)
 from tcex.pleb.cached_property import cached_property

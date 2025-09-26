@@ -1,18 +1,13 @@
 """TcEx Framework Module"""
 
-# standard library
 import datetime
 import logging
 from typing import TYPE_CHECKING, Any
 
-# third-party
 import wrapt
-
-# first-party
 from tcex.logger.trace_logger import TraceLogger
 
 if TYPE_CHECKING:
-    # standard library
     from collections.abc import Callable
 
 # get tcex logger

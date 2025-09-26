@@ -1,26 +1,56 @@
-"""TcEx Framework Module"""
+"""TestPlaybookEmbeddedVariable for TcEx App Playbook Embedded Variable Module Testing.
 
-# standard library
+This module contains comprehensive test cases for the TcEx App Playbook Embedded Variable Module,
+specifically testing embedded variable functionality including string replacement, variable
+expansion, JSON handling, escape character processing, and various data type embedding
+scenarios across different playbook variable types and formats.
+
+Classes:
+    TestPlaybookEmbeddedVariable: Test class for TcEx App Playbook Embedded Variable Module
+        functionality
+
+TcEx Module Tested: app.playbook.playbook_read
+"""
+
+
 from typing import Any
 
-# third-party
+
 import pytest
 
-# first-party
+
 from tcex import TcEx
 from tcex.app.playbook import Playbook
 
 
-class TestEmbedded:
-    """Test the TcEx Batch Module."""
+class TestPlaybookEmbeddedVariable:
+    """TestPlaybookEmbeddedVariable for TcEx App Playbook Embedded Variable Module Testing.
 
-    def setup_method(self):
-        """Configure setup before all tests."""
-        print('\n')  # print blank line for readability
+    This class provides comprehensive testing for the TcEx App Playbook Embedded Variable Module,
+    covering various embedded variable scenarios including string replacement patterns,
+    variable expansion, JSON data handling, escape character processing, and complex
+    nested variable embedding across different playbook variable types.
+    """
+
+    def setup_method(self) -> None:
+        """Configure setup before all tests.
+
+        This method is called before each test method to prepare the test environment
+        for embedded variable testing scenarios.
+        """
+        # setup method for future use if needed
 
     @staticmethod
-    def stage_data(tcex: TcEx):
-        """Configure setup before all tests."""
+    def stage_data(tcex: TcEx) -> None:
+        """Stage test data for embedded variable testing.
+
+        This utility method sets up various playbook variables with different data types
+        and values to test embedded variable functionality including strings, string arrays,
+        key-value pairs, and key-value arrays with various escape characters and formats.
+
+        Args:
+            tcex: TcEx instance with playbook functionality configured
+        """
         out_variables = []
         tcex.inputs.model.tc_playbook_out_variables = ','.join(out_variables)  # type: ignore
         playbook = tcex.app.playbook
@@ -28,7 +58,7 @@ class TestEmbedded:
         # add String inputs
         string_inputs = [
             {'variable': '#App:0001:string.1!String', 'data': 'DATA'},
-            {'variable': '#App:0001:string.2!String', 'data': 'This is \"a string\"'},
+            {'variable': '#App:0001:string.2!String', 'data': 'This is "a string"'},
             {'variable': '#App:0001:string.3!String', 'data': 'two'},
             {'variable': '#App:0001:string.4!String', 'data': 'one\ntwo\n'},
             {'variable': '#App:0001:string.5!String', 'data': r'\snow or later\s'},
@@ -84,70 +114,77 @@ class TestEmbedded:
     @pytest.mark.parametrize(
         'embedded_value,expected',
         [
-            # (
-            #     (
-            #         '{\n\"trackingID\": 12345,\n\"title\": \"#App:0001:string.7!String\",\n'
-            #         '\"comments\": \"#App:0001:string.8!String\",\n\"requester\": '
-            #         '\"ThreatConnect Playbook\"}'
-            #     ),
-            #     (
-            #         '{\n\"trackingID\": 12345,\n\"title\": \"invalid json char \" \\",\n'
-            #         '\"comments\": \"Json Reserved Characters: \\\\" \n \r \f \b \t '
-            #         '\\",\n\"requester\": \"ThreatConnect Playbook\"}'
-            #     ),
-            # ),
             # test \s replacement
-            (r'\stest', r' test'),
-            (r'test\s', r'test '),
-            (r'\stest\s', r' test '),
-            (r'\\stest', r'\stest'),
-            (r'test\\s', r'test\s'),
-            (r'\\\somedir', r'\\somedir'),
-            (r'\snow\sor\slater\s', ' now or later '),
-            (
+            pytest.param(r'\stest', r' test', id='pass-backslash-s-start'),
+            pytest.param(r'test\s', r'test ', id='pass-backslash-s-end'),
+            pytest.param(r'\stest\s', r' test ', id='pass-backslash-s-both'),
+            pytest.param(r'\\stest', r'\stest', id='pass-escaped-backslash-s-start'),
+            pytest.param(r'test\\s', r'test\s', id='pass-escaped-backslash-s-end'),
+            pytest.param(r'\\\somedir', r'\\somedir', id='pass-escaped-backslash-somedir'),
+            pytest.param(r'\snow\sor\slater\s', ' now or later ', id='pass-multiple-backslash-s'),
+            pytest.param(
                 '{"numbers": "#App:0001:string.4!String three\n\r"}',
                 '{"numbers": "one\ntwo\n three\n\r"}',
+                id='pass-json-with-embedded-string',
             ),
             # String Test: new lines
-            ('#App:0001:string.4!String', 'one\ntwo\n'),
+            pytest.param('#App:0001:string.4!String', 'one\ntwo\n', id='pass-string-with-newlines'),
             # String Test: escaped \n
-            ('#App:0001:string.5!String', r'\snow or later\s'),
+            pytest.param(
+                '#App:0001:string.5!String', r'\snow or later\s', id='pass-string-with-escaped-n'
+            ),
             # String Test: \s replacement
-            ('#App:0001:string.6!String', r'\snow is not \\snow.\s'),
+            pytest.param(
+                '#App:0001:string.6!String',
+                r'\snow is not \\snow.\s',
+                id='pass-string-with-backslash-s',
+            ),
             # String Test: String in String
-            ('This is #App:0001:string.1!String in a String.', 'This is DATA in a String.'),
+            pytest.param(
+                'This is #App:0001:string.1!String in a String.',
+                'This is DATA in a String.',
+                id='pass-string-embedded-in-string',
+            ),
             # String Test: StringArray in String
-            (
+            pytest.param(
                 'This is #App:0001:array.1!StringArray in a String.',
                 'This is ["two", "three"] in a String.',
+                id='pass-stringarray-embedded-in-string',
             ),
             # String Test: KeyValue in String
-            (
+            pytest.param(
                 'This is #App:0001:keyvalue.1!KeyValue in a String.',
                 'This is {"key": "kv1", "value": "kv1 value"} in a String.',
+                id='pass-keyvalue-embedded-in-string',
             ),
             # String Test: KeyValueArray in String
-            (
+            pytest.param(
                 'This is #App:0001:keyvalue.array.1!KeyValueArray in a String.',
                 (
                     'This is [{"key": "kva1", "value": "kva1 value"}, '
                     '{"key": "kva2", "value": "kva2 value"}] in a String.'
                 ),
+                id='pass-keyvaluearray-embedded-in-string',
             ),
             # String Test: String and StringArray in String
-            (
-                'This is #App:0001:string.1!String and #App:0001:array.1!StringArray in '
-                'a String.',
+            pytest.param(
+                'This is #App:0001:string.1!String and #App:0001:array.1!StringArray in a String.',
                 'This is DATA and ["two", "three"] in a String.',
+                id='pass-mixed-variables-embedded-in-string',
             ),
             # String Test: service now use case
-            ('{"work_notes": "#App:0001:string.4!String"}', '{"work_notes": "one\ntwo\n"}'),
+            pytest.param(
+                '{"work_notes": "#App:0001:string.4!String"}',
+                '{"work_notes": "one\ntwo\n"}',
+                id='pass-servicenow-work-notes',
+            ),
             # KeyValueArray Test: Nested KeyValue
-            (
+            pytest.param(
                 '{"key": "one", "value": #App:0001:keyvalue.1!KeyValue}',
                 '{"key": "one", "value": {"key": "kv1", "value": "kv1 value"}}',
+                id='pass-nested-keyvalue-in-json',
             ),
-            (
+            pytest.param(
                 (
                     '{'
                     '    "KeyValue": #App:0001:keyvalue.1!KeyValue,'
@@ -166,13 +203,29 @@ class TestEmbedded:
                     '    "StringArray": ["two", "three"]'
                     '}'
                 ),
+                id='pass-complex-json-with-multiple-embedded-types',
             ),
             # StringArray Test: String in StringArray
-            ('#App:0001:array.1!StringArray', ['two', 'three']),
+            pytest.param(
+                '#App:0001:array.1!StringArray', ['two', 'three'], id='pass-stringarray-direct'
+            ),
         ],
     )
-    def test_embedded_read_string(self, embedded_value: str, expected: Any, tcex: TcEx):
-        """Test playbook variables."""
+    def test_embedded_read_string(self, embedded_value: str, expected: Any, tcex: TcEx) -> None:
+        """Test Embedded Read String for TcEx App Playbook Embedded Variable Module.
+
+        This test case verifies that embedded variable functionality works correctly
+        by testing various embedded variable patterns including string replacement,
+        variable expansion, JSON handling, escape character processing, and complex
+        nested variable scenarios across different playbook variable types.
+
+        Parameters:
+            embedded_value: The string containing embedded variables to test
+            expected: The expected result after variable expansion and processing
+
+        Fixtures:
+            tcex: TcEx instance with playbook functionality configured
+        """
         playbook: Playbook = tcex.app.playbook
         self.stage_data(tcex)
         result = playbook.read.variable(embedded_value)

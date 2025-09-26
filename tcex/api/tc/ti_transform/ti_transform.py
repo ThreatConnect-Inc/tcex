@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# standard library
 from datetime import datetime
 
-# first-party
 from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
 from tcex.api.tc.ti_transform.transform_abc import (
     NoValidTransformException,
@@ -155,7 +153,7 @@ class TiTransform(TransformABC):
         """
         self.adhoc_indicators.append(indicator_data)
 
-    def add_metadata(self, key: str, value: str):
+    def add_metadata(self, key: str, value: int | str):
         """Add name to the transformed item."""
         if all([key, value]):
             self.transformed_item[key] = value

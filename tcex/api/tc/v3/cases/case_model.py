@@ -1,14 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 from __future__ import annotations
 
 from datetime import datetime
 
-# third-party
 from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
-# first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
@@ -450,7 +447,6 @@ class CasesModel(
     )
 
 
-# first-party
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
 from tcex.api.tc.v3.case_attributes.case_attribute_model import CaseAttributesModel
 from tcex.api.tc.v3.groups.group_model import GroupsModel
@@ -462,8 +458,3 @@ from tcex.api.tc.v3.tags.tag_model import TagsModel
 from tcex.api.tc.v3.tasks.task_model import TasksModel
 from tcex.api.tc.v3.workflow_events.workflow_event_model import WorkflowEventsModel
 from tcex.api.tc.v3.workflow_templates.workflow_template_model import WorkflowTemplateModel
-
-# rebuild model
-# CaseDataModel.model_rebuild()
-# CaseModel.model_rebuild()
-# CasesModel.model_rebuild()

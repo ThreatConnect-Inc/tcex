@@ -1,14 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 from __future__ import annotations
 
 from datetime import datetime
 
-# third-party
 from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
-# first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
@@ -214,13 +211,7 @@ class NotesModel(
     )
 
 
-# first-party
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
 from tcex.api.tc.v3.cases.case_model import CaseModel
 from tcex.api.tc.v3.tasks.task_model import TaskModel
 from tcex.api.tc.v3.workflow_events.workflow_event_model import WorkflowEventModel
-
-# rebuild model
-# NoteDataModel.model_rebuild()
-# NoteModel.model_rebuild()
-# NotesModel.model_rebuild()

@@ -1,16 +1,13 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 from abc import ABC
 from collections.abc import Generator
 from typing import Self
 
-# third-party
 from requests import Response, Session
 from requests.exceptions import ProxyError, RetryError
 
-# first-party
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC

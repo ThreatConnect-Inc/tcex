@@ -1,14 +1,14 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import os
 import uuid
 from random import randint
 
-# third-party
+
 from _pytest.fixtures import FixtureRequest
 
-# first-party
+
 from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
 from tcex.api.tc.v2.threat_intelligence.mapping.group.group import Group
 from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator import Indicator

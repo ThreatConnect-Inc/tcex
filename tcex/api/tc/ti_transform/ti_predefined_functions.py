@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import hashlib
 import json
 import uuid
@@ -8,7 +7,6 @@ from collections.abc import Iterable
 from inspect import _empty, signature
 from typing import TypedDict
 
-# first-party
 from tcex.api.tc.ti_transform.model.transform_model import (
     GroupTransformModel,
     IndicatorTransformModel,
@@ -268,8 +266,7 @@ class ProcessingFunctions:
                                 api_def['kwargs'][kwarg]
                             )
         except Exception as ex:
-            # first-party
-            from tcex.api.tc.ti_transform import TransformException
+            from tcex.api.tc.ti_transform import TransformException  # noqa: PLC0415
 
             ex_msg = f'{context}{additional_context}'
             raise TransformException(ex_msg, ex, context=api_def) from ex

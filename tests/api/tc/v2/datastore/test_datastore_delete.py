@@ -1,9 +1,9 @@
 """TcEx Framework Module"""
 
-# third-party
+
 from _pytest.monkeypatch import MonkeyPatch
 
-# first-party
+
 from tcex import TcEx
 from tests.api.tc.v2.datastore.mock_post import MockPost
 

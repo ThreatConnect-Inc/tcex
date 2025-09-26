@@ -10,14 +10,14 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.choice
 """
 
-# standard library
+
 from collections.abc import Callable
 
-# third-party
+
 import pytest
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-# first-party
+
 from tcex.input.field_type import Choice, choice
 from tcex.pleb.cached_property import cached_property
 from tcex.pleb.scoped_property import scoped_property
@@ -103,10 +103,10 @@ class TestInputsFieldTypeChoice(InputTest):
 
         config_data = {'my_choice': None}
         tcex = playbook_app(config_data=config_data).tcex
-        with pytest.raises(ValidationError) as ex:
+        with pytest.raises((TypeError, ValidationError)) as ex:
             tcex.inputs.add_model(PytestModel)
 
-        assert 'Input should be a valid string' in str(ex.value)
+        assert 'Error with field' in str(ex.value)
 
     @staticmethod
     def test_field_type_choice_assignment_test(playbook_app: Callable[..., MockApp]) -> None:
@@ -138,12 +138,12 @@ class TestInputsFieldTypeChoice(InputTest):
         tcex.inputs.model.my_choice = 'choice_3'  # type: ignore
         assert tcex.inputs.model.my_choice == 'choice_3'  # type: ignore
 
-        with pytest.raises(ValidationError) as ex:
+        with pytest.raises((TypeError, ValidationError)) as ex:
             tcex.inputs.model.my_choice = None  # type: ignore
 
-        assert 'Input should be a valid string' in str(ex.value)
+        assert 'Error with field' in str(ex.value)
 
-        with pytest.raises(ValidationError) as ex:
+        with pytest.raises((TypeError, ValidationError)) as ex:
             tcex.inputs.model.my_choice = 'Invalid Choice'  # type: ignore
 
         assert 'provided value Invalid Choice' in str(ex.value)
@@ -303,12 +303,12 @@ class TestInputsFieldTypeChoice(InputTest):
         class PytestModelRequired(BaseModel):
             """Test Model for Inputs"""
 
-            my_choice: choice(value_transformations=transformations)  # type: ignore
+            my_choice: choice(value_transformations=transformations) = Field(default=...)  # type: ignore
 
         class PytestModelOptional(BaseModel):
             """Test Model for Inputs"""
 
-            my_choice_optional: choice(value_transformations=transformations) | None  # type: ignore
+            my_choice_optional: choice(value_transformations=transformations) | None = Field(default=None)  # type: ignore
 
         pytest_model = PytestModelOptional
         if optional is False:

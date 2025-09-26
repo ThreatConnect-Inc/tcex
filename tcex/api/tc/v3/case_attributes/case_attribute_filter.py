@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from datetime import datetime
 from enum import Enum
 
-# first-party
 from arrow import Arrow
 
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -79,8 +77,8 @@ class CaseAttributeFilter(FilterABC):
     @property
     def has_case(self):
         """Return **CaseFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.cases.case_filter import CaseFilter
+
+        from tcex.api.tc.v3.cases.case_filter import CaseFilter  # noqa: PLC0415
 
         cases = CaseFilter(Tql())
         self._tql.add_filter('hasCase', TqlOperator.EQ, cases, TqlType.SUB_QUERY)

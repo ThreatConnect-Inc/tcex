@@ -1,12 +1,10 @@
 """TcEx Framework Module"""
 
-# standard library
 import json
 import uuid
 from collections.abc import Callable
 from typing import Any
 
-# first-party
 from tcex.api.tc.v2.batch.attribute import Attribute
 from tcex.api.tc.v2.batch.security_label import SecurityLabel
 from tcex.api.tc.v2.batch.tag import Tag

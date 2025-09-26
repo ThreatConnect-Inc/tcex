@@ -1,6 +1,6 @@
 """TcEx Framework Module"""
 
-# first-party
+
 from tcex.tcex import TcEx
 
 

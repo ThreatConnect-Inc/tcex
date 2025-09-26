@@ -1,10 +1,7 @@
 """TcEx Framework Module"""
 
-# standard library
 import json
 from collections.abc import Generator, Iterator
-
-# first-party
 from datetime import datetime
 from typing import TYPE_CHECKING, Self
 
@@ -23,12 +20,11 @@ from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelMod
 from tcex.api.tc.v3.tags.tag_model import TagModel
 
 if TYPE_CHECKING:  # pragma: no cover
-    # first-party
     from tcex.api.tc.v3.artifacts.artifact import Artifact  # CIRCULAR-IMPORT
     from tcex.api.tc.v3.cases.case import Case  # CIRCULAR-IMPORT
     from tcex.api.tc.v3.groups.group import Group  # CIRCULAR-IMPORT
-    from tcex.api.tc.v3.indicator_attributes.indicator_attribute import (
-        IndicatorAttribute,  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.indicator_attributes.indicator_attribute import (  # CIRCULAR-IMPORT
+        IndicatorAttribute,
     )
     from tcex.api.tc.v3.security_labels.security_label import SecurityLabel  # CIRCULAR-IMPORT
     from tcex.api.tc.v3.tags.tag import Tag  # CIRCULAR-IMPORT
@@ -115,21 +111,21 @@ class Indicator(ObjectABC):
     @property
     def associated_artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
-        from tcex.api.tc.v3.artifacts.artifact import Artifacts
+        from tcex.api.tc.v3.artifacts.artifact import Artifacts  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Artifacts)  # type: ignore
 
     @property
     def associated_cases(self) -> Generator['Case', None, None]:
         """Yield Case from Cases."""
-        from tcex.api.tc.v3.cases.case import Cases
+        from tcex.api.tc.v3.cases.case import Cases  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Cases)  # type: ignore
 
     @property
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
-        from tcex.api.tc.v3.groups.group import Groups
+        from tcex.api.tc.v3.groups.group import Groups  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
 
@@ -150,21 +146,23 @@ class Indicator(ObjectABC):
     @property
     def attributes(self) -> Generator['IndicatorAttribute', None, None]:
         """Yield Attribute from Attributes."""
-        from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttributes
+        from tcex.api.tc.v3.indicator_attributes.indicator_attribute import (  # noqa: PLC0415
+            IndicatorAttributes,
+        )
 
         yield from self._iterate_over_sublist(IndicatorAttributes)  # type: ignore
 
     @property
     def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
-        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
 
     @property
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
-        from tcex.api.tc.v3.tags.tag import Tags
+        from tcex.api.tc.v3.tags.tag import Tags  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore
 

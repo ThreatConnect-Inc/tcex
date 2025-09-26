@@ -1,12 +1,10 @@
 """TcEx Framework Module"""
 
-# standard library
 import os
 import threading
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-# first-party
 from tcex.app.config.install_json import InstallJson
 from tcex.app.key_value_store.key_value_store import KeyValueStore
 from tcex.app.playbook.playbook import Playbook
@@ -18,7 +16,6 @@ from tcex.registry import registry
 from tcex.util.file_operation import FileOperation
 
 if TYPE_CHECKING:
-    # first-party
     from tcex.app.service import ApiService, CommonServiceTrigger, WebhookTriggerService
 
 
@@ -136,14 +133,11 @@ class App:
     def service(self) -> 'ApiService | CommonServiceTrigger | WebhookTriggerService':
         """Include the Service Module."""
         if self.install_json.model.is_api_service_app:
-            # first-party
-            from tcex.app.service import ApiService as Service
+            from tcex.app.service import ApiService as Service  # noqa: PLC0415
         elif self.ij.model.is_webhook_trigger_app:
-            # first-party
-            from tcex.app.service import WebhookTriggerService as Service
+            from tcex.app.service import WebhookTriggerService as Service  # noqa: PLC0415
         elif self.ij.model.is_trigger_app:
-            # first-party
-            from tcex.app.service import CommonServiceTrigger as Service
+            from tcex.app.service import CommonServiceTrigger as Service  # noqa: PLC0415
         else:
             ex_msg = 'Could not determine the service type.'
             raise RuntimeError(ex_msg)

@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import concurrent.futures
 import json
 import sys
@@ -10,7 +9,6 @@ from functools import reduce
 from io import BytesIO
 from typing import Any
 
-# first-party
 from tcex.app.key_value_store.key_value_store import KeyValueStore
 from tcex.app.service.common_service import CommonService
 from tcex.app.token import Token

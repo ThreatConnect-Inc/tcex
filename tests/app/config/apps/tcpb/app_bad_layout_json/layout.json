@@ -1,0 +1,502 @@
+{
+  "inputs": [
+    {
+      "parameters": [
+        {
+          "name": "tc_action"
+        }
+      ],
+      "sequence": 1,
+      "title": "Action"
+    },
+    {
+      "parameters": [
+        {
+          "name": "username"
+        },
+        {
+          "name": "password"
+        }
+      ],
+      "sequence": 2,
+      "title": "Connection"
+    },
+    {
+      "parameters": [
+        {
+          "display": "tc_action in ('Action 1')",
+          "name": "boolean_input_required"
+        },
+        {
+          "display": "tc_action in ('Action 2')",
+          "name": "boolean_input_optional"
+        },
+        {
+          "display": "tc_action in ('Action 3')",
+          "name": "boolean_input_default"
+        },
+        {
+          "display": "tc_action in ('Action 1')",
+          "name": "choice_required"
+        },
+        {
+          "display": "tc_action in ('Action 2')",
+          "name": "choice_optional"
+        },
+        {
+          "display": "tc_action in ('Action 3')",
+          "name": "choice_default"
+        },
+        {
+          "display": "tc_action in ('Action 1')",
+          "name": "key_value_list_required"
+        },
+        {
+          "display": "tc_action in ('Action 2')",
+          "name": "key_value_list_optional"
+        },
+        {
+          "display": "tc_action in ('Action 3')",
+          "name": "key_value_list_default"
+        },
+        {
+          "display": "tc_action in ('Action 4')",
+          "name": "key_value_list_expose_playbook_key_as_string"
+        },
+        {
+          "display": "tc_action in ('Action 1')",
+          "name": "multi_choice_required"
+        },
+        {
+          "display": "tc_action in ('Action 2')",
+          "name": "multi_choice_optional"
+        },
+        {
+          "display": "tc_action in ('Action 3')",
+          "name": "multi_choice_default"
+        },
+        {
+          "display": "tc_action in ('Action 1')",
+          "name": "string_required"
+        },
+        {
+          "display": "tc_action in ('Action 2')",
+          "name": "string_optional"
+        },
+        {
+          "display": "tc_action in ('Action 3')",
+          "name": "string_default"
+        },
+        {
+          "display": "tc_action in ('Action 4')",
+          "name": "string_encrypt"
+        },
+        {
+          "display": "tc_action in ('Action 4')",
+          "name": "string_allow_multiple"
+        },
+        {
+          "display": "tc_action in ('Action 4')",
+          "name": "string_intel_type"
+        }
+      ],
+      "sequence": 3,
+      "title": "Configure"
+    },
+    {
+      "parameters": [
+        {
+          "name": "string_advanced"
+        }
+      ],
+      "sequence": 4,
+      "title": "Advanced"
+    }
+  ],
+  "outputs": [
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.binary.output1"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.binary.output2"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.binary.output3"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.binary_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.binary_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.binary_array.output3"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.key_value.output1"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.key_value.output2"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.key_value.output3"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.key_value_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.key_value_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.key_value_array.output3"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.string.output1"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.string.output2"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.string.output3"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.string_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.string_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.string_array.output3"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.tcentity.output1"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.tcentity.output2"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.tcentity.output3"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.tcentity_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.tcentity_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 1')",
+      "name": "action_1.tcentity_array.output3"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.binary.output1"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.binary.output2"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.binary.output3"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.binary_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.binary_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.binary_array.output3"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.key_value.output1"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.key_value.output2"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.key_value.output3"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.key_value_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.key_value_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.key_value_array.output3"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.string.output1"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.string.output2"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.string.output3"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.string_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.string_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.string_array.output3"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.tcentity.output1"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.tcentity.output2"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.tcentity.output3"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.tcentity_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.tcentity_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 2')",
+      "name": "action_2.tcentity_array.output3"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.binary.output1"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.binary.output2"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.binary.output3"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.binary_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.binary_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.binary_array.output3"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.key_value.output1"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.key_value.output2"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.key_value.output3"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.key_value_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.key_value_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.key_value_array.output3"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.string.output1"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.string.output2"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.string.output3"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.string_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.string_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.string_array.output3"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.tcentity.output1"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.tcentity.output2"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.tcentity.output3"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.tcentity_array.output1"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.tcentity_array.output2"
+    },
+    {
+      "display": "tc_action in ('Action 3')",
+      "name": "action_3.tcentity_array.output3"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.binary.output1"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.binary.output2"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.binary.output3"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.binary_array.output1"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.binary_array.output2"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.binary_array.output3"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.key_value.output1"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.key_value.output2"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.key_value.output3"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.key_value_array.output1"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.key_value_array.output2"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.key_value_array.output3"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.string.output1"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.string.output2"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.string.output3"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.string_array.output1"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.string_array.output2"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.string_array.output3"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.tcentity.output1"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.tcentity.output2"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.tcentity.output3"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.tcentity_array.output1"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.tcentity_array.output2"
+    },
+    {
+      "display": "tc_action not in ('')",
+      "name": "action_all.tcentity_array.output3"
+    }
+  ]
+}

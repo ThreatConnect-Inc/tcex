@@ -1,15 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
 import json
 from typing import TYPE_CHECKING
 from urllib.parse import quote, unquote
 
-# first-party
 from tcex.api.tc.v2.threat_intelligence.mapping.mapping import Mapping
 
 if TYPE_CHECKING:
-    # first-party
     from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 

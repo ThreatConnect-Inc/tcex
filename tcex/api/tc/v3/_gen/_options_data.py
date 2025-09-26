@@ -1,17 +1,14 @@
 """TcEx Framework Module"""
 
-# standard library
 import json
 import os
 from collections.abc import Generator
 from pathlib import Path
 
-# third-party
 from pydantic import ValidationError
 from requests import Session
 from requests.exceptions import ProxyError
 
-# first-party
 from tcex.api.tc.v3._gen.model import PropertyModel
 from tcex.input.field_type.sensitive import Sensitive
 from tcex.pleb.cached_property import cached_property
@@ -72,7 +69,8 @@ class OptionsData:
                 field_data_ = field_data_[0]
             else:
                 Render.panel.failure(
-                    f'Invalid type properties data: field-name={field_name}, type={self.object_type}'
+                    'Invalid type properties data: '
+                    f'field-name={field_name}, type={self.object_type}'
                 )
             field_data_['name'] = field_name
 
@@ -340,8 +338,7 @@ class OptionsData:
                 'webLink',  # Core Issue: should not be listed for this type
             ]
             for field in unused_fields:
-                if field in properties:
-                    del properties[field]
+                properties.pop(field, None)
 
         if self.object_type in ['users']:
             unused_fields = [
@@ -368,16 +365,14 @@ class OptionsData:
                 'uiTheme',
             ]
             for field in unused_fields:
-                if field in properties:
-                    del properties[field]
+                properties.pop(field, None)
 
         if self.object_type in ['victims']:
             unused_fields = [
                 'ownerId',  # Core Issue: should not be listed for this type
             ]
             for field in unused_fields:
-                if field in properties:
-                    del properties[field]
+                properties.pop(field, None)
 
     def _content_update(self, properties: dict):
         """Update "bad" data in properties."""

@@ -1,16 +1,16 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import os
 from collections.abc import Callable
 from datetime import datetime, timedelta
 from random import randint
 
-# third-party
+
 import pytest
 from _pytest.fixtures import FixtureRequest
 
-# first-party
+
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 

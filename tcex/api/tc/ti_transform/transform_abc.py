@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import collections
 import logging
 from abc import ABC, abstractmethod
@@ -9,10 +8,7 @@ from datetime import datetime
 from inspect import signature
 from typing import Any, cast
 
-# third-party
 import jmespath
-
-# first-party
 from tcex.api.tc.ti_transform import ti_predefined_functions
 from tcex.api.tc.ti_transform.model import (
     AttributeTransformModel,
@@ -116,7 +112,7 @@ class TransformABC(ABC):
         self._validate_transforms()
 
     @staticmethod
-    def _always_array(value: str | list | None) -> list:
+    def _always_array(value: int | str | list | None) -> list:
         """Ensure value is always an array."""
         if value is None:
             value = []
@@ -126,10 +122,10 @@ class TransformABC(ABC):
 
     @staticmethod
     def _build_summary(
-        val1: str | None = None, val2: str | None = None, val3: str | None = None
+        val1: int | str | None = None, val2: int | str | None = None, val3: int | str | None = None
     ) -> str:
         """Build the Indicator summary using available values."""
-        return ' : '.join([value for value in [val1, val2, val3] if value is not None])
+        return ' : '.join([str(value) for value in [val1, val2, val3] if value is not None])
 
     def _path_search(self, path: str) -> Any:
         """Return the value of the provided path.
@@ -162,23 +158,15 @@ class TransformABC(ABC):
         self._process_tags(self.transform.tags or [])
 
         # date fields
-        # date fields
         self._process_metadata_datetime('dateAdded', self.transform.date_added)
+        self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
+        self._process_metadata_datetime('externalDateExpires', self.transform.external_date_expires)
+        self._process_metadata_datetime(
+            'externalLastModified', self.transform.external_last_modified
+        )
+        self._process_metadata_datetime('firstSeen', self.transform.first_seen)
+        self._process_metadata_datetime('lastSeen', self.transform.last_seen)
         self._process_metadata_datetime('lastModified', self.transform.last_modified)
-        self._process_metadata_datetime('firstSeen', self.transform.first_seen)
-        self._process_metadata_datetime('lastSeen', self.transform.first_seen)
-        self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
-        self._process_metadata_datetime('externalDateExpires', self.transform.external_date_expires)
-        self._process_metadata_datetime(
-            'externalLastModified', self.transform.external_last_modified
-        )
-        self._process_metadata_datetime('firstSeen', self.transform.first_seen)
-        self._process_metadata_datetime('lastSeen', self.transform.first_seen)
-        self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
-        self._process_metadata_datetime('externalDateExpires', self.transform.external_date_expires)
-        self._process_metadata_datetime(
-            'externalLastModified', self.transform.external_last_modified
-        )
 
         # xid
         self._process_metadata('xid', self.transform.xid)
@@ -251,7 +239,7 @@ class TransformABC(ABC):
                     if 'type_' not in param_:
                         self.log.warning(
                             'feature=transform, action=process-attribute, '
-                            f'transform={attribute.dict(exclude_unset=True)}, error=no-type'
+                            f'transform={attribute.model_dump(exclude_unset=True)}, error=no-type'
                         )
                         continue
 
@@ -262,11 +250,11 @@ class TransformABC(ABC):
                     except Exception:
                         self.log.exception(
                             'feature=transform, action=process-attribute, '
-                            f'transform={attribute.dict(exclude_unset=True)}'
+                            f'transform={attribute.model_dump(exclude_unset=True)}'
                         )
             except Exception as ex:
                 ex_msg = f'Attribute [{i}], type={attribute.type}'
-                raise TransformException(ex_msg, ex, context=attribute.dict()) from ex
+                raise TransformException(ex_msg, ex, context=attribute.model_dump()) from ex
 
     def _process_file_occurrences(self, file_occurrences: list[FileOccurrenceTransformModel]):
         """Process File Occurrences data.
@@ -391,12 +379,20 @@ class TransformABC(ABC):
 
         name = self._transform_value(self.transform.name)
 
-        if name is None:
+        if not isinstance(name, str):
+            self.log.error(
+                'feature=ti-transform, event=process-group-name, message=invalid-name-type, '
+                f'path={self.transform.name.path}, value={name}, type={type(name)}'
+            )
+            ex_msg = 'Group name must be a string.'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+
+        if not name:
             self.log.error(
                 'feature=ti-transform, event=process-group-name, message=no-name-found, '
                 f'path={self.transform.name.path}'
             )
-            ex_msg = 'At least one indicator value must be provided.'
+            ex_msg = 'Group object must have a proper name.'
             raise RuntimeError(ex_msg)
 
         self.add_name(name)
@@ -408,7 +404,7 @@ class TransformABC(ABC):
             if value is not None:
                 self.add_metadata(key, value)
         except Exception as ex:
-            raise TransformException(key, ex, metadata.dict() if metadata else None) from ex
+            raise TransformException(key, ex, metadata.model_dump() if metadata else None) from ex
 
     def _process_metadata_datetime(self, key: str, metadata: DatetimeTransformModel | None):
         """Process metadata fields that should be a TC datetime."""
@@ -420,7 +416,9 @@ class TransformABC(ABC):
                         key, self.util.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
                     )
         except Exception as ex:
-            raise TransformException(key, ex, context=metadata.dict() if metadata else None) from ex
+            raise TransformException(
+                key, ex, context=metadata.model_dump() if metadata else None
+            ) from ex
 
     def _process_security_labels(self, labels: list[SecurityLabelTransformModel]):
         """Process Tag data"""
@@ -428,7 +426,6 @@ class TransformABC(ABC):
             try:
                 names = self._process_metadata_transform_model(label.value)
                 if not names:
-                    # self.log.info(f'No values found for security label transform {label.dict()}')
                     continue
 
                 descriptions = self._process_metadata_transform_model(
@@ -453,7 +450,7 @@ class TransformABC(ABC):
                     self.add_security_label(**kwargs_)
             except Exception as ex:
                 ex_msg = f'Security Labels [{i}]'
-                raise TransformException(ex_msg, ex, context=label.dict()) from ex
+                raise TransformException(ex_msg, ex, context=label.model_dump()) from ex
 
     def _process_tags(self, tags: list[TagTransformModel]):
         """Process Tag data"""
@@ -463,7 +460,7 @@ class TransformABC(ABC):
                     self.add_tag(name=value)  # type: ignore
             except Exception as ex:
                 ex_msg = f'Tags [{i}]'
-                raise TransformException(ex_msg, ex, context=tag.dict()) from ex
+                raise TransformException(ex_msg, ex, context=tag.model_dump()) from ex
 
     def _process_rating(self, metadata: MetadataTransformModel | None):
         """Process standard metadata fields."""
@@ -472,7 +469,7 @@ class TransformABC(ABC):
         except Exception as ex:
             ex_msg = 'Rating'
             raise TransformException(
-                ex_msg, ex, context=metadata.dict() if metadata else None
+                ex_msg, ex, context=metadata.model_dump() if metadata else None
             ) from ex
 
     def _process_type(self):
@@ -490,7 +487,7 @@ class TransformABC(ABC):
                 raise RuntimeError(ex_msg)  # noqa: TRY301
         except Exception as ex:
             ex_msg = 'Type'
-            raise TransformException(ex_msg, ex, context=self.transform.type.dict()) from ex
+            raise TransformException(ex_msg, ex, context=self.transform.type.model_dump()) from ex
 
     def _select_transform(self):
         """Select the correct transform based on the "applies" field."""
@@ -502,7 +499,7 @@ class TransformABC(ABC):
             ex_msg = 'No transform found for TI data'
             raise NoValidTransformException(ex_msg)
 
-    def _transform_value(self, metadata: MetadataTransformModel | None) -> str | None:
+    def _transform_value(self, metadata: MetadataTransformModel | None) -> Any:
         """Pass value to series transforms."""
         # not all fields are required
         if metadata is None:
@@ -686,7 +683,7 @@ class TransformABC(ABC):
         """Abstract method"""
 
     @abstractmethod
-    def add_metadata(self, key: str, value: str):
+    def add_metadata(self, key: str, value: int | str):
         """Abstract method"""
 
     @abstractmethod

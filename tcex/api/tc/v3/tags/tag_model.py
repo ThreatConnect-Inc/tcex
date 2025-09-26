@@ -1,14 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 from __future__ import annotations
 
 from datetime import datetime
 
-# third-party
 from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
-# first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
@@ -216,13 +213,7 @@ class TagsModel(
     )
 
 
-# first-party
 from tcex.api.tc.v3.cases.case_model import CasesModel
 from tcex.api.tc.v3.groups.group_model import GroupsModel
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorsModel
 from tcex.api.tc.v3.victims.victim_model import VictimsModel
-
-# rebuild model
-# TagDataModel.model_rebuild()
-# TagModel.model_rebuild()
-# TagsModel.model_rebuild()

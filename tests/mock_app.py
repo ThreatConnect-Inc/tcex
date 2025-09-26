@@ -1,6 +1,6 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import json
 import os
 import sys
@@ -8,10 +8,10 @@ import uuid
 from pathlib import Path
 from typing import Any
 
-# third-party
+
 from requests import Session
 
-# first-party
+
 from tcex.app.config.install_json import InstallJson
 from tcex.input.field_type.sensitive import Sensitive
 from tcex.registry import registry

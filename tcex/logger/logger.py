@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 import os
 import platform
@@ -9,11 +8,9 @@ from importlib.metadata import version
 from pathlib import Path
 from urllib.parse import urlsplit
 
-# third-party
-from certifi import where
 from requests import Session  # TYPE-CHECKING
 
-# first-party
+from certifi import where
 from tcex.app.config.install_json import InstallJson
 from tcex.input.model.common_model import CommonModel  # TYPE-CHECKING
 from tcex.logger.api_handler import ApiHandler, ApiHandlerFormatter

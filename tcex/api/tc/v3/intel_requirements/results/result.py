@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# standard library
 from collections.abc import Iterator
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.intel_requirements.results.result_filter import ResultFilter
 from tcex.api.tc.v3.intel_requirements.results.result_model import ResultModel, ResultsModel

@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from pydantic import Field, PrivateAttr
 
-# first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
@@ -26,29 +24,26 @@ class KeywordSectionModel(
     }
     """
 
-    _associated_type = PrivateAttr(default=False)
-    _cm_type = PrivateAttr(default=False)
-    _shared_type = PrivateAttr(default=False)
-    _staged = PrivateAttr(default=False)
+    _associated_type: bool = PrivateAttr(default=False)
+    _cm_type: bool = PrivateAttr(default=False)
+    _shared_type: bool = PrivateAttr(default=False)
+    _staged: bool = PrivateAttr(default=False)
 
     section_number: int | None = Field(
         None,
         description='The section number of the keyword section.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        json_schema_extra={'methods': ['POST', 'PUT'], 'read_only': False},
         title='sectionNumber',
     )
     compare_value: str | None = Field(
         None,
         description='The compare value for the keyword section.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        json_schema_extra={'methods': ['POST', 'PUT'], 'read_only': False},
         title='compareValue',
     )
     keywords: list[dict] | None = Field(
         [],
         description='A list of keywords for the keyword section.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        json_schema_extra={'methods': ['POST', 'PUT'], 'read_only': False},
         title='keywords',
     )

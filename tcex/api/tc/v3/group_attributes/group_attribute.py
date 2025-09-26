@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.group_attributes.group_attribute_filter import GroupAttributeFilter
 from tcex.api.tc.v3.group_attributes.group_attribute_model import (
@@ -16,7 +14,6 @@ from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelModel
 
 if TYPE_CHECKING:  # pragma: no cover
-    # first-party
     from tcex.api.tc.v3.security_labels.security_label import SecurityLabel  # CIRCULAR-IMPORT
 
 
@@ -59,7 +56,7 @@ class GroupAttribute(ObjectABC):
     @property
     def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
-        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
 

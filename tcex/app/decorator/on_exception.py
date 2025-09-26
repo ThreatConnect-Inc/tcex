@@ -1,17 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
 from typing import TYPE_CHECKING, Any, cast
 
-# third-party
 import wrapt
-
-# first-party
 from tcex.exit import ExitCode
 from tcex.tcex import TcEx
 
 if TYPE_CHECKING:
-    # standard library
     from collections.abc import Callable
 
 

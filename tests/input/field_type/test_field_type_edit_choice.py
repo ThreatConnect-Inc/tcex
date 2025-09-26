@@ -9,15 +9,15 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.EditChoice
 """
 
-# standard library
+
 from collections.abc import Callable
 from typing import Any
 
-# third-party
+
 import pytest
 from pydantic import BaseModel
 
-# first-party
+
 from tcex.input.field_type import EditChoice, edit_choice
 from tcex.pleb.cached_property import cached_property
 from tcex.pleb.scoped_property import scoped_property

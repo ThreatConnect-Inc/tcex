@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 
-# first-party
 from tcex.logger.trace_logger import TraceLogger
 
 # get tcex logger

@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
@@ -16,7 +14,6 @@ from tcex.api.tc.v3.victims.victim_filter import VictimFilter
 from tcex.api.tc.v3.victims.victim_model import VictimModel, VictimsModel
 
 if TYPE_CHECKING:  # pragma: no cover
-    # first-party
     from tcex.api.tc.v3.groups.group import Group  # CIRCULAR-IMPORT
     from tcex.api.tc.v3.security_labels.security_label import SecurityLabel  # CIRCULAR-IMPORT
     from tcex.api.tc.v3.tags.tag import Tag  # CIRCULAR-IMPORT
@@ -70,35 +67,37 @@ class Victim(ObjectABC):
     @property
     def victim_assets(self) -> Generator['VictimAsset', None, None]:
         """Yield VictimAsset from VictimAssets."""
-        from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
+        from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(VictimAssets)  # type: ignore
 
     @property
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
-        from tcex.api.tc.v3.groups.group import Groups
+        from tcex.api.tc.v3.groups.group import Groups  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
 
     @property
     def attributes(self) -> Generator['VictimAttribute', None, None]:
         """Yield Attribute from Attributes."""
-        from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttributes
+        from tcex.api.tc.v3.victim_attributes.victim_attribute import (  # noqa: PLC0415
+            VictimAttributes,
+        )
 
         yield from self._iterate_over_sublist(VictimAttributes)  # type: ignore
 
     @property
     def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
-        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
 
     @property
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
-        from tcex.api.tc.v3.tags.tag import Tags
+        from tcex.api.tc.v3.tags.tag import Tags  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore
 

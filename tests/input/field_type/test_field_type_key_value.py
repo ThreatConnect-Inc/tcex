@@ -10,14 +10,14 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.key_value
 """
 
-# standard library
+
 from collections.abc import Callable
 
-# third-party
+
 import pytest
 from pydantic import BaseModel
 
-# first-party
+
 from tcex.input.field_type import KeyValue, TCEntity
 from tcex.pleb.cached_property import cached_property
 from tcex.pleb.scoped_property import scoped_property

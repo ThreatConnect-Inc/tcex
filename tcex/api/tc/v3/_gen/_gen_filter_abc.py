@@ -1,15 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
 from abc import ABC
 from collections.abc import Generator
 from typing import Any
 
-# third-party
 from pydantic import ValidationError
 from requests.exceptions import ProxyError
 
-# first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
 from tcex.api.tc.v3._gen.model import FilterModel
 from tcex.pleb.cached_property import cached_property
@@ -180,8 +177,11 @@ class GenerateFilterABC(GenerateABC, ABC):
             f'{self.i1}@property',
             f'{self.i1}def has_artifact(self):',
             f'{self.i2}"""Return **ArtifactFilter** for further filtering."""',
-            f'{self.i2}# first-party',
-            f'{self.i2}from tcex.api.tc.v3.artifacts.artifact_filter import ArtifactFilter',
+            f'{self.i2}',
+            (
+                f'{self.i2}from tcex.api.tc.v3.artifacts.artifact_filter '
+                'import ArtifactFilter  # noqa: PLC0415'
+            ),
             '',
             f'{self.i2}artifacts = ArtifactFilter(Tql())',
             (
@@ -203,8 +203,11 @@ class GenerateFilterABC(GenerateABC, ABC):
         if self.type_ != 'cases':
             _code.extend(
                 [
-                    f'{self.i2}# first-party',
-                    f'{self.i2}from tcex.api.tc.v3.cases.case_filter import CaseFilter',
+                    f'{self.i2}',
+                    (
+                        f'{self.i2}from tcex.api.tc.v3.cases.case_filter '
+                        'import CaseFilter  # noqa: PLC0415'
+                    ),
                     '',
                 ]
             )
@@ -232,8 +235,11 @@ class GenerateFilterABC(GenerateABC, ABC):
         if self.type_ != 'groups':
             _code.extend(
                 [
-                    f'{self.i2}# first-party',
-                    f'{self.i2}from tcex.api.tc.v3.groups.group_filter import GroupFilter',
+                    f'{self.i2}',
+                    (
+                        f'{self.i2}from tcex.api.tc.v3.groups.group_filter '
+                        'import GroupFilter  # noqa: PLC0415'
+                    ),
                     '',
                 ]
             )
@@ -261,10 +267,10 @@ class GenerateFilterABC(GenerateABC, ABC):
         if self.type_ != 'indicators':
             _code.extend(
                 [
-                    f'{self.i2}# first-party',
+                    f'{self.i2}',
                     (
                         f'{self.i2}from tcex.api.tc.v3.indicators.indicator_filter '
-                        'import IndicatorFilter'
+                        'import IndicatorFilter  # noqa: PLC0415'
                     ),
                     '',
                 ]
@@ -289,8 +295,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             f'{self.i1}@property',
             f'{self.i1}def has_note(self):',
             f'{self.i2}"""Return **NoteFilter** for further filtering."""',
-            f'{self.i2}# first-party',
-            f'{self.i2}from tcex.api.tc.v3.notes.note_filter import NoteFilter',
+            f'{self.i2}',
+            f'{self.i2}from tcex.api.tc.v3.notes.note_filter import NoteFilter  # noqa: PLC0415',
             '',
             f'{self.i2}notes = NoteFilter(Tql())',
             (
@@ -308,8 +314,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             f'{self.i1}@property',
             f'{self.i1}def has_tag(self):',
             f'{self.i2}"""Return **TagFilter** for further filtering."""',
-            f'{self.i2}# first-party',
-            f'{self.i2}from tcex.api.tc.v3.tags.tag_filter import TagFilter',
+            f'{self.i2}',
+            f'{self.i2}from tcex.api.tc.v3.tags.tag_filter import TagFilter  # noqa: PLC0415',
             '',
             f'{self.i2}tags = TagFilter(Tql())',
             (
@@ -327,8 +333,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             f'{self.i1}@property',
             f'{self.i1}def has_all_tags(self):',
             f'{self.i2}"""Return **TagFilter** for further filtering."""',
-            f'{self.i2}# first-party',
-            f'{self.i2}from tcex.api.tc.v3.tags.tag_filter import TagFilter',
+            f'{self.i2}',
+            f'{self.i2}from tcex.api.tc.v3.tags.tag_filter import TagFilter  # noqa: PLC0415',
             '',
             f'{self.i2}tags = TagFilter(Tql())',
             (
@@ -346,8 +352,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             f'{self.i1}@property',
             f'{self.i1}def has_task(self):',
             f'{self.i2}"""Return **TaskFilter** for further filtering."""',
-            f'{self.i2}# first-party',
-            f'{self.i2}from tcex.api.tc.v3.tasks.task_filter import TaskFilter',
+            f'{self.i2}',
+            f'{self.i2}from tcex.api.tc.v3.tasks.task_filter import TaskFilter  # noqa: PLC0415',
             '',
             f'{self.i2}tasks = TaskFilter(Tql())',
             (
@@ -365,10 +371,10 @@ class GenerateFilterABC(GenerateABC, ABC):
             f'{self.i1}@property',
             f'{self.i1}def has_security_label(self):',
             f'{self.i2}"""Return **SecurityLabel** for further filtering."""',
-            f'{self.i2}# first-party',
+            f'{self.i2}',
             (
-                f'{self.i2}from tcex.api.tc.v3.security_labels.security_label_filter import '
-                f'SecurityLabelFilter'
+                f'{self.i2}from tcex.api.tc.v3.security_labels.security_label_filter '
+                'import SecurityLabelFilter  # noqa: PLC0415'
             ),
             '',
             f'{self.i2}security_labels = SecurityLabelFilter(Tql())',
@@ -390,10 +396,10 @@ class GenerateFilterABC(GenerateABC, ABC):
         if self.type_ != 'intel_requirements':
             _code.extend(
                 [
-                    f'{self.i2}# first-party',
+                    f'{self.i2}',
                     (
                         f'{self.i2}from tcex.api.tc.v3.intel_requirements.intel_requirement_filter '
-                        'import IntelRequirementFilter'
+                        'import IntelRequirementFilter  # noqa: PLC0415'
                     ),
                     '',
                 ]
@@ -422,10 +428,10 @@ class GenerateFilterABC(GenerateABC, ABC):
         if self.type_ != 'victim_assets':
             _code.extend(
                 [
-                    f'{self.i2}# first-party',
+                    f'{self.i2}',
                     (
                         f'{self.i2}from tcex.api.tc.v3.victim_assets.victim_asset_filter import '
-                        f'VictimAssetFilter'
+                        f'VictimAssetFilter  # noqa: PLC0415'
                     ),
                     '',
                 ]
@@ -454,8 +460,11 @@ class GenerateFilterABC(GenerateABC, ABC):
         if self.type_ != 'victims':
             _code.extend(
                 [
-                    f'{self.i2}# first-party',
-                    f'{self.i2}from tcex.api.tc.v3.victims.victim_filter import VictimFilter',
+                    f'{self.i2}',
+                    (
+                        f'{self.i2}from tcex.api.tc.v3.victims.victim_filter '
+                        'import VictimFilter  # noqa: PLC0415'
+                    ),
                     '',
                 ]
             )
@@ -490,8 +499,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             f'{self.i1}@property',
             f'{self.i1}def has_attribute(self):',
             f'{self.i2}"""Return **{filter_type}** for further filtering."""',
-            f'{self.i2}# first-party',
-            f'{self.i2}from tcex.api.tc.v3.{import_path} import {filter_type}',
+            f'{self.i2}',
+            f'{self.i2}from tcex.api.tc.v3.{import_path} import {filter_type}  # noqa: PLC0415',
             '',
             f'{self.i2}attributes = {filter_type}(Tql())',
             (

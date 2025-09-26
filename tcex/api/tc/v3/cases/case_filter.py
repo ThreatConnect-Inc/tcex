@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from datetime import datetime
 from enum import Enum
 
-# first-party
 from arrow import Arrow
 
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -302,8 +300,8 @@ class CaseFilter(FilterABC):
     @property
     def has_all_tags(self):
         """Return **TagFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.tags.tag_filter import TagFilter
+
+        from tcex.api.tc.v3.tags.tag_filter import TagFilter  # noqa: PLC0415
 
         tags = TagFilter(Tql())
         self._tql.add_filter('hasAllTags', TqlOperator.EQ, tags, TqlType.SUB_QUERY)
@@ -312,8 +310,8 @@ class CaseFilter(FilterABC):
     @property
     def has_artifact(self):
         """Return **ArtifactFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.artifacts.artifact_filter import ArtifactFilter
+
+        from tcex.api.tc.v3.artifacts.artifact_filter import ArtifactFilter  # noqa: PLC0415
 
         artifacts = ArtifactFilter(Tql())
         self._tql.add_filter('hasArtifact', TqlOperator.EQ, artifacts, TqlType.SUB_QUERY)
@@ -329,8 +327,8 @@ class CaseFilter(FilterABC):
     @property
     def has_group(self):
         """Return **GroupFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.groups.group_filter import GroupFilter
+
+        from tcex.api.tc.v3.groups.group_filter import GroupFilter  # noqa: PLC0415
 
         groups = GroupFilter(Tql())
         self._tql.add_filter('hasGroup', TqlOperator.EQ, groups, TqlType.SUB_QUERY)
@@ -339,8 +337,8 @@ class CaseFilter(FilterABC):
     @property
     def has_indicator(self):
         """Return **IndicatorFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter
+
+        from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter  # noqa: PLC0415
 
         indicators = IndicatorFilter(Tql())
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
@@ -349,8 +347,8 @@ class CaseFilter(FilterABC):
     @property
     def has_note(self):
         """Return **NoteFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.notes.note_filter import NoteFilter
+
+        from tcex.api.tc.v3.notes.note_filter import NoteFilter  # noqa: PLC0415
 
         notes = NoteFilter(Tql())
         self._tql.add_filter('hasNote', TqlOperator.EQ, notes, TqlType.SUB_QUERY)
@@ -359,8 +357,8 @@ class CaseFilter(FilterABC):
     @property
     def has_tag(self):
         """Return **TagFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.tags.tag_filter import TagFilter
+
+        from tcex.api.tc.v3.tags.tag_filter import TagFilter  # noqa: PLC0415
 
         tags = TagFilter(Tql())
         self._tql.add_filter('hasTag', TqlOperator.EQ, tags, TqlType.SUB_QUERY)
@@ -369,8 +367,8 @@ class CaseFilter(FilterABC):
     @property
     def has_task(self):
         """Return **TaskFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.tasks.task_filter import TaskFilter
+
+        from tcex.api.tc.v3.tasks.task_filter import TaskFilter  # noqa: PLC0415
 
         tasks = TaskFilter(Tql())
         self._tql.add_filter('hasTask', TqlOperator.EQ, tasks, TqlType.SUB_QUERY)

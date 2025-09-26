@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# third-party
 from pydantic import BaseModel, ConfigDict, field_validator
 from pydantic_core.core_schema import ValidationInfo
 
-# first-party
 from tcex.input.field_type.exception import InvalidEmptyValue
 
 

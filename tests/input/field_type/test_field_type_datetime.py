@@ -9,20 +9,20 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.DateTime
 """
 
-# standard library
+
 import math
 from collections.abc import Callable
 from datetime import timedelta
 from operator import add, sub
 from typing import Any
 
-# third-party
+
 import arrow
 import pytest
 from dateutil.relativedelta import relativedelta
 from pydantic import BaseModel, ValidationError
 
-# first-party
+
 from tcex import TcEx  # TYPE-CHECKING
 from tcex.input.field_type import DateTime
 from tests.input.field_type.util import InputTest

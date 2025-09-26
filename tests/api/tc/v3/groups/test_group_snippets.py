@@ -1,11 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import base64
 import time
 from collections.abc import Callable
 
-# first-party
+
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 

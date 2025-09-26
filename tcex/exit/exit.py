@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 import os
 import sys
@@ -8,13 +7,11 @@ from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal, NoReturn
 
-# first-party
 from tcex.app.config import InstallJson
 from tcex.logger.trace_logger import TraceLogger
 from tcex.registry import registry
 
 if TYPE_CHECKING:
-    # first-party
     from tcex.input.input import Input  # CIRCULAR-IMPORT
 
 

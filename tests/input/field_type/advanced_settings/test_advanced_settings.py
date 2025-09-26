@@ -9,15 +9,15 @@ Classes:
 TcEx Module Tested: tcex.input.m.modify_advanced_settings
 """
 
-# standard library
+
 from collections.abc import Callable
 from typing import Literal
 
-# third-party
+
 import pytest
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-# first-party
+
 from tcex.input.field_type import DateTime, String, modify_advanced_settings
 from tcex.pleb.cached_property import cached_property
 from tcex.pleb.scoped_property import scoped_property

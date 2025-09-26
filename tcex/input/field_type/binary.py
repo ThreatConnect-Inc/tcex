@@ -2,15 +2,12 @@
 
 from __future__ import annotations
 
-# standard library
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-# third-party
 from pydantic.annotated_handlers import GetCoreSchemaHandler  # noqa: TC002
 from pydantic_core import core_schema  # TYPE-CHECKING
 
-# first-party
 from tcex.input.field_type.exception import InvalidEmptyValue, InvalidType
 
 

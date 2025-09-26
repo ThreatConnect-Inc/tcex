@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# standard library
 from collections.abc import Iterator
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.intel_requirements.subtypes.subtype_filter import SubtypeFilter
 from tcex.api.tc.v3.intel_requirements.subtypes.subtype_model import SubtypeModel, SubtypesModel

@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# standard library
 from abc import ABC
 
-# first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
 from tcex.api.tc.v3._gen._gen_args_abc import GenerateArgsABC
 from tcex.util.string_operation import SnakeString
@@ -708,7 +706,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 [
                     (
                         f'{self.i2}from {model_import_data.get("object_module")} '
-                        f'import {model_import_data.get("object_collection_class")}'
+                        f'import {model_import_data.get("object_collection_class")} # noqa: PLC0415'
                     ),
                     '',
                 ]

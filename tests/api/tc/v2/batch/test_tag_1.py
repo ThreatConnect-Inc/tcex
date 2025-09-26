@@ -1,9 +1,9 @@
 """TcEx Framework Module"""
 
-# third-party
+
 import pytest
 
-# first-party
+
 from tcex import TcEx
 
 

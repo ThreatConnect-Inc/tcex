@@ -1,13 +1,10 @@
 """TcEx Framework Module"""
 
-# standard library
 from typing import ClassVar
 
-# third-party
 from pydantic import create_model, field_validator
 from pydantic_core import core_schema
 
-# first-party
 from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
 from tcex.input.field_type.exception import InvalidEmptyValue, InvalidEntityType
 from tcex.input.field_type.tc_entity import TCEntity

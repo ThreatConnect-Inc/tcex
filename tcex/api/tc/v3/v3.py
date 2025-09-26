@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# first-party
 from tcex.api.tc.v3.attribute_types.attribute_type import AttributeType, AttributeTypes
 from tcex.api.tc.v3.case_management.case_management import CaseManagement
 from tcex.api.tc.v3.intel_requirement.ir import IR

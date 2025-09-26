@@ -1,21 +1,17 @@
 """TcEx Framework Module"""
 
-# # third-party
+#
 # import debugpy
 #
 # debugpy.listen(5678)
 # print('Waiting for debugger attach')
 # debugpy.wait_for_client()
 
-# standard library
 import os
 from enum import Enum
 from pathlib import Path
 
-# third-party
 import typer
-
-# first-party
 from tcex.api.tc.v3._gen._gen_args_abc import GenerateArgsABC
 from tcex.api.tc.v3._gen._gen_filter_abc import GenerateFilterABC
 from tcex.api.tc.v3._gen._gen_model_abc import GenerateModelABC

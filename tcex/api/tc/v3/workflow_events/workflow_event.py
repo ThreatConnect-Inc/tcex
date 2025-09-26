@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.notes.note_model import NoteModel
 from tcex.api.tc.v3.object_abc import ObjectABC
@@ -16,7 +14,6 @@ from tcex.api.tc.v3.workflow_events.workflow_event_model import (
 )
 
 if TYPE_CHECKING:  # pragma: no cover
-    # first-party
     from tcex.api.tc.v3.notes.note import Note  # CIRCULAR-IMPORT
 
 
@@ -66,7 +63,7 @@ class WorkflowEvent(ObjectABC):
     @property
     def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
-        from tcex.api.tc.v3.notes.note import Notes
+        from tcex.api.tc.v3.notes.note import Notes  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Notes)  # type: ignore
 

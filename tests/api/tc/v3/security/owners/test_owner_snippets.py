@@ -1,6 +1,6 @@
 """TcEx Framework Module"""
 
-# first-party
+
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
@@ -41,7 +41,6 @@ class TestOwnerSnippets(TestV3):
         owners.filter.perm_tag(TqlOperator.EQ, 'FULL')
         owners.filter.perm_task(TqlOperator.EQ, 'FULL')
         owners.filter.perm_timeline(TqlOperator.EQ, 'FULL')
-        owners.filter.perm_track(TqlOperator.EQ, 'FULL')
         owners.filter.perm_users(TqlOperator.EQ, 'FULL')
         owners.filter.perm_victim(TqlOperator.EQ, 'FULL')
         owners.filter.perm_workflow_template(TqlOperator.EQ, 'FULL')
@@ -83,7 +82,6 @@ class TestOwnerSnippets(TestV3):
         assert owner.model.perm_tag == 'FULL'
         assert owner.model.perm_task == 'FULL'
         assert owner.model.perm_timeline == 'FULL'
-        assert owner.model.perm_track == 'FULL'
         assert owner.model.perm_users == 'FULL'
         assert owner.model.perm_victim == 'FULL'
         assert owner.model.perm_workflow_template == 'FULL'

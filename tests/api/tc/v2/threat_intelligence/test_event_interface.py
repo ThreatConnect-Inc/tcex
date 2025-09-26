@@ -1,14 +1,14 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import os
 from datetime import datetime, timedelta
 from typing import cast
 
-# third-party
+
 from _pytest.fixtures import FixtureRequest
 
-# first-party
+
 from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.event import Event
 from tcex.tcex import TcEx
 from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper

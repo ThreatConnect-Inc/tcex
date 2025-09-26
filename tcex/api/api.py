@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from requests import Session  # TYPE-CHECKING
 
-# first-party
 from tcex.api.tc.tc import TC
 from tcex.input.input import Input  # TYPE-CHECKING
 from tcex.pleb.cached_property import cached_property

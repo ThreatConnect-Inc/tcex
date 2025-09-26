@@ -1,12 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import os
 
-# third-party
+
 from _pytest.fixtures import FixtureRequest
 
-# first-party
+
 from tcex.tcex import TcEx
 from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 

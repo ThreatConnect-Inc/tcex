@@ -10,14 +10,14 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.tcentity
 """
 
-# standard library
+
 from collections.abc import Callable
 
-# third-party
+
 import pytest
 from pydantic import BaseModel, field_validator
 
-# first-party
+
 from tcex.input.field_type import (GroupEntity, IndicatorEntity, TCEntity,
                                    always_array, indicator_entity)
 from tcex.input.model.app_playbook_model import AppPlaybookModel

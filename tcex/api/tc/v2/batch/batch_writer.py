@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import contextlib
 import gzip
 import hashlib
@@ -15,10 +14,8 @@ from collections import deque
 from pathlib import Path
 from typing import Any
 
-# third-party
 from requests import Session  # TYPE-CHECKING
 
-# first-party
 from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
 from tcex.api.tc.v2.batch.group import (
     Adversary,

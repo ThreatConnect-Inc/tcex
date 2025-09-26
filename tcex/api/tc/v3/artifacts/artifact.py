@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.artifacts.artifact_filter import ArtifactFilter
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel, ArtifactsModel
@@ -15,7 +13,6 @@ from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 
 if TYPE_CHECKING:  # pragma: no cover
-    # first-party
     from tcex.api.tc.v3.groups.group import Group  # CIRCULAR-IMPORT
     from tcex.api.tc.v3.indicators.indicator import Indicator  # CIRCULAR-IMPORT
     from tcex.api.tc.v3.notes.note import Note  # CIRCULAR-IMPORT
@@ -67,21 +64,21 @@ class Artifact(ObjectABC):
     @property
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
-        from tcex.api.tc.v3.groups.group import Groups
+        from tcex.api.tc.v3.groups.group import Groups  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
 
     @property
     def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
-        from tcex.api.tc.v3.indicators.indicator import Indicators
+        from tcex.api.tc.v3.indicators.indicator import Indicators  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Indicators)  # type: ignore
 
     @property
     def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
-        from tcex.api.tc.v3.notes.note import Notes
+        from tcex.api.tc.v3.notes.note import Notes  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Notes)  # type: ignore
 

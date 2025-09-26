@@ -1,12 +1,9 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 
-# third-party
 from requests import Session
 
-# first-party
 from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
 from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttribute, GroupAttributes
 from tcex.api.tc.v3.groups.group import Group, Groups

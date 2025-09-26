@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from requests import Session  # TYPE-CHECKING
 
-# first-party
 from tcex.api.tc.v2.batch.batch import Batch
 from tcex.api.tc.v2.batch.batch_submit import BatchSubmit
 from tcex.api.tc.v2.batch.batch_writer import BatchWriter

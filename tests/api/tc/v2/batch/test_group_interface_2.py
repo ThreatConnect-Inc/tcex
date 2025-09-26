@@ -1,12 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
+
 from typing import cast
 
-# third-party
+
 import pytest
 
-# first-party
+
 from tcex import TcEx
 from tcex.api.tc.v2.batch.group import Group
 

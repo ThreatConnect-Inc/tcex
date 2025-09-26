@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# first-party
 from tcex.input.model.api_model import ApiModel
 from tcex.input.model.batch_model import BatchModel
 from tcex.input.model.cert_model import CertModel

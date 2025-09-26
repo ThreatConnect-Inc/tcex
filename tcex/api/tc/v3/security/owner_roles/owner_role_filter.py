@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# standard library
 from enum import Enum
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.filter_abc import FilterABC
 from tcex.api.tc.v3.tql.tql_type import TqlType

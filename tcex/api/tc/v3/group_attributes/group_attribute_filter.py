@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from datetime import datetime
 from enum import Enum
 
-# first-party
 from arrow import Arrow
 
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -88,8 +86,8 @@ class GroupAttributeFilter(FilterABC):
     @property
     def has_group(self):
         """Return **GroupFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.groups.group_filter import GroupFilter
+
+        from tcex.api.tc.v3.groups.group_filter import GroupFilter  # noqa: PLC0415
 
         groups = GroupFilter(Tql())
         self._tql.add_filter('hasGroup', TqlOperator.EQ, groups, TqlType.SUB_QUERY)
@@ -98,8 +96,10 @@ class GroupAttributeFilter(FilterABC):
     @property
     def has_security_label(self):
         """Return **SecurityLabel** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.security_labels.security_label_filter import SecurityLabelFilter
+
+        from tcex.api.tc.v3.security_labels.security_label_filter import (  # noqa: PLC0415
+            SecurityLabelFilter,
+        )
 
         security_labels = SecurityLabelFilter(Tql())
         self._tql.add_filter('hasSecurityLabel', TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)

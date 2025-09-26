@@ -1,13 +1,10 @@
 """TcEx Framework Module"""
 
-# standard library
 from typing import TYPE_CHECKING
 
-# first-party
 from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator import Indicator
 
 if TYPE_CHECKING:
-    # first-party
     from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 

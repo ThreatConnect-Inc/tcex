@@ -10,14 +10,14 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.sensitive
 """
 
-# standard library
+
 from collections.abc import Callable
 
-# third-party
+
 import pytest
 from pydantic import BaseModel, ValidationError
 
-# first-party
+
 from tcex.input.field_type import Sensitive
 from tcex.input.field_type.sensitive import sensitive
 from tcex.pleb.scoped_property import scoped_property

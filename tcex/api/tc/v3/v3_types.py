@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
-    # first-party
     # from tcex.api.tc.v3.adversary_assets.adversary_asset import AdversaryAsset
     from tcex.api.tc.v3.artifact_types.artifact_type import ArtifactType
     from tcex.api.tc.v3.artifacts.artifact import Artifact

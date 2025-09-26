@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import json
 import os
 import threading
@@ -8,7 +7,6 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-# first-party
 from tcex.app.key_value_store.key_value_store import KeyValueStore
 from tcex.app.playbook import Playbook
 from tcex.app.service.common_service import CommonService

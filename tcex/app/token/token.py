@@ -1,22 +1,19 @@
-"""TcEx Framework Module"""  # noqa: A005
+"""TcEx Framework Module"""
 
-# standard library
 import contextlib
 import logging
 import os
 import threading
 import time
 
-# third-party
 from requests import Session, exceptions
 from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 
-# first-party
 from tcex.input.field_type.sensitive import Sensitive
 from tcex.logger.trace_logger import TraceLogger
 from tcex.pleb.cached_property import cached_property
 from tcex.pleb.exception_thread import ExceptionThread
+from urllib3.util.retry import Retry
 
 # get tcex logger
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore

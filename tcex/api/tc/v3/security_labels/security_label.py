@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 import json
 from collections.abc import Iterator
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC

@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from pydantic import Field
 
-# first-party
 from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel
 from tcex.util import Util
 
@@ -16,12 +14,10 @@ class AssigneeUserGroupModel(
 ):
     """Assignee Model"""
 
-    name: str | None = Field(
+    name: str | None = Field(  # type: ignore
         None,
         frozen=True,
         description='The **name** for the User_Group.',
-        # TODO: @bsummers-tc
-        # read_only=False,
         title='name',
-        json_schema_extra={'methods': ['POST', 'PUT']},
+        json_schema_extra={'methods': ['POST', 'PUT'], 'read_only': False},
     )

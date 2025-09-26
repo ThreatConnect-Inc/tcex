@@ -1,12 +1,9 @@
 """TcEx Framework Module"""
 
-# standard library
 from datetime import datetime
 
-# third-party
 from pydantic import BaseModel, Field
 
-# first-party
 from tcex.util import Util
 
 

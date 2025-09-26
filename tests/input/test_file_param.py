@@ -10,10 +10,10 @@ Classes:
 TcEx Module Tested: tcex.input.file_params
 """
 
-# standard library
+
 from collections.abc import Callable
 
-# first-party
+
 from tests.mock_app import MockApp
 
 

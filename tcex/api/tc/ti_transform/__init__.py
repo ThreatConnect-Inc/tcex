@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# first-party
 from tcex.api.tc.ti_transform.ti_predefined_functions import (
     ProcessingFunctions,
     transform_builder_to_model,

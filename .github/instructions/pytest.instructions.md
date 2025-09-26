@@ -1,5 +1,5 @@
 ---
-applyTo: tests/**/*.py
+applyTo: tests/**/test_*.py
 description: Guideline for Pytest Test Cases
 ---
 # PYTEST CODING GUIDELINES
@@ -18,7 +18,7 @@ This document contains ABSOLUTE MANDATORY instructions for creating Python Pytes
 - **MUST** Only leave code unchanged if docstring already follows the complete format specified in [Docstring Structure](#module-docstring-structure)
 
 #### 1.1.2 Docstring Structure (MANDATORY) {#module-docstring-structure}
-Every module docstring MUST follow this EXACT format with NO VARIATIONS:
+- **MUST** follow the template provided below for the module docstring with NO VARIATIONS.
 
 ```python
 """[Class Name] for [Purpose].
@@ -43,27 +43,42 @@ TcEx Module Tested: [TcEx Module Name]
 - **MUST** Only leave code unchanged if docstring already follows the complete format specified in [Docstring Structure](#class-docstring-structure)
 
 #### 1.2.2 Docstring Structure (MANDATORY) {#class-docstring-structure}
-Every class docstring MUST follow this EXACT format with NO VARIATIONS:
+- **MUST** follow the template provided below for every class docstring with NO VARIATIONS.
 
 ```python
 class ClassName(EndpointBase):
     """[Class Name] for [Purpose].
 
     [Detailed description of what the class represents and its purpose in the system.]
+    """
+```
+
+### 1.3 Method Docstring Requirements {#method-docstring-requirements}
+
+#### 1.3.1 Docstring Structure (MANDATORY)
+- **MUST** follow the template provided below for every method docstring with NO VARIATIONS.
+
+```python
+def test_method_name(test_case_name):
+    """[Test Case Name] for [Purpose].
+
+    [Detailed description of what the test case represents and its purpose in the system.]
+
+    Parameters:
+        [Parameter Name]: [Purpose of the parameter]
 
     Fixtures:
         [Fixture Name]: [Purpose of the fixture]
     """
 ```
 
-#### 1.2.3 Restrictions (MANDATORY)
-- **MUST NOT** use `Example:` section in docstring.
-
-#### 1.2.4 Attribute Section (OPTIONAL)
-- **MUST** add `Attribute:` section if defined in [Docstring Structure](#class-docstring-structure)
-
-#### 1.2.5 Usage Section (OPTIONAL)
-- **MUST** add `Usage:` section if defined in [Docstring Structure](#class-docstring-structure)
+#### 1.3.2 Docstring Structure (MANDATORY) {#method-docstring-structure}
+- **MUST** include a well structured docstring for all class methods
+- **MUST** provide details of the test case in docstring
+- **MUST** list out parameters in docstring that come from @pytest.mark.parametrize
+- **MUST** list out fixtures in docstring that come from conftest.py
+- **MUST** only list out fixtures that are used in the test case
+- **MUST NOT** include parametrize inputs in docstring
 
 ## 2. IMPORT RULES {#import-rules}
 
@@ -118,15 +133,20 @@ class ClassName(EndpointBase):
 - **MUST** any security issues in the code should still be addressed
 - **MUST** any bug in the code issues should still be addressed
 
-### 5.2 Method Docstring
-- **MUST** include a well structured docstring for all methods
-- **MUST** provide details of the test case in docstring
-- **MUST** list out fixtures in docstring
-
-## 5.3 Pytest Mark Parametrize
+## 5.2 Pytest Mark Parametrize
 - **MUST** use `pytest.param` for all `@pytest.mark.parametrize` usage
 - **MUST** use a valid `id` for `pytest.param` that is prefix with `pass` or `fail` dependent on if the test is intended to pass
+- **MUST** use '-' delimiter for `pytest.param` id values
 - **MUST NOT** use tuples for `@pytest.mark.parametrize` inputs
+
+## 5.3 Pytest Assertions Message
+- **MUST** use `assert` for all assertions
+- **MUST** have a valid assertion message for all assertions
+- **MUST** use `pytest.fail` for all failed assertions
+- **MUST** use `pytest.skip` for all skipped assertions
+- **MUST** use `pytest.xfail` for all expected failures
+- **MUST** use `pytest.mark.skipif` for all conditional skipping
+- **MUST** use `pytest.mark.parametrize` for all parameter inputs
 
 ## 6. FORMATTING AND LINTING RULES (MANDATORY) {#formatting-and-linting-rules}
 
@@ -181,6 +201,12 @@ Validation rules applicable to [General Code Rules](#general-code-rules)
 
 ### 7.5 Custom Code Validation
 Validation rules applicable to [Custom Code Rules](#custom-code-rules)
+
+- [ ] All @pytest.mark.parametrize decorators use pytest.param instead of tuples
+- [ ] All pytest.param inputs have valid id parameters prefixed with 'pass' or 'fail'
+- [ ] All pytest.param id values use '-' delimiters (not underscores)
+- [ ] All assertions have proper messages
+- [ ] All assertions use assert statements
 
 ### 7.6 Formatting and Linting Validation
 Validation rules applicable to [Formatting and Linting Rules](#formatting-and-linting-rules)

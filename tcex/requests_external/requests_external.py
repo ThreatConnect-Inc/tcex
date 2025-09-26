@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 from functools import cached_property
 
-# first-party
 from tcex.app.config.install_json import InstallJson
 from tcex.input.model.module_requests_session_model import ModuleRequestsSessionModel
 from tcex.registry import registry

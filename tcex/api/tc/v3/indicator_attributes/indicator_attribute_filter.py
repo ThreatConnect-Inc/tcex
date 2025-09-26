@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from datetime import datetime
 from enum import Enum
 
-# first-party
 from arrow import Arrow
 
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -72,8 +70,8 @@ class IndicatorAttributeFilter(FilterABC):
     @property
     def has_indicator(self):
         """Return **IndicatorFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter
+
+        from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter  # noqa: PLC0415
 
         indicators = IndicatorFilter(Tql())
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
@@ -82,8 +80,10 @@ class IndicatorAttributeFilter(FilterABC):
     @property
     def has_security_label(self):
         """Return **SecurityLabel** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.security_labels.security_label_filter import SecurityLabelFilter
+
+        from tcex.api.tc.v3.security_labels.security_label_filter import (  # noqa: PLC0415
+            SecurityLabelFilter,
+        )
 
         security_labels = SecurityLabelFilter(Tql())
         self._tql.add_filter('hasSecurityLabel', TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)

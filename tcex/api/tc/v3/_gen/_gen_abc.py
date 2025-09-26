@@ -1,12 +1,10 @@
 """TcEx Framework Module"""
 
-# standard library
 import os
 from abc import ABC
 from collections.abc import Generator
 from textwrap import TextWrapper
 
-# first-party
 from tcex.api.tc.v3._gen._options_data import OptionsData
 from tcex.api.tc.v3._gen.model import PropertyModel
 from tcex.util import Util
@@ -122,9 +120,9 @@ class GenerateABC(ABC):  # noqa: B024
                 indent = self.i1
                 # this should be fine?
                 comment = '  # CIRCULAR-IMPORT'
-                _libs.append(f'{indent}# first-party')
-            else:
-                _libs.append(f'{indent}# {from_}')
+                _libs.append(f'{indent}')
+            # else:
+            #     _libs.append(f'{indent}# {from_}')
 
             # manage imports as string and dicts
             _imports = []  # temp store for imports so they can be sorted

@@ -10,14 +10,14 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.integer
 """
 
-# standard library
+
 from collections.abc import Callable
 
-# third-party
+
 import pytest
 from pydantic import BaseModel, field_validator
 
-# first-party
+
 from tcex.input.field_type import Integer, always_array, integer
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_type.util import InputTest

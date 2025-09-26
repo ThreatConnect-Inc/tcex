@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# first-party
 from tcex.app.decorator.benchmark import Benchmark
 from tcex.app.decorator.debug import Debug
 from tcex.app.decorator.fail_on_output import FailOnOutput

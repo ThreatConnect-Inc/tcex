@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import inspect
 import platform
 import signal
@@ -8,7 +7,6 @@ import threading
 from dataclasses import dataclass
 from pathlib import Path
 
-# first-party
 from tcex.api.api import API
 from tcex.app.app import App
 from tcex.exit.exit import Exit, ExitCode

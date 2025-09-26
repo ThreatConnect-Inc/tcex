@@ -1,13 +1,10 @@
 """TcEx Framework Module"""
 
-# standard library
 from typing import ForwardRef
 
-# third-party
 from pydantic import BaseModel, ConfigDict, field_validator
 from pydantic_core.core_schema import ValidationInfo
 
-# first-party
 from tcex.input.field_type.binary import Binary
 from tcex.input.field_type.exception import InvalidEmptyValue
 from tcex.input.field_type.sensitive import Sensitive

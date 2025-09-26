@@ -1,14 +1,14 @@
 """TcEx Framework Module"""
 
-# standard library
+
 from collections.abc import Callable
 from typing import Any
 
-# third-party
+
 import pytest
 from pydantic import BaseModel, ValidationError
 
-# first-party
+
 from tcex.input.field_type.sensitive import Sensitive
 from tcex.registry import registry
 from tcex.tcex import TcEx

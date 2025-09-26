@@ -1,6 +1,6 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import hashlib
 import logging
 import os
@@ -10,16 +10,15 @@ import socket
 from collections.abc import Callable, Iterator
 from threading import Thread
 
-# third-party
+
 import fakeredis
 import pytest
 import redis
 from _pytest.monkeypatch import MonkeyPatch
 from fakeredis import TcpFakeServer
 
-# first-party
+
 from tcex import TcEx
-from tcex.app.key_value_store import RedisClient
 from tcex.app.playbook.playbook import Playbook
 from tcex.logger.trace_logger import TraceLogger
 from tcex.pleb.cached_property import cached_property

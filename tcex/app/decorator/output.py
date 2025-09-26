@@ -1,13 +1,10 @@
 """TcEx Framework Module"""
 
-# standard library
 from typing import TYPE_CHECKING, Any
 
-# third-party
 import wrapt
 
 if TYPE_CHECKING:
-    # standard library
     from collections.abc import Callable
 
 

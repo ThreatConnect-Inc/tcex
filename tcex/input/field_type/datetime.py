@@ -1,14 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 from typing import Any
 
-# third-party
 import arrow
 from pydantic.annotated_handlers import GetCoreSchemaHandler
 from pydantic_core import core_schema
 
-# first-party
 from tcex.input.field_type.exception import InvalidInput
 from tcex.util import Util
 

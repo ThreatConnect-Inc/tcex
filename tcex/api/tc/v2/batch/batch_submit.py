@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import gzip
 import json
 import logging
@@ -8,10 +7,8 @@ import math
 import re
 import time
 
-# third-party
 from requests import Session
 
-# first-party
 from tcex.exit.error_code import handle_error
 from tcex.input.input import Input
 from tcex.logger.trace_logger import TraceLogger
@@ -341,7 +338,7 @@ class BatchSubmit:
             if data.get('data', {}).get('batchStatus', {}).get('status') == 'Completed':
                 # store last 5 poll times to use in calculating average poll time
                 modifier = poll_time_total * 0.7
-                self._poll_interval_times = self._poll_interval_times[-4:] + [modifier]
+                self._poll_interval_times = [*self._poll_interval_times[-4:], modifier]
 
                 weights: list[float | int] = [1]
                 poll_interval_time_weighted_sum = 0

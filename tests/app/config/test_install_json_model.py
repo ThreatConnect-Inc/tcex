@@ -1,33 +1,59 @@
-"""TcEx Framework Module"""
+"""TestInstallJsonModel for TcEx App Config InstallJson Model Module Testing.
+
+This module contains comprehensive test cases for the TcEx App Config InstallJson Model Module,
+specifically testing InstallJson configuration functionality including model validation,
+file parsing, singleton management, and proper configuration behavior across different
+JSON file formats and validation scenarios for TcEx application installation configuration.
+
+Classes:
+    TestInstallJsonModel: Test class for TcEx App Config InstallJson Model Module functionality
+
+TcEx Module Tested: app.config.install_json
+"""
 
 
-# standard library
 import json
 import os
 import shutil
 from pathlib import Path
 
-# third-party
+import pytest
+
+
 from _pytest.monkeypatch import MonkeyPatch
 from deepdiff import DeepDiff
 
-# first-party
+
 from tcex.app.config.install_json import InstallJson
 
 
-class TestInstallJson:
-    """App Config InstallJson testing."""
+class TestInstallJsonModel:
+    """TestInstallJsonModel for TcEx App Config InstallJson Model Module Testing.
 
-    def setup_method(self):
-        """Configure setup before all tests."""
-        print('')
+    This class provides comprehensive testing for the TcEx App Config InstallJson Model Module,
+    covering various InstallJson configuration scenarios including model validation,
+    file parsing, singleton management, and proper configuration behavior for
+    TcEx application installation configuration management.
+    """
+
+    def setup_method(self) -> None:
+        """Configure setup before all tests.
+
+        This method is called before each test method to initialize
+        test environment and prepare for InstallJson model testing.
+        """
+        # Setup method for future use if needed
 
     @property
     def tcex_test_dir(self) -> Path:
-        """Return tcex test directory."""
+        """Return tcex test directory.
+
+        This property provides access to the test directory path for InstallJson
+        configuration testing, ensuring proper test file location management.
+        """
         tcex_test_dir = os.getenv('TCEX_TEST_DIR')
         if tcex_test_dir is None:
-            assert False, 'TCEX_TEST_DIR environment variable not set.'
+            pytest.fail('TCEX_TEST_DIR environment variable not set.')
         return Path(tcex_test_dir)
 
     # @staticmethod
@@ -49,20 +75,41 @@ class TestInstallJson:
     #     print('ij.model.features', ij.model.features)
     #     print('ij.model.display_name', ij.model.display_name)
 
-    def ij(self, app_name: str = 'app_1', app_type: str = 'tcpb'):
-        """Return install.json instance."""
+    def ij(self, app_name: str = 'app_1', app_type: str = 'tcpb') -> InstallJson:
+        """Return install.json instance.
+
+        This method creates and returns an InstallJson instance for testing
+        configuration scenarios with proper file path management.
+
+        Parameters:
+            app_name: The name of the application to test
+            app_type: The type of application (e.g., tcpb, tcva)
+
+        Returns:
+            InstallJson: Configured InstallJson instance for testing
+        """
         # reset singleton
         # InstallJson._instances = {}
 
         fqfn = self.tcex_test_dir / 'app' / 'config' / 'apps' / app_type / app_name / 'install.json'
         try:
-            _ij = InstallJson(filename=fqfn.name, path=fqfn.parent)
-            return _ij
+            return InstallJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
-            assert False, f'Failed parsing file {fqfn.name} ({ex})'
+            pytest.fail(f'Failed parsing file {fqfn.name} ({ex})')
 
-    def ij_bad(self, app_name: str = 'app_bad_install_json', app_type: str = 'tcpb'):
-        """Return install.json instance with "bad" file."""
+    def ij_bad(self, app_name: str = 'app_bad_install_json', app_type: str = 'tcpb') -> InstallJson:
+        """Return install.json instance with "bad" file.
+
+        This method creates an InstallJson instance with intentionally malformed
+        configuration for testing error handling and validation scenarios.
+
+        Parameters:
+            app_name: The name of the bad application to test
+            app_type: The type of application (e.g., tcpb, tcva)
+
+        Returns:
+            InstallJson: Configured InstallJson instance with bad configuration
+        """
         # reset singleton
         # InstallJson._instances = {}
 
@@ -74,16 +121,24 @@ class TestInstallJson:
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
-            assert False, f'Failed parsing file {fqfn.name} ({ex})'
+            pytest.fail(f'Failed parsing file {fqfn.name} ({ex})')
 
-    def model_validate(self, path: str):
-        """Validate input model in and out."""
-        ij_path = Path(os.path.join(self.tcex_test_dir, path))
-        for fqfn in sorted(ij_path.glob('**/*install.json')):
+    def model_validate(self, path: str) -> None:
+        """Validate input model in and out.
+
+        This method validates InstallJson model configurations by comparing
+        input JSON with parsed model output, ensuring proper model
+        serialization and deserialization.
+
+        Parameters:
+            path: The path to validate InstallJson model configurations
+        """
+        ij_path = self.tcex_test_dir / path
+        for fqfn_path in sorted(ij_path.glob('**/*install.json')):
             # reset singleton
             # InstallJson._instances = {}
 
-            fqfn = Path(fqfn)
+            fqfn = Path(fqfn_path)
             with fqfn.open() as fh:
                 json_dict = json.load(fh)
 
@@ -91,20 +146,15 @@ class TestInstallJson:
                 ij = InstallJson(filename=fqfn.name, path=fqfn.parent)
                 # ij.update.multiple()
             except Exception as ex:
-                assert False, f'Failed parsing file {fqfn.name} ({ex})'
+                pytest.fail(f'Failed parsing file {fqfn.name} ({ex})')
 
             ddiff = DeepDiff(
                 json_dict,
                 # template requires json dump to serialize certain fields
-                json.loads(
-                    ij.model.model_dump_json(
-                        by_alias=True, exclude_defaults=True, exclude_none=True
-                    )
-                ),
+                json.loads(ij.model.model_dump_json(exclude_defaults=True, exclude_none=True)),
                 ignore_order=True,
-                exclude_paths=["root['minServerVersion']", "root['sdkVersion']"],
             )
-            assert not ddiff, f'Failed validation of file {fqfn}'
+            assert not ddiff, f'Failed validation of file {fqfn.name}'
 
     def test_app_prefix(self):
         """Test method"""
@@ -187,8 +237,17 @@ class TestInstallJson:
     #         'StringArray|TCEntity|TCEntityArray|TCEnhancedEntityArray>'
     #     )
 
-    def test_tc_playbook_out_variables(self):
-        """Test method"""
+    def test_tc_playbook_out_variables(self) -> None:
+        """Test TC Playbook Out Variables for TcEx App Config InstallJson Model Module.
+
+        This test case verifies that the InstallJson model correctly provides
+        playbook output variables for various data types and actions,
+        ensuring proper variable naming and type specification for
+        playbook application outputs.
+
+        This test validates the playbook output variable generation
+        and formatting capabilities of the InstallJson configuration.
+        """
         data = self.ij(app_type='tcpb').tc_playbook_out_variables
         assert data == [
             '#App:9876:action_1.binary.output1!Binary',
@@ -289,8 +348,17 @@ class TestInstallJson:
             '#App:9876:action_all.tcentity_array.output3!TCEntityArray',
         ]
 
-    def test_tc_playbook_out_variables_csv(self):
-        """Test method"""
+    def test_tc_playbook_out_variables_csv(self) -> None:
+        """Test TC Playbook Out Variables CSV for TcEx App Config InstallJson Model Module.
+
+        This test case verifies that the InstallJson model correctly provides
+        playbook output variables in CSV format for various data types and actions,
+        ensuring proper variable formatting and comma-separated value generation
+        for playbook application outputs.
+
+        This test validates the CSV output variable generation
+        and formatting capabilities of the InstallJson configuration.
+        """
         data = self.ij(app_type='tcpb').tc_playbook_out_variables_csv
         assert data == (
             '#App:9876:action_1.binary.output1!Binary,#App:9876:action_1.binary.output2!Binary,#App'
@@ -350,38 +418,70 @@ class TestInstallJson:
             'ray.output2!TCEntityArray,#App:9876:action_all.tcentity_array.output3!TCEntityArray'
         )
 
-    def test_has_feature(self):
-        """Test method"""
+    def test_has_feature(self) -> None:
+        """Test Has Feature for TcEx App Config InstallJson Model Module.
+
+        This test case verifies that the InstallJson model correctly
+        identifies and reports feature availability, ensuring proper
+        feature detection and configuration management.
+
+        This test validates the feature detection capabilities
+        of the InstallJson configuration system.
+        """
         assert self.ij(app_type='tcpb').has_feature('fileParams')
 
-    def test_update(self):
-        """Test method"""
+    def test_update(self) -> None:
+        """Test Update for TcEx App Config InstallJson Model Module.
+
+        This test case verifies that the InstallJson model update
+        functionality works correctly across different application types,
+        ensuring proper configuration updates and file management.
+
+        This test validates the update capabilities and file handling
+        of the InstallJson configuration system.
+        """
         for app_type in ['tc', 'tcpb', 'tcva']:
             ij = self.ij_bad(app_type=app_type)
             try:
                 ij.update.multiple()
                 assert True
             except Exception as ex:
-                assert False, f'Failed to update install.json file ({ex}).'
+                pytest.fail(f'Failed to update install.json file ({ex}).')
             finally:
                 # cleanup temp file
                 ij.fqfn.unlink()
 
-    def test_validate(self):
-        """Test method"""
+    def test_validate(self) -> None:
+        """Test Validate for TcEx App Config InstallJson Model Module.
+
+        This test case verifies that the InstallJson model validation
+        functionality works correctly by testing duplicate detection
+        and validation error reporting.
+
+        This test validates the validation capabilities and error
+        detection of the InstallJson configuration system.
+        """
         ij = self.ij_bad(app_type='tcpb')
         try:
             assert ij.validate.validate_duplicate_input() == ['boolean_optional']
             assert ij.validate.validate_duplicate_output() == ['binary']
             assert ij.validate.validate_duplicate_sequence() == [12]
         except Exception as ex:
-            assert False, f'Failed to validate install.json file ({ex}).'
+            pytest.fail(f'Failed to validate install.json file ({ex}).')
         finally:
             # cleanup temp file
             ij.fqfn.unlink()
 
-    def test_model_app_output_var_typ(self):
-        """Test method"""
+    def test_model_app_output_var_typ(self) -> None:
+        """Test Model App Output Variable Type for TcEx App Config InstallJson Model Module.
+
+        This test case verifies that the InstallJson model correctly
+        identifies and reports application output variable types,
+        ensuring proper type classification for different application types.
+
+        This test validates the output variable type detection
+        and classification capabilities of the InstallJson model.
+        """
         ij = self.ij_bad(app_type='tcpb')
         try:
             assert ij.model.app_output_var_type == 'App'
@@ -395,8 +495,20 @@ class TestInstallJson:
             # cleanup temp file
             ij.fqfn.unlink()
 
-    def test_model_commit_hash(self, monkeypatch: MonkeyPatch):
-        """Test method"""
+    def test_model_commit_hash(self, monkeypatch: MonkeyPatch) -> None:
+        """Test Model Commit Hash for TcEx App Config InstallJson Model Module.
+
+        This test case verifies that the InstallJson model correctly
+        retrieves and reports commit hash information from environment
+        variables, ensuring proper version tracking and deployment
+        information management.
+
+        Parameters:
+            monkeypatch: Pytest fixture for patching environment variables
+
+        This test validates the commit hash retrieval and environment
+        variable integration capabilities of the InstallJson model.
+        """
         monkeypatch.setenv('CI_COMMIT_SHA', '1234567890123456789012345678901234567890')
         ij = self.ij_bad(app_type='tcpb')
 
@@ -406,8 +518,16 @@ class TestInstallJson:
             # cleanup temp file
             ij.fqfn.unlink()
 
-    def test_model_filter_params(self):
-        """Test method"""
+    def test_model_filter_params(self) -> None:
+        """Test Model Filter Params for TcEx App Config InstallJson Model Module.
+
+        This test case verifies that the InstallJson model correctly
+        provides filtered parameter information, ensuring proper
+        parameter management and filtering capabilities.
+
+        This test validates the parameter filtering and management
+        capabilities of the InstallJson model.
+        """
         ij = self.ij(app_type='tcvc')
 
         assert ij.model.filter_params(name='service_string_required')

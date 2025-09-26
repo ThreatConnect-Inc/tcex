@@ -1,9 +1,9 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import uuid
 
-# first-party
+
 from tcex.tcex import TcEx
 
 

@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
-# first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
 from tcex.api.tc.v3.notes.note_model import NoteModel
@@ -16,7 +14,6 @@ from tcex.api.tc.v3.tasks.task_filter import TaskFilter
 from tcex.api.tc.v3.tasks.task_model import TaskModel, TasksModel
 
 if TYPE_CHECKING:  # pragma: no cover
-    # first-party
     from tcex.api.tc.v3.artifacts.artifact import Artifact  # CIRCULAR-IMPORT
     from tcex.api.tc.v3.notes.note import Note  # CIRCULAR-IMPORT
 
@@ -67,14 +64,14 @@ class Task(ObjectABC):
     @property
     def artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
-        from tcex.api.tc.v3.artifacts.artifact import Artifacts
+        from tcex.api.tc.v3.artifacts.artifact import Artifacts  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Artifacts)  # type: ignore
 
     @property
     def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
-        from tcex.api.tc.v3.notes.note import Notes
+        from tcex.api.tc.v3.notes.note import Notes  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Notes)  # type: ignore
 
@@ -108,8 +105,8 @@ class Task(ObjectABC):
             ex_msg = 'Invalid type passed in to stage_assignee'
             raise RuntimeError(ex_msg)  # noqa: TRY004
         data._staged = True  # noqa: SLF001
-        self.model.assignee._staged = True  # noqa: SLF001
-        self.model.assignee.type = type
+        self.model.assignee._staged = True  # noqa: SLF001 # type: ignore
+        self.model.assignee.type = type  # type: ignore
         self.model.assignee.data = data  # type: ignore
 
     def stage_note(self, data: dict | ObjectABC | NoteModel):

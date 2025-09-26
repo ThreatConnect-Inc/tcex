@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from pydantic import Field
 
-# first-party
 from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.util import Util
 
@@ -16,7 +14,7 @@ class AssigneeUserModel(
 ):
     """Assignee Model"""
 
-    user_name: str = Field(
+    user_name: str = Field(  # type: ignore
         ...,
         frozen=True,
         description='The **user name** for the User.',

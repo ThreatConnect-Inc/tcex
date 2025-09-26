@@ -1,15 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 import ssl
 import time
 from collections.abc import Callable
 
-# third-party
 import paho.mqtt.client as mqtt
-
-# first-party
 from tcex.input.field_type.sensitive import Sensitive
 from tcex.logger.trace_logger import TraceLogger
 from tcex.pleb.cached_property import cached_property

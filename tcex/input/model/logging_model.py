@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# third-party
 from pydantic import BaseModel, Field
 
 

@@ -1,10 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
 import json
 from collections.abc import Callable
 
-# first-party
 from tcex.util import Util
 
 

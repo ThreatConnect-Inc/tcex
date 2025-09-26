@@ -1,15 +1,15 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from random import randint
 
-# third-party
+
 import pytest
 from pytest import FixtureRequest
 
-# first-party
+
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
@@ -229,7 +229,7 @@ class TestArtifacts(TestV3):
 
         # [Filter Testing] date_added
         artifacts.filter.date_added(
-            TqlOperator.GT, (datetime.utcnow() - timedelta(days=1)).isoformat()
+            TqlOperator.GT, (datetime.now(UTC) - timedelta(days=1)).isoformat()
         )
 
         # [Filter Testing] has_case - using id filter as it's easily available

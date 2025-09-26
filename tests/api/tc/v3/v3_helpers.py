@@ -1,6 +1,6 @@
 """TcEx Framework Module"""
 
-# standard library
+
 import importlib
 import inspect
 import os
@@ -9,11 +9,11 @@ from datetime import datetime
 from random import randint
 from typing import Any
 
-# third-party
+
 from _pytest.fixtures import FixtureRequest
 from pydantic import BaseModel
 
-# first-party
+
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.v3 import V3
 from tcex.tcex import TcEx
@@ -776,6 +776,13 @@ class TestV3:
         for f in self.v3_helper.v3_obj.fields:
             names = [f.get('name')]
 
+            if self.v3_helper.v3_object == 'exclusion_lists':
+                if 'values' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names.remove('values')
+                else:
+                    print('value not in names, this check can be removed.')
+
             if self.v3_helper.v3_object == 'artifacts' and 'analytics' in names:
                 # fix discrepancy between <endpoint>/fields and <endpoint>
                 names = [
@@ -787,6 +794,26 @@ class TestV3:
                 ]
 
             if self.v3_helper.v3_object in ['groups']:
+                # per Phil
+                # common -> provides the common group data:
+                #     for example, cvss_v4 and cvss_score_v4, etc.
+                # references -> provides the sources of the common group:
+                #     what was used to determine it was a vulnerability CVE or KEV
+                # linkedGroups -> provides all the groups/buckets linked to common group:
+                #     share the same name and type
+
+                if 'common' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = ['commonGroup']
+
+                if 'linkedGroups' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = ['commonGroup']
+
+                if 'references' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = ['commonGroup']
+
                 if 'intelReviews' in names:
                     names = ['reviews']
 

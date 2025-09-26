@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# first-party
 from tcex.input.model.advanced_request_model import AdvancedRequestModel
 from tcex.input.model.app_api_service_model import AppApiServiceModel
 from tcex.input.model.app_external_model import AppExternalModel

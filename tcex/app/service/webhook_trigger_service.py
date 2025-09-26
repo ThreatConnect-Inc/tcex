@@ -1,11 +1,9 @@
 """TcEx Framework Module"""
 
-# standard library
 import base64
 import json
 from typing import TYPE_CHECKING, Any
 
-# first-party
 from tcex.app.key_value_store.key_value_store import KeyValueStore
 from tcex.app.service.common_service_trigger import CommonServiceTrigger
 from tcex.app.token import Token
@@ -14,7 +12,6 @@ from tcex.input.model.module_app_model import ModuleAppModel
 from tcex.logger.logger import Logger
 
 if TYPE_CHECKING:
-    # standard library
     from collections.abc import Callable
 
 

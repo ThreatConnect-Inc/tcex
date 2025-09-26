@@ -1,15 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
 from abc import ABC
 from typing import TYPE_CHECKING
 
-# first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.util.util import Util
 
 if TYPE_CHECKING:
-    # first-party
     from tcex.api.tc.v3.tql.tql import Tql  # CIRCULAR-IMPORT
 
 

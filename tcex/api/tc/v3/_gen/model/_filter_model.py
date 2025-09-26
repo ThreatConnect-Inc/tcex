@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# third-party
 from pydantic import BaseModel, Field, field_validator
 
-# first-party
 from tcex.pleb.cached_property import cached_property
 from tcex.util import Util
 from tcex.util.string_operation import CamelString
