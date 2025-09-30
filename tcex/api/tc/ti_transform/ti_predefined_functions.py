@@ -1,5 +1,6 @@
 """TcEx Framework Module"""
 
+# standard library
 import hashlib
 import json
 import uuid
@@ -7,6 +8,7 @@ from collections.abc import Iterable
 from inspect import _empty, signature
 from typing import TypedDict
 
+# first-party
 from tcex.api.tc.ti_transform.model.transform_model import (
     GroupTransformModel,
     IndicatorTransformModel,
@@ -143,6 +145,22 @@ class ProcessingFunctions:
             mapping = json.loads(mapping)
         return mapping.get(str(value), value)
 
+    def deduplicate_array(self, value: list) -> list:
+        """Remove duplicate values from an array."""
+        return list(set(value))
+
+    def slice_array(self, value: list, start: int = 0, end: int | None = None) -> list:
+        """Slice an array."""
+        return value[start:end]
+
+    def remove_trailing_whitespace(self, value: str) -> str:
+        """Remove trailing whitespace from a string."""
+        return value.rstrip()
+
+    def remove_leading_whitespace(self, value: str) -> str:
+        """Remove leading whitespace from a string."""
+        return value.lstrip()
+
     def value_in(self, value, values: str, delimiter: str = ','):
         """Return the value if it is in the list of values, else return None."""
         if not values.startswith('"'):
@@ -169,6 +187,16 @@ class ProcessingFunctions:
             table += f'|{"|".join([str(row.get(o, "")) for o in order])}|\n'
 
         return table
+
+    def defang(self, value: str) -> str:
+        """Defangs URLs, IPs, and common indicators to make them inert."""
+        if not isinstance(value, str):
+            return value
+        value = value.replace('http://', 'hxxp://')
+        value = value.replace('https://', 'hxxps://')
+        value = value.replace('.', '[.]')
+        value = value.replace(':', '[:]')
+        return value
 
     def any_to_datetime(self, value):
         """Convert any value to a datetime object."""
@@ -266,7 +294,8 @@ class ProcessingFunctions:
                                 api_def['kwargs'][kwarg]
                             )
         except Exception as ex:
-            from tcex.api.tc.ti_transform import TransformException  # noqa: PLC0415
+            # first-party
+            from tcex.api.tc.ti_transform import TransformException
 
             ex_msg = f'{context}{additional_context}'
             raise TransformException(ex_msg, ex, context=api_def) from ex
