@@ -267,6 +267,9 @@ class IndicatorToIndicatorAssociation(BaseModel, extra='forbid'):
 
 def get_association_discriminator(v: Any) -> str:
     """Return the association type discriminator value."""
+    if isinstance(v, BaseModel):
+        return v.__class__.__name__
+
     if 'xid_1' in v and 'xid_2' in v:
         return GroupToGroupAssociation.__name__
     if 'xid' in v and 'indicator_value' in v and 'indicator_type' in v:

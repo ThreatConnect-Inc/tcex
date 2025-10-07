@@ -53,24 +53,24 @@ class TestAssociationTransform:
 
         transform = tcex.api.tc.association_transform(
            {    'association': [
-        {
-            'xid_1': {'default': 'group-1'},
-            'xid_2': {'path': 'xid2'},
-        },
-        {
-            'xid': {'path': 'xid2'},
-            'indicator_value': {'path': 'indicator1'},
-            'indicator_type': {'default': 'Address'},
-        },
-        {
-            'indicator_value_1': {'path': 'indicator1'},
-            'indicator_type_1': {'default': 'Address'},
-            'indicator_value_2': {'default': '1.2.3.4'},
-            'indicator_type_2': {'default': 'Address'},
-            'custom_association_type': {'default': 'related-to'},
-        },
-    ],}
-        )
+                    {
+                        'xid_1': {'default': 'group-1'},
+                        'xid_2': {'path': 'xid2'},
+                    },
+                    {
+                        'xid': {'path': 'xid2'},
+                        'indicator_value': {'path': 'indicator1'},
+                        'indicator_type': {'default': 'Address'},
+                    },
+                    {
+                        'indicator_value_1': {'path': 'indicator1'},
+                        'indicator_type_1': {'default': 'Address'},
+                        'indicator_value_2': {'default': '1.2.3.4'},
+                        'indicator_type_2': {'default': 'Address'},
+                        'custom_association_type': {'default': 'related-to'},
+                    },
+                ],
+            })
 
         transforms = tcex.api.tc.ti_transforms(data, [transform])
 
