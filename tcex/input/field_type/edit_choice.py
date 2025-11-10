@@ -287,9 +287,9 @@ class EditChoice(str):
             raise InvalidEmptyValue(field_name)
 
         # fix addressing PLAT-14751
-        pattern = re.compile(r'^\${(users|user_group):.*?}$', re.IGNORECASE)
+        pattern = re.compile(r'^\${(users|user_groups):.*?}$', re.IGNORECASE)
         if pattern.match(value):
-            value = re.sub(r'^\${(users|user_group):|}$', '', value, flags=re.IGNORECASE)
+            value = re.sub(r'^\${(users|user_groups):|}$', '', value, flags=re.IGNORECASE)
 
         ij = InstallJson()
         param = ij.model.get_param(field_name)
