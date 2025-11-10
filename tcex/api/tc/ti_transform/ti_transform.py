@@ -343,7 +343,7 @@ class TiTransform(TransformABC):
             }
             del v3_data['attribute']
 
-        # transfomr tags
+        # transform tags
         if v3_data.get('tag'):
             v3_data['tags'] = {'data': [{'name': t['name']} for t in v3_data['tag']]}
             del v3_data['tag']

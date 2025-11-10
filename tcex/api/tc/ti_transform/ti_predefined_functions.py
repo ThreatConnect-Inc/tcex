@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import hashlib
 import json
 import uuid
@@ -8,7 +7,7 @@ from collections.abc import Iterable
 from inspect import _empty, signature
 from typing import TypedDict
 
-# first-party
+from tcex import TcEx
 from tcex.api.tc.ti_transform.model.transform_model import (
     GroupTransformModel,
     IndicatorTransformModel,
@@ -98,9 +97,9 @@ def custom_function_definition(definition: FunctionDefinition):
 class ProcessingFunctions:
     """Predefined functions to use in transforms."""
 
-    def __init__(self, tcex) -> None:
+    def __init__(self, tcex: TcEx) -> None:
         """."""
-        self.tcex = tcex
+        self.tcex: TcEx = tcex
         self.custom_fns = {}
 
     @custom_function_definition(
@@ -190,13 +189,11 @@ class ProcessingFunctions:
 
     def defang(self, value: str) -> str:
         """Defangs URLs, IPs, and common indicators to make them inert."""
-        if not isinstance(value, str):
-            return value
-        value = value.replace('http://', 'hxxp://')
-        value = value.replace('https://', 'hxxps://')
-        value = value.replace('.', '[.]')
-        value = value.replace(':', '[:]')
-        return value
+        return self.tcex.util.defang(value)
+
+    def refang(self, value: str) -> str:
+        """Refangs URLs, IPs, and common indicators to make them active."""
+        return self.tcex.util.refang(value)
 
     def any_to_datetime(self, value):
         """Convert any value to a datetime object."""
@@ -294,8 +291,8 @@ class ProcessingFunctions:
                                 api_def['kwargs'][kwarg]
                             )
         except Exception as ex:
-            # first-party
-            from tcex.api.tc.ti_transform import TransformException
+            # import here to avoid circular import
+            from tcex.api.tc.ti_transform import TransformException  # noqa: PLC0415
 
             ex_msg = f'{context}{additional_context}'
             raise TransformException(ex_msg, ex, context=api_def) from ex
