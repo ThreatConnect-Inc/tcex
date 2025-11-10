@@ -12,6 +12,7 @@ class AssigneeModel(
     V3ModelABC,
     title='User Data Model',
     alias_generator=Util().snake_to_camel,
+    fields={'id': {'exclude': True}},
     validate_assignment=True,
 ):
     """Assignee Model"""
