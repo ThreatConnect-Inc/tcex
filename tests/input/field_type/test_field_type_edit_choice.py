@@ -117,13 +117,13 @@ class TestInputsFieldTypes(InputTest):
                 id='pass-normal-users-variable'
             ),
             pytest.param(
-                '${user_group:bsummers@threatconnect.com}',
+                '${user_groups:bsummers@threatconnect.com}',
                 'bsummers@threatconnect.com',
                 False,
                 False,
                 None,
                 False,
-                id='pass-normal-user_group-variable'
+                id='pass-normal-user_groups-variable'
             ),
             pytest.param(
                 'choice_1', 'choice_1', False, False, None, False, id='pass-required-valid-choice'

@@ -152,13 +152,13 @@ class PropertyModel(
         """Process standard type."""
         types = [
             'AiInsights',
+            'AttackFinancialImpact',
             'AttackSecurityCoverage',
             'AttributeSource',
             'CommonGroup',
             'DNSResolutions',
             'Enrichments',
             'Exclusions',
-            'AttackFinancialImpact',
             'GeoLocation',
             'InvestigationLinks',
             'IntelligenceReviews',
@@ -167,8 +167,8 @@ class PropertyModel(
             'KeywordSection',
             'Links',
             'Map',
-            'ValidationRule',
             'Strings',
+            'ValidationRule',
             'WhoIs',
         ]
         if pm.type in types:
