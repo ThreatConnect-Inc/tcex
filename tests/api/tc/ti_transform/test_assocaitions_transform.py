@@ -12,17 +12,8 @@ Classes:
 TcEx Module Tested: api.tc.ti_transform
 """
 
-
-import json
-from pathlib import Path
-from typing import Any
-
-
 import deepdiff
-
-
 from tcex import TcEx
-from tcex.api.tc.ti_transform.model.transform_model import AssociationTransformModel, IndicatorTransformModel
 
 
 class TestAssociationTransform:

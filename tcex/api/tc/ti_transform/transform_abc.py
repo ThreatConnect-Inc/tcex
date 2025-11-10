@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import collections
 import logging
 from abc import ABC, abstractmethod
@@ -9,10 +8,7 @@ from datetime import datetime
 from inspect import signature
 from typing import Any, cast
 
-# third-party
 import jmespath
-
-# first-party
 from tcex.api.tc.ti_transform import ti_predefined_functions
 from tcex.api.tc.ti_transform.model import (
     AttributeTransformModel,
@@ -70,7 +66,7 @@ class TransformsABC(ABC):  # noqa: B024
         transforms: list[AssociationTransformModel | GroupTransformModel | IndicatorTransformModel],
         raise_exceptions: bool = False,
         *,
-        seperate_batch_associations: bool = False,
+        separate_batch_associations: bool = False,
     ):
         """Initialize instance properties."""
         self.ti_dicts = ti_dicts
@@ -79,7 +75,7 @@ class TransformsABC(ABC):  # noqa: B024
         # properties
         self.log = _logger
         self.raise_exceptions = raise_exceptions
-        self.seperate_batch_associations = seperate_batch_associations
+        self.separate_batch_associations = separate_batch_associations
         self.transformed_collection: list[TransformABC] = []
 
         # validate transforms
@@ -105,12 +101,12 @@ class TransformABC(ABC):
         ti_dict: dict,
         transforms: list[AssociationTransformModel | GroupTransformModel | IndicatorTransformModel],
         *,
-        seperate_batch_associations: bool = False,
+        separate_batch_associations: bool = False,
     ):
         """Initialize instance properties."""
         self.ti_dict = ti_dict
         self.transforms = transforms if isinstance(transforms, list) else [transforms]
-        self.seperate_batch_associations = seperate_batch_associations
+        self.separate_batch_associations = separate_batch_associations
 
         # properties
         self.adhoc_groups: list[dict] = []
@@ -283,7 +279,7 @@ class TransformABC(ABC):
                     self.log.warning(
                         'feature=transform, action=process-custom-association, '
                         'transform=%s, error=no-summary-or-type',
-                        association.dict(exclude_unset=True),
+                        association.model_dump(exclude_unset=True),
                     )
                     continue
 
@@ -305,7 +301,7 @@ class TransformABC(ABC):
                     self.log.warning(
                         'feature=transform, action=process-associated-indicator, '
                         'transform=%s, error=no-summary-or-type',
-                        association.dict(exclude_unset=True),
+                        association.model_dump(exclude_unset=True),
                     )
                     continue
 
@@ -384,7 +380,7 @@ class TransformABC(ABC):
                     if 'type_' not in param_:
                         self.log.warning(
                             'feature=transform, action=process-attribute, '
-                            f'transform={attribute.dict(exclude_unset=True)}, error=no-type'
+                            f'transform={attribute.model_dump(exclude_unset=True)}, error=no-type'
                         )
                         continue
 
@@ -395,7 +391,7 @@ class TransformABC(ABC):
                     except Exception:
                         self.log.exception(
                             'feature=transform, action=process-attribute, '
-                            f'transform={attribute.dict(exclude_unset=True)}'
+                            f'transform={attribute.model_dump(exclude_unset=True)}'
                         )
             except Exception as ex:
                 ex_msg = f'Attribute [{i}], type={attribute.type}'
@@ -521,7 +517,7 @@ class TransformABC(ABC):
             ex_msg = 'At least one indicator value must be provided.'
             raise RuntimeError(ex_msg)
 
-        self.add_summary(self._build_summary(str(value1), str(value2), str(value3)))
+        self.add_summary(self._build_summary(value1, value2, value3))
 
     def _process_name(self):
         """Process Group Name data."""
@@ -530,7 +526,7 @@ class TransformABC(ABC):
 
         name = self._transform_value(self.transform.name)
 
-        if name is None:
+        if not name:
             self.log.error(
                 'feature=ti-transform, event=process-group-name, message=no-name-found, '
                 f'path={self.transform.name.path}'
@@ -653,7 +649,7 @@ class TransformABC(ABC):
 
         # not all metadata fields have a path, but they must have a path or default
         if metadata.path is None:
-            return str(metadata.default) if metadata.default is not None else None
+            return str(metadata.default) if metadata.default else None
 
         # get value from path
         value = self._path_search(metadata.path)
