@@ -29,6 +29,7 @@ Usage Examples:
     ) = Field(...)
 """
 
+import re
 from typing import Any, ClassVar
 
 from pydantic.annotated_handlers import GetCoreSchemaHandler
@@ -284,6 +285,11 @@ class EditChoice(str):
         """
         if value == '':
             raise InvalidEmptyValue(field_name)
+
+        # fix addressing PLAT-14751
+        pattern = re.compile(r'^\${(users|user_group):.*?}$', re.IGNORECASE)
+        if pattern.match(value):
+            value = re.sub(r'^\${(users|user_group):|}$', '', value, flags=re.IGNORECASE)
 
         ij = InstallJson()
         param = ij.model.get_param(field_name)
