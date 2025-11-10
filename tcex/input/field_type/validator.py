@@ -14,6 +14,7 @@ def always_array(
     include_empty: bool = False,
     include_null: bool = False,
     split_csv: bool = False,
+    strip: bool = False,
 ) -> Callable[[Any, ValidationInfo], list[Any]]:
     """Return customized validator that always returns a list.
 
@@ -25,6 +26,7 @@ def always_array(
             affect list with existing null values.
         split_csv: if True and input value is a string, then string will be split on comma. No
         further processing is done on result of splitting on comma
+        strip: If True, will strip whitespace from each list item.
     """
 
     def _always_array(value: Any, info: ValidationInfo) -> list[Any]:
@@ -47,6 +49,9 @@ def always_array(
         if allow_empty is False and value == []:
             field_name = info.field_name or '--unknown--'
             raise InvalidEmptyValue(field_name=field_name)
+
+        if strip is True:
+            value = [v.strip() if isinstance(v, str) else v for v in value]
 
         return value
 
