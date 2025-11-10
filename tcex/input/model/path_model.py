@@ -1,6 +1,7 @@
 """TcEx Framework Module"""
 
 import tempfile
+import uuid
 from pathlib import Path
 
 from pydantic import BaseModel, Field
@@ -41,3 +42,15 @@ class PathModel(BaseModel):
         description='The path to the Apps "tmp" directory.',
         json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
+
+    @property
+    def tc_session_id(self) -> str:
+        """Return the current session id."""
+        if self.tc_out_path.parent.name:
+            return self.tc_in_path.parent.name
+
+        # handle running locally
+        session_id_filename = self.tc_out_path / 'tc_session_id'
+        if not session_id_filename.exists():
+            session_id_filename.write_text(str(uuid.uuid4()))
+        return session_id_filename.read_text().strip()

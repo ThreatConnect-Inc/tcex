@@ -157,6 +157,7 @@ class PropertyModel(
             'CommonGroup',
             'DNSResolutions',
             'Enrichments',
+            'Exclusions',
             'AttackFinancialImpact',
             'GeoLocation',
             'InvestigationLinks',
@@ -410,6 +411,7 @@ class PropertyModel(
     def __extra_tap(cls, type_: CamelString) -> str:
         """Return the TcEx Api Path."""
         if type_.snake_case().plural().lower() in [
+            'exclusion_lists',
             'owners',
             'owner_roles',
             'system_roles',

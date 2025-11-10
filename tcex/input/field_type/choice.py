@@ -21,8 +21,11 @@ class Choice(EditChoice):
     ) -> core_schema.ChainSchema:
         """Run validators / modifiers on input."""
 
+        # Get parent class _validate method
+        parent_validate = super()._validate  # type: ignore[misc]
+
         base_validate = core_schema.with_info_plain_validator_function(
-            function=super()._validate, field_name=handler.field_name
+            function=parent_validate, field_name=handler.field_name
         )
         modifier_select = core_schema.with_info_plain_validator_function(
             function=cls.modifier_select, field_name=handler.field_name

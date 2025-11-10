@@ -908,6 +908,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         # skip object that don't require as_entity method
         if self.type_ not in [
             'case_attributes',
+            'exclusion_lists',
             'victim_attributes',
             'group_attributes',
             'indicator_attributes',

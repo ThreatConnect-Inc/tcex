@@ -19,13 +19,13 @@ class ServiceModel(BaseModel):
         description='The broker connection startup timeout in seconds.',
         json_schema_extra={'inclusion_reason': 'runtimeLevel', 'requires_definition': True},
     )
-    tc_svc_broker_host: str = Field(
-        default=...,
+    tc_svc_broker_host: str | None = Field(
+        default=None,
         description='The Broker service hostname.',
         json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
-    tc_svc_broker_port: int = Field(
-        default=...,
+    tc_svc_broker_port: int | None = Field(
+        default=None,
         description='The Broker service port number.',
         json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
@@ -39,8 +39,8 @@ class ServiceModel(BaseModel):
         description='The Broker auth token.',
         json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
-    tc_svc_client_topic: str = Field(
-        default=...,
+    tc_svc_client_topic: str | None = Field(
+        default=None,
         description='The Broker client topic (App -> Core).',
         json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
@@ -54,13 +54,13 @@ class ServiceModel(BaseModel):
         description='The unique ID for the current service.',
         json_schema_extra={'inclusion_reason': 'runtimeLevel', 'requires_definition': True},
     )
-    tc_svc_server_topic: str = Field(
-        default=...,
+    tc_svc_server_topic: str | None = Field(
+        default=None,
         description='The Broker server topic (Core -> App).',
         json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )
-    tcex_testing_context: str = Field(
-        default=...,
+    tcex_testing_context: str | None = Field(
+        default=None,
         description='[Testing] The testing framework context.',
         json_schema_extra={'inclusion_reason': 'runtimeLevel'},
     )

@@ -105,7 +105,7 @@ class Task(ObjectABC):
             ex_msg = 'Invalid type passed in to stage_assignee'
             raise RuntimeError(ex_msg)  # noqa: TRY004
         data._staged = True  # noqa: SLF001
-        self.model.assignee._staged = True  # noqa: SLF001 # type: ignore
+        self.model.assignee._staged = True  # noqa: SLF001  # type: ignore
         self.model.assignee.type = type  # type: ignore
         self.model.assignee.data = data  # type: ignore
 
