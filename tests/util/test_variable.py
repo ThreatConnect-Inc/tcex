@@ -56,7 +56,7 @@ class TestVariable:
         """
         results = self.variables.get_playbook_variable_model(variable)
         if results is not None:
-            results = results.dict()
+            results = results.model_dump()
         assert results == expected
 
     @pytest.mark.parametrize(

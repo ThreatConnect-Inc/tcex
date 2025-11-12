@@ -1,8 +1,9 @@
 """Model Definition"""
 
 from collections.abc import Callable
+from typing import Annotated, Any, TypeAlias
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Discriminator, Field, Tag, field_validator, model_validator
 
 from jmespath import compile as jmespath_compile
 
@@ -117,6 +118,21 @@ class AssociatedGroupTransform(ValueTransformModel, extra='forbid'):
     """."""
 
 
+class AssociatedIndicatorFromGroupTransform(BaseModel, extra='forbid'):
+    """."""
+
+    summary: str | MetadataTransformModel = Field(..., description='')
+    indicator_type: str | MetadataTransformModel = Field(..., description='')
+
+
+class AssociatedIndicatorFromIndicatorTransform(BaseModel, extra='forbid'):
+    """."""
+
+    summary: str | MetadataTransformModel = Field(..., description='')
+    type: str | MetadataTransformModel = Field(..., description='')
+    association_type: str | MetadataTransformModel = Field(..., description='')
+
+
 class AttributeTransformModel(ValueTransformModel, extra='forbid'):
     """."""
 
@@ -159,6 +175,8 @@ class TiTransformModel(BaseModel, extra='forbid'):
 class GroupTransformModel(TiTransformModel, extra='forbid'):
     """."""
 
+    associated_indicators: list[AssociatedIndicatorFromGroupTransform] = Field([], description='')
+
     name: MetadataTransformModel = Field(..., description='')
     # document
     malware: MetadataTransformModel | None = Field(None, description='')
@@ -180,11 +198,16 @@ class GroupTransformModel(TiTransformModel, extra='forbid'):
     file_text: MetadataTransformModel | None = Field(None, description='')
     # document, signature
     file_name: MetadataTransformModel | None = Field(None, description='')
+    # Case
+    severity: MetadataTransformModel | None = Field(None, description='')
 
 
 class IndicatorTransformModel(TiTransformModel, extra='forbid'):
     """."""
 
+    associated_indicators: list[AssociatedIndicatorFromIndicatorTransform] = Field(
+        [], description=''
+    )
     confidence: MetadataTransformModel | None = Field(None, description='')
     rating: MetadataTransformModel | None = Field(None, description='')
     # summary: MetadataTransformModel | None = Field(None, description='')
@@ -203,7 +226,7 @@ class IndicatorTransformModel(TiTransformModel, extra='forbid'):
     @model_validator(mode='before')
     @classmethod
     def _one_indicator_value(cls, values):
-        """Validate that one set of credentials is provided for the TC API."""
+        """Validate that at least one indicator value is provided."""
 
         if not any(
             [
@@ -212,8 +235,67 @@ class IndicatorTransformModel(TiTransformModel, extra='forbid'):
                 values.get('value3'),
             ]
         ):
-            ex_msg = (
-                'An indicator transform must be defined (e.g., summary, value1, value2, value3).'
-            )
+            ex_msg = 'An indicator transform must be defined (e.g., value1, value2, value3).'
             raise ValueError(ex_msg)
         return values
+
+
+class GroupToGroupAssociation(BaseModel, extra='forbid'):
+    """."""
+
+    xid_1: MetadataTransformModel = Field(..., description='')
+    xid_2: MetadataTransformModel = Field(..., description='')
+
+
+class GroupToIndicatorAssociation(BaseModel, extra='forbid'):
+    """."""
+
+    xid: MetadataTransformModel = Field(..., description='')
+    indicator_value: MetadataTransformModel = Field(..., description='')
+    indicator_type: MetadataTransformModel = Field(..., description='')
+
+
+class IndicatorToIndicatorAssociation(BaseModel, extra='forbid'):
+    """."""
+
+    indicator_value_1: MetadataTransformModel = Field(..., description='')
+    indicator_type_1: MetadataTransformModel = Field(..., description='')
+    indicator_value_2: MetadataTransformModel = Field(..., description='')
+    indicator_type_2: MetadataTransformModel = Field(..., description='')
+    custom_association_type: MetadataTransformModel = Field(..., description='')
+
+
+def get_association_discriminator(v: Any) -> str:
+    """Return the association type discriminator value."""
+    if isinstance(v, BaseModel):
+        return v.__class__.__name__
+
+    if 'xid_1' in v and 'xid_2' in v:
+        return GroupToGroupAssociation.__name__
+    if 'xid' in v and 'indicator_value' in v and 'indicator_type' in v:
+        return GroupToIndicatorAssociation.__name__
+    if (
+        'indicator_value_1' in v
+        and 'indicator_type_1' in v
+        and 'indicator_value_2' in v
+        and 'indicator_type_2' in v
+        and 'custom_association_type' in v
+    ):
+        return IndicatorToIndicatorAssociation.__name__
+    msg = f'Could not determine association type for {v}.'
+    raise ValueError(msg)
+
+
+AssociationTypes: TypeAlias = Annotated[
+    Annotated[GroupToGroupAssociation, Tag(GroupToGroupAssociation.__name__)]
+    | Annotated[GroupToIndicatorAssociation, Tag(GroupToIndicatorAssociation.__name__)]
+    | Annotated[IndicatorToIndicatorAssociation, Tag(IndicatorToIndicatorAssociation.__name__)],
+    Discriminator(get_association_discriminator),
+]
+
+
+class AssociationTransformModel(BaseModel, extra='forbid'):
+    """."""
+
+    applies: Callable | None = Field(None, description='')
+    associations: list[AssociationTypes] = Field([], description='')
