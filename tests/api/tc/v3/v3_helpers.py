@@ -336,7 +336,7 @@ class V3Helper:
             print(f'''{key} == {value}''')
 
         # Generate TQL statements
-        model_data = model.dict()
+        model_data = model.model_dump()
         tql_filters = {
             'found': [],
             'missing': [],
@@ -898,13 +898,13 @@ class TestV3:
         the API endpoint we can validate that the model has all required properties.
         """
         for prop_string in self.v3_helper.v3_obj.properties:
-            assert prop_string in self.v3_helper.v3_obj.model.dict(
+            assert prop_string in self.v3_helper.v3_obj.model.model_dump(
                 by_alias=True
             ), f'Missing {prop_string} property'
 
     def obj_properties_extra(self):
         """Check to see if there are any additional properties in obj."""
-        for prop in self.v3_helper.v3_obj.model.dict(by_alias=True):
+        for prop in self.v3_helper.v3_obj.model.model_dump(by_alias=True):
             # Ignore extra properties
             # * id - not define, by API endpoint
             # * webLink - not define, by API endpoint (Core Issue)

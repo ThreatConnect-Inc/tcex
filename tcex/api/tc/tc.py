@@ -1,9 +1,10 @@
 """TcEx Framework Module"""
 
-from requests import Session  # TYPE-CHECKING
+from requests import Session
 
 from tcex.api.tc.ti_transform import TiTransform, TiTransforms
 from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
+from tcex.api.tc.ti_transform.model.transform_model import AssociationTransformModel
 from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
 from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3
@@ -25,6 +26,11 @@ class TC:
         self.session_tc = session_tc
 
     @staticmethod
+    def association_transform(transform: dict) -> AssociationTransformModel:
+        """Return a association transform model."""
+        return AssociationTransformModel(**transform)
+
+    @staticmethod
     def group_transform(transform: dict) -> GroupTransformModel:
         """Return a group transform model."""
         return GroupTransformModel(**transform)
@@ -37,7 +43,7 @@ class TC:
     @staticmethod
     def ti_transform(
         ti_dict: dict,
-        transforms: list[GroupTransformModel | IndicatorTransformModel],
+        transforms: list[AssociationTransformModel | GroupTransformModel | IndicatorTransformModel],
     ) -> TiTransform:
         """Return an instance of TI Transform class."""
         return TiTransform(ti_dict, transforms)
@@ -45,7 +51,7 @@ class TC:
     @staticmethod
     def ti_transforms(
         ti_dict: list[dict],
-        transforms: list[GroupTransformModel | IndicatorTransformModel],
+        transforms: list[AssociationTransformModel | GroupTransformModel | IndicatorTransformModel],
     ) -> TiTransforms:
         """Return an instance of TI Transforms class."""
         return TiTransforms(ti_dict, transforms)
