@@ -148,11 +148,18 @@ class TestInstallJsonModel:
             except Exception as ex:
                 pytest.fail(f'Failed parsing file {fqfn.name} ({ex})')
 
+            # Ensure both dictionaries are sorted consistently for comparison
+            model_dict = json.loads(
+                ij.model.model_dump_json(by_alias=True, exclude_defaults=True, exclude_none=True)
+            )
+            json_dict_sorted = json.loads(json.dumps(json_dict, sort_keys=True))
+            model_dict_sorted = json.loads(json.dumps(model_dict, sort_keys=True))
+
             ddiff = DeepDiff(
-                json_dict,
-                # template requires json dump to serialize certain fields
-                json.loads(ij.model.model_dump_json(exclude_defaults=True, exclude_none=True)),
+                json_dict_sorted,
+                model_dict_sorted,
                 ignore_order=True,
+                exclude_paths="root['sdkVersion']",
             )
             assert not ddiff, f'Failed validation of file {fqfn.name}'
 

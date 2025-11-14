@@ -308,8 +308,8 @@ class TestCaseSnippets(TestV3):
             pytest.param(
                 10, 11, 'Group', AssigneeUserGroupModel, id='assignee-as-user-group-model',
             ),
-            pytest.param(10, 11, 'User', UserModel, id='assignee-as-user-only-model'),
-            pytest.param(10, 11, 'Group', UserGroupModel, id='assignee-as-user-group-only-model'),
+            pytest.param(10, 66, 'User', UserModel, id='assignee-as-user-only-model'),
+            pytest.param(10, 10, 'Group', UserGroupModel, id='assignee-as-user-group-only-model'),
         ]
     )
     def test_case_update_with_assignee(

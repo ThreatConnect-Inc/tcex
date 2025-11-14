@@ -1,6 +1,6 @@
 """TcEx Framework Module"""
 
-from pydantic import Field, field_validator
+from pydantic import ConfigDict, Field, field_validator
 
 from tcex.api.tc.v3.security.assignee_user_group_model import AssigneeUserGroupModel
 from tcex.api.tc.v3.security.assignee_user_model import AssigneeUserModel
@@ -8,14 +8,17 @@ from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
 
-class AssigneeModel(
-    V3ModelABC,
-    title='User Data Model',
-    alias_generator=Util().snake_to_camel,
-    fields={'id': {'exclude': True}},
-    validate_assignment=True,
-):
+class AssigneeModel(V3ModelABC):
     """Assignee Model"""
+
+    model_config = ConfigDict(
+        title='User Data Model',
+        alias_generator=Util().snake_to_camel,
+        validate_assignment=True,
+    )
+
+    # Exclude inherited 'id' field
+    id: int | None = Field(default=None, exclude=True)  # type: ignore
 
     type: str | None = Field(
         None,

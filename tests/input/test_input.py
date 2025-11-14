@@ -101,7 +101,7 @@ class TestInputsConfig:
             'tc_api_access_id': os.getenv('TC_API_ACCESS_ID'),
             'tc_api_path': os.getenv('TC_API_PATH'),
             'tc_api_secret_key': os.getenv('TC_API_SECRET_KEY'),
-            'tc_log_path': Path.cwd(),
+            'tc_log_path': str(Path.cwd()),
             'tc_token': None,
             'tc_expires': None,
             'tc_verify': True,

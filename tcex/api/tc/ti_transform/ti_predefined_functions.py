@@ -5,13 +5,15 @@ import json
 import uuid
 from collections.abc import Iterable
 from inspect import _empty, signature
-from typing import TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
-from tcex import TcEx
 from tcex.api.tc.ti_transform.model.transform_model import (
     GroupTransformModel,
     IndicatorTransformModel,
 )
+
+if TYPE_CHECKING:
+    from tcex import TcEx
 
 
 class TransformBuilderExport(TypedDict):
@@ -97,7 +99,7 @@ def custom_function_definition(definition: FunctionDefinition):
 class ProcessingFunctions:
     """Predefined functions to use in transforms."""
 
-    def __init__(self, tcex: TcEx) -> None:
+    def __init__(self, tcex: 'TcEx') -> None:
         """."""
         self.tcex: TcEx = tcex
         self.custom_fns = {}

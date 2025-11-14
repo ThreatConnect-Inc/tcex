@@ -32,8 +32,8 @@ class Choice(EditChoice):
         )
         return core_schema.chain_schema(
             [
-                modifier_select,
                 base_validate,
+                modifier_select,
             ]
         )
 

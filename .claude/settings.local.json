@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(.venv/bin/python:*)",
+      "Bash(.venv/bin/pytest tests/util/test_string_operation_fang.py -v)",
+      "Bash(.venv/bin/pytest tests/util/test_string_operation_fang.py -v --tb=short)",
+      "Bash(.venv/bin/pytest tests/api/tc/ti_transform/test_assocaitions_transform.py::TestAssociationTransform::test_association_types -xvs)"
+    ],
+    "ask": [],
+    "deny": []
+  }
+}
