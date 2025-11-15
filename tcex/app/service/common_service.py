@@ -52,8 +52,8 @@ class CommonService:
         self.log = _logger
         self.logger = logger
         self.message_broker = MqttMessageBroker(
-            broker_host=self.model.tc_svc_broker_host,
-            broker_port=self.model.tc_svc_broker_port,
+            broker_host=self.tc_svc_broker_host,
+            broker_port=self.tc_svc_broker_port,
             broker_timeout=self.model.tc_svc_broker_conn_timeout,
             broker_token=self.model.tc_svc_broker_token,
             broker_cacert=self.model.tc_svc_broker_cacert_file,
@@ -129,9 +129,7 @@ class CommonService:
             'date': str(datetime.now(UTC)),
             'heartbeat_watchdog': self.heartbeat_watchdog,
         }
-        self.message_broker.publish(
-            message=json.dumps(message), topic=self.model.tc_svc_server_topic
-        )
+        self.message_broker.publish(message=json.dumps(message), topic=self.tc_svc_server_topic)
 
         # allow time for message to be received
         time.sleep(5)
@@ -169,7 +167,7 @@ class CommonService:
         """List for message coming from broker."""
         self.message_broker.add_on_connect_callback(self.on_connect_handler)
         self.message_broker.add_on_message_callback(
-            self.on_message_handler, topics=[self.model.tc_svc_server_topic]
+            self.on_message_handler, topics=[self.tc_svc_server_topic]
         )
         self.message_broker.register_callbacks()
 
@@ -212,9 +210,9 @@ class CommonService:
     def on_connect_handler(self, client, userdata, flags, rc):  # noqa: ARG002
         """On connect method for mqtt broker."""
         self.log.info(
-            f'feature=service, event=topic-subscription, topic={self.model.tc_svc_server_topic}'
+            f'feature=service, event=topic-subscription, topic={self.tc_svc_server_topic}'
         )
-        self.message_broker.client.subscribe(self.model.tc_svc_server_topic)
+        self.message_broker.client.subscribe(self.tc_svc_server_topic)
         self.message_broker.client.disable_logger()
 
     def on_message_handler(self, client, userdata, message):  # noqa: ARG002
@@ -290,9 +288,7 @@ class CommonService:
 
         # send heartbeat -acknowledge- command
         response = {'command': 'Heartbeat', 'metric': self.metrics}
-        self.message_broker.publish(
-            message=json.dumps(response), topic=self.model.tc_svc_client_topic
-        )
+        self.message_broker.publish(message=json.dumps(response), topic=self.tc_svc_client_topic)
         self.log.info(f'feature=service, event=heartbeat-sent, metric={self.metrics}')
 
     def process_logging_change_command(self, message: dict):
@@ -344,7 +340,7 @@ class CommonService:
         # acknowledge shutdown command
         self.message_broker.publish(
             json.dumps({'command': 'Acknowledged', 'type': 'Shutdown'}),
-            self.model.tc_svc_client_topic,
+            self.tc_svc_client_topic,
         )
 
         # call App shutdown callback
@@ -356,7 +352,7 @@ class CommonService:
                 self.log.exception('feature=service, event=shutdown-callback-error')
 
         # unsubscribe and disconnect from the broker
-        self.message_broker.client.unsubscribe(self.model.tc_svc_server_topic)
+        self.message_broker.client.unsubscribe(self.tc_svc_server_topic)
         self.message_broker.client.disconnect()
 
         # update shutdown flag
@@ -381,9 +377,7 @@ class CommonService:
                 ready_command: dict[str, list[str] | str] = {'command': 'Ready'}
                 if self.ij.model.is_api_service_app and self.ij.model.service:
                     ready_command['discoveryTypes'] = self.ij.model.service.discovery_types
-                self.message_broker.publish(
-                    json.dumps(ready_command), self.model.tc_svc_client_topic
-                )
+                self.message_broker.publish(json.dumps(ready_command), self.tc_svc_client_topic)
                 self._ready = True
 
     def service_thread(
@@ -422,6 +416,50 @@ class CommonService:
         if not hasattr(threading.current_thread(), 'session_id'):
             threading.current_thread().session_id = self.create_session_id()  # type: ignore
         return threading.current_thread().session_id  # type: ignore
+
+    @property
+    def tc_svc_broker_host(self) -> str:
+        """Return the service broker host.
+
+        Service apps will always provide a broker host.
+        """
+        if self.model.tc_svc_broker_host is None:
+            ex_msg = 'Model does not have value for tc_svc_broker_host'
+            raise AttributeError(ex_msg)
+        return self.model.tc_svc_broker_host
+
+    @property
+    def tc_svc_broker_port(self) -> int:
+        """Return the service broker port.
+
+        Service apps will always provide a broker port.
+        """
+        if self.model.tc_svc_broker_port is None:
+            ex_msg = 'Model does not have value for tc_svc_broker_port'
+            raise AttributeError(ex_msg)
+        return self.model.tc_svc_broker_port
+
+    @property
+    def tc_svc_client_topic(self) -> str:
+        """Return the service client topic.
+
+        Service apps will always provide a client topic.
+        """
+        if self.model.tc_svc_client_topic is None:
+            ex_msg = 'Model does not have value for tc_svc_client_topic'
+            raise AttributeError(ex_msg)
+        return self.model.tc_svc_client_topic
+
+    @property
+    def tc_svc_server_topic(self) -> str:
+        """Return the service server topic.
+
+        Service apps will always provide a server topic.
+        """
+        if self.model.tc_svc_server_topic is None:
+            ex_msg = 'Model does not have value for tc_svc_server_topic'
+            raise AttributeError(ex_msg)
+        return self.model.tc_svc_server_topic
 
     @property
     def thread_name(self) -> str:
