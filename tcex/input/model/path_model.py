@@ -47,7 +47,7 @@ class PathModel(BaseModel):
     def tc_session_id(self) -> str:
         """Return the current session id."""
         if self.tc_out_path.parent.name:
-            return self.tc_in_path.parent.name
+            return self.tc_out_path.parent.name
 
         # handle running locally
         session_id_filename = self.tc_out_path / 'tc_session_id'

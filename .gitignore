@@ -36,6 +36,7 @@ temp
 .vs
 .vscode
 nbproject
+.claude
 *.swp
 *.vim
 
