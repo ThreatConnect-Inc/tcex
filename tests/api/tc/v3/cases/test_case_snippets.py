@@ -332,10 +332,10 @@ class TestCaseSnippets(TestV3):
 
         if assignee_type == AssigneeModel:
             assignee = assignee_type(
-                **{'type': user_or_group, 'data': {'id':user_id_new, 'user_name':'blah'}}
+                **{'type': user_or_group, 'data': {'id': user_id_new, 'user_name': 'blah'}}
             )  # type: ignore[assignment]
         else:
-            assignee = assignee_type(**{'id':user_id_new, 'user_name':'blah'})
+            assignee = assignee_type(**{'id': user_id_new, 'user_name': 'blah'})
         case.stage_assignee(type=user_or_group, data=assignee)
         case.update()
 

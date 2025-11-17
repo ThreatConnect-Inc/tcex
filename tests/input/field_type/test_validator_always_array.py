@@ -44,7 +44,7 @@ class TestInputsFieldTypes(InputTest):
         include_null: bool,
         split_csv: bool,
         strip: bool,
-        expected: bool,
+        expected: list,
     ):
         """Test the always_array validator."""
 
