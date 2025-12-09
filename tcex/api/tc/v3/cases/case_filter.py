@@ -54,21 +54,21 @@ class CaseFilter(FilterABC):
 
         self._tql.add_filter('assigneeName', operator, assignee_name, TqlType.STRING)
 
-    def attribute(self, operator: Enum, attribute: list | str):
-        """Filter attribute based on **attribute** keyword.
+    def attack_tag(self, operator: Enum, attack_tag: list | str):
+        """Filter ATT&CK Tag based on **attackTag** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            attribute: No description provided.
+            attack_tag: The name of the ATT&CK Tag applied to a case.
         """
-        if isinstance(attribute, list) and operator not in self.list_types:
+        if isinstance(attack_tag, list) and operator not in self.list_types:
             ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
             raise RuntimeError(ex_msg)
 
-        self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
+        self._tql.add_filter('attackTag', operator, attack_tag, TqlType.STRING)
 
     def cal_score(self, operator: Enum, cal_score: int | list):
         """Filter CalScore based on **calScore** keyword.

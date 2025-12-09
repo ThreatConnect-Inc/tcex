@@ -20,6 +20,22 @@ class GroupFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.GROUPS.value
 
+    def ai_provider(self, operator: Enum, ai_provider: list | str):
+        """Filter AI Provider based on **aiProvider** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            ai_provider: The system that is providing the AI generated synopsis of the group.
+        """
+        if isinstance(ai_provider, list) and operator not in self.list_types:
+            ex_msg = (
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+            raise RuntimeError(ex_msg)
+
+        self._tql.add_filter('aiProvider', operator, ai_provider, TqlType.STRING)
+
     def associated_indicator(self, operator: Enum, associated_indicator: int | list):
         """Filter associatedIndicator based on **associatedIndicator** keyword.
 
@@ -36,21 +52,21 @@ class GroupFilter(FilterABC):
 
         self._tql.add_filter('associatedIndicator', operator, associated_indicator, TqlType.INTEGER)
 
-    def attribute(self, operator: Enum, attribute: list | str):
-        """Filter attribute based on **attribute** keyword.
+    def attack_tag(self, operator: Enum, attack_tag: list | str):
+        """Filter ATT&CK Tag based on **attackTag** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            attribute: No description provided.
+            attack_tag: The name of the ATT&CK Tag applied to a group.
         """
-        if isinstance(attribute, list) and operator not in self.list_types:
+        if isinstance(attack_tag, list) and operator not in self.list_types:
             ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
             raise RuntimeError(ex_msg)
 
-        self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
+        self._tql.add_filter('attackTag', operator, attack_tag, TqlType.STRING)
 
     def child_group(self, operator: Enum, child_group: int | list):
         """Filter childGroup based on **childGroup** keyword.
@@ -83,54 +99,6 @@ class GroupFilter(FilterABC):
             raise RuntimeError(ex_msg)
 
         self._tql.add_filter('createdBy', operator, created_by, TqlType.STRING)
-
-    def criteria(self, operator: Enum, criteria: list | str):
-        """Filter Criteria based on **criteria** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            criteria: The criteria of the vulnerability.
-        """
-        if isinstance(criteria, list) and operator not in self.list_types:
-            ex_msg = (
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-            raise RuntimeError(ex_msg)
-
-        self._tql.add_filter('criteria', operator, criteria, TqlType.STRING)
-
-    def cvss_v2(self, operator: Enum, cvss_v2: list | str):
-        """Filter Products Affected based on **cvss_v2** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            cvss_v2: The CVSS V2 vector string of the vulnerability.
-        """
-        if isinstance(cvss_v2, list) and operator not in self.list_types:
-            ex_msg = (
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-            raise RuntimeError(ex_msg)
-
-        self._tql.add_filter('cvss_v2', operator, cvss_v2, TqlType.STRING)
-
-    def cvss_v3(self, operator: Enum, cvss_v3: list | str):
-        """Filter Products Affected based on **cvss_v3** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            cvss_v3: The CVSS V3 vector string of the vulnerability.
-        """
-        if isinstance(cvss_v3, list) and operator not in self.list_types:
-            ex_msg = (
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-            raise RuntimeError(ex_msg)
-
-        self._tql.add_filter('cvss_v3', operator, cvss_v3, TqlType.STRING)
 
     def date_added(self, operator: Enum, date_added: Arrow | datetime | int | str):
         """Filter Date Added based on **dateAdded** keyword.
@@ -561,11 +529,11 @@ class GroupFilter(FilterABC):
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
     def insights(self, operator: Enum, insights: list | str):
-        """Filter Insights (Report) based on **insights** keyword.
+        """Filter AI Insights based on **insights** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            insights: The AI generated synopsis of the report.
+            insights: The AI generated synopsis of the group {Event, Report, Document}.
         """
         if isinstance(insights, list) and operator not in self.list_types:
             ex_msg = (
@@ -594,16 +562,6 @@ class GroupFilter(FilterABC):
         """
         last_modified = self.util.any_to_datetime(last_modified).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
-
-    def last_published(self, operator: Enum, last_published: Arrow | datetime | int | str):
-        """Filter Last Published based on **lastPublished** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            last_published: The date the common group has been last published.
-        """
-        last_published = self.util.any_to_datetime(last_published).strftime('%Y-%m-%d %H:%M:%S')
-        self._tql.add_filter('lastPublished', operator, last_published, TqlType.STRING)
 
     def last_seen(self, operator: Enum, last_seen: Arrow | datetime | int | str):
         """Filter Last Seen based on **lastSeen** keyword.
@@ -662,22 +620,6 @@ class GroupFilter(FilterABC):
             raise RuntimeError(ex_msg)
 
         self._tql.add_filter('parentGroup', operator, parent_group, TqlType.INTEGER)
-
-    def products(self, operator: Enum, products: list | str):
-        """Filter Products Affected based on **products** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            products: The products affected by the vulnerability.
-        """
-        if isinstance(products, list) and operator not in self.list_types:
-            ex_msg = (
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-            raise RuntimeError(ex_msg)
-
-        self._tql.add_filter('products', operator, products, TqlType.STRING)
 
     def security_label(self, operator: Enum, security_label: list | str):
         """Filter Security Label based on **securityLabel** keyword.
@@ -740,22 +682,6 @@ class GroupFilter(FilterABC):
             raise RuntimeError(ex_msg)
 
         self._tql.add_filter('signatureType', operator, signature_type, TqlType.STRING)
-
-    def source(self, operator: Enum, source: list | str):
-        """Filter Source based on **source** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            source: The source of the vulnerability.
-        """
-        if isinstance(source, list) and operator not in self.list_types:
-            ex_msg = (
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-            raise RuntimeError(ex_msg)
-
-        self._tql.add_filter('source', operator, source, TqlType.STRING)
 
     def status(self, operator: Enum, status: list | str):
         """Filter Status based on **status** keyword.
@@ -912,18 +838,6 @@ class GroupFilter(FilterABC):
         )
         self._tql.add_filter('taskEscalationDate', operator, task_escalation_date, TqlType.STRING)
 
-    def task_last_modified(self, operator: Enum, task_last_modified: Arrow | datetime | int | str):
-        """Filter Last Modified based on **taskLastModified** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            task_last_modified: The date the group was last modified.
-        """
-        task_last_modified = self.util.any_to_datetime(task_last_modified).strftime(
-            '%Y-%m-%d %H:%M:%S'
-        )
-        self._tql.add_filter('taskLastModified', operator, task_last_modified, TqlType.STRING)
-
     def task_overdue(self, operator: Enum, task_overdue: bool):
         """Filter Overdue (Task) based on **taskOverdue** keyword.
 
@@ -969,22 +883,6 @@ class GroupFilter(FilterABC):
             raise RuntimeError(ex_msg)
 
         self._tql.add_filter('taskStatus', operator, task_status, TqlType.STRING)
-
-    def title(self, operator: Enum, title: list | str):
-        """Filter Title based on **title** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            title: The summary of the vulnerability.
-        """
-        if isinstance(title, list) and operator not in self.list_types:
-            ex_msg = (
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-            raise RuntimeError(ex_msg)
-
-        self._tql.add_filter('title', operator, title, TqlType.STRING)
 
     def type(self, operator: Enum, type: int | list):  # noqa: A002
         """Filter Type based on **type** keyword.
