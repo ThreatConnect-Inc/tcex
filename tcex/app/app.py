@@ -138,13 +138,13 @@ class App:
         """Include the Service Module."""
         if self.install_json.model.is_api_service_app:
             # first-party
-            from tcex.app.service import ApiService as Service
+            from tcex.app.service import ApiService as Service  # noqa: PLC0415
         elif self.ij.model.is_webhook_trigger_app:
             # first-party
-            from tcex.app.service import WebhookTriggerService as Service
+            from tcex.app.service import WebhookTriggerService as Service  # noqa: PLC0415
         elif self.ij.model.is_trigger_app:
             # first-party
-            from tcex.app.service import CommonServiceTrigger as Service
+            from tcex.app.service import CommonServiceTrigger as Service  # noqa: PLC0415
         else:
             ex_msg = 'Could not determine the service type.'
             raise RuntimeError(ex_msg)

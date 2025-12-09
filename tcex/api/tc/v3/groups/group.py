@@ -197,7 +197,7 @@ class Group(ObjectABC):
     def associated_artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
         # first-party
-        from tcex.api.tc.v3.artifacts.artifact import Artifacts
+        from tcex.api.tc.v3.artifacts.artifact import Artifacts  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Artifacts)  # type: ignore
 
@@ -205,7 +205,7 @@ class Group(ObjectABC):
     def associated_cases(self) -> Generator['Case', None, None]:
         """Yield Case from Cases."""
         # first-party
-        from tcex.api.tc.v3.cases.case import Cases
+        from tcex.api.tc.v3.cases.case import Cases  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Cases)  # type: ignore
 
@@ -222,7 +222,7 @@ class Group(ObjectABC):
     def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
         # first-party
-        from tcex.api.tc.v3.indicators.indicator import Indicators
+        from tcex.api.tc.v3.indicators.indicator import Indicators  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Indicators)  # type: ignore
 
@@ -230,7 +230,7 @@ class Group(ObjectABC):
     def associated_victim_assets(self) -> Generator['VictimAsset', None, None]:
         """Yield VictimAsset from VictimAssets."""
         # first-party
-        from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
+        from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(VictimAssets)  # type: ignore
 
@@ -238,7 +238,7 @@ class Group(ObjectABC):
     def attributes(self) -> Generator['GroupAttribute', None, None]:
         """Yield Attribute from Attributes."""
         # first-party
-        from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttributes
+        from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttributes  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(GroupAttributes)  # type: ignore
 
@@ -246,7 +246,7 @@ class Group(ObjectABC):
     def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
         # first-party
-        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
 
@@ -254,7 +254,7 @@ class Group(ObjectABC):
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
         # first-party
-        from tcex.api.tc.v3.tags.tag import Tags
+        from tcex.api.tc.v3.tags.tag import Tags  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore
 

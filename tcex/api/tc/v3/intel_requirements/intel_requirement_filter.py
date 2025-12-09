@@ -53,7 +53,7 @@ class IntelRequirementFilter(FilterABC):
     def has_artifact(self):
         """Return **ArtifactFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.artifacts.artifact_filter import ArtifactFilter
+        from tcex.api.tc.v3.artifacts.artifact_filter import ArtifactFilter  # noqa: PLC0415
 
         artifacts = ArtifactFilter(Tql())
         self._tql.add_filter('hasArtifact', TqlOperator.EQ, artifacts, TqlType.SUB_QUERY)
@@ -63,7 +63,7 @@ class IntelRequirementFilter(FilterABC):
     def has_case(self):
         """Return **CaseFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.cases.case_filter import CaseFilter
+        from tcex.api.tc.v3.cases.case_filter import CaseFilter  # noqa: PLC0415
 
         cases = CaseFilter(Tql())
         self._tql.add_filter('hasCase', TqlOperator.EQ, cases, TqlType.SUB_QUERY)
@@ -73,7 +73,7 @@ class IntelRequirementFilter(FilterABC):
     def has_group(self):
         """Return **GroupFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.groups.group_filter import GroupFilter
+        from tcex.api.tc.v3.groups.group_filter import GroupFilter  # noqa: PLC0415
 
         groups = GroupFilter(Tql())
         self._tql.add_filter('hasGroup', TqlOperator.EQ, groups, TqlType.SUB_QUERY)
@@ -83,7 +83,7 @@ class IntelRequirementFilter(FilterABC):
     def has_indicator(self):
         """Return **IndicatorFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter
+        from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter  # noqa: PLC0415
 
         indicators = IndicatorFilter(Tql())
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
@@ -93,7 +93,7 @@ class IntelRequirementFilter(FilterABC):
     def has_tag(self):
         """Return **TagFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.tags.tag_filter import TagFilter
+        from tcex.api.tc.v3.tags.tag_filter import TagFilter  # noqa: PLC0415
 
         tags = TagFilter(Tql())
         self._tql.add_filter('hasTag', TqlOperator.EQ, tags, TqlType.SUB_QUERY)
@@ -103,7 +103,7 @@ class IntelRequirementFilter(FilterABC):
     def has_victim(self):
         """Return **VictimFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.victims.victim_filter import VictimFilter
+        from tcex.api.tc.v3.victims.victim_filter import VictimFilter  # noqa: PLC0415
 
         victims = VictimFilter(Tql())
         self._tql.add_filter('hasVictim', TqlOperator.EQ, victims, TqlType.SUB_QUERY)
@@ -113,7 +113,9 @@ class IntelRequirementFilter(FilterABC):
     def has_victim_asset(self):
         """Return **VictimAssetFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.victim_assets.victim_asset_filter import VictimAssetFilter
+        from tcex.api.tc.v3.victim_assets.victim_asset_filter import (  # noqa: PLC0415
+            VictimAssetFilter,
+        )
 
         victim_assets = VictimAssetFilter(Tql())
         self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)

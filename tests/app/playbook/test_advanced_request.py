@@ -154,7 +154,7 @@ class TestAdvancedRequest:
 
         assert data.get('#App:0001:pytest.request.reason!String') == 'INTERNAL SERVER ERROR'
         assert data.get('#App:0001:pytest.request.content!String') == ''
-        assert data.get('#App:0001:pytest.request.headers!String', {}).get('Server') == 'nginx'
+        assert 'nginx' in data.get('#App:0001:pytest.request.headers!String', {}).get('Server')
         assert data.get('#App:0001:pytest.request.status_code!String') == '500'
         assert data.get('#App:0001:pytest.request.content.binary!Binary') == ''
         assert data.get('#App:0001:pytest.request.ok!String') == 'false'

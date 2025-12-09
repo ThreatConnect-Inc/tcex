@@ -1,4 +1,4 @@
-"""TcEx Framework Module"""  # noqa: A005
+"""TcEx Framework Module"""
 
 # standard library
 from collections.abc import Generator

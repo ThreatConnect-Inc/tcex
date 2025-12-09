@@ -86,6 +86,13 @@ class IndicatorModel(
         read_only=False,
         title='attributes',
     )
+    cal_score: int | None = Field(
+        None,
+        allow_mutation=False,
+        description='The CAL score for this indicator.',
+        read_only=True,
+        title='calScore',
+    )
     confidence: int | None = Field(
         None,
         description='The indicator threat confidence.',

@@ -341,7 +341,7 @@ class BatchSubmit:
             if data.get('data', {}).get('batchStatus', {}).get('status') == 'Completed':
                 # store last 5 poll times to use in calculating average poll time
                 modifier = poll_time_total * 0.7
-                self._poll_interval_times = self._poll_interval_times[-4:] + [modifier]
+                self._poll_interval_times = self._poll_interval_times[-4:] + [modifier]  # noqa: RUF005
 
                 weights: list[float | int] = [1]
                 poll_interval_time_weighted_sum = 0

@@ -143,7 +143,6 @@ class MqttMessageBroker:
                 _client.tls_set(
                     ca_certs=self.broker_cacert,
                     cert_reqs=ssl.CERT_REQUIRED,
-                    tls_version=ssl.PROTOCOL_TLSv1_2,
                 )
                 _client.tls_insecure_set(value=False)
             # add logger when logging in TRACE

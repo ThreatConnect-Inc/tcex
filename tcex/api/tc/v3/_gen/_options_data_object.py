@@ -329,8 +329,7 @@ class OptionsDataObject(OptionsABC):
                 'webLink',  # Core Issue: should not be listed for this type
             ]
             for field in unused_fields:
-                if field in properties:
-                    del properties[field]
+                properties.pop(field, None)
 
         if self.object_type in ['users']:
             unused_fields = [
@@ -357,16 +356,14 @@ class OptionsDataObject(OptionsABC):
                 'uiTheme',
             ]
             for field in unused_fields:
-                if field in properties:
-                    del properties[field]
+                properties.pop(field, None)
 
         if self.object_type in ['victims']:
             unused_fields = [
                 'ownerId',  # Core Issue: should not be listed for this type
             ]
             for field in unused_fields:
-                if field in properties:
-                    del properties[field]
+                properties.pop(field, None)
 
     def _content_update(self, properties: dict):
         """Update "bad" data in properties."""

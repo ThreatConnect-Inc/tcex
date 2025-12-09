@@ -1,10 +1,9 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
-      - id: check-byte-order-marker
       - id: check-builtin-literals
       - id: check-case-conflict
       - id: check-docstring-first
@@ -20,6 +19,7 @@ repos:
       - id: detect-private-key
       - id: double-quote-string-fixer
       - id: end-of-file-fixer
+      - id: fix-byte-order-marker
       - id: mixed-line-ending
       - id: pretty-format-json
         args:
@@ -27,7 +27,7 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/pycqa/bandit
-    rev: 1.8.3
+    rev: 1.9.2
     hooks:
       - id: bandit
         exclude: |
@@ -43,11 +43,18 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.1
+    rev: v3.21.2
     hooks:
       - id: pyupgrade
         args:
           - --py311-plus
+  - repo: https://github.com/google/osv-scanner/
+    rev: v2.3.0
+    hooks:
+      - id: osv-scanner
+        args:
+          - --lockfile
+          - uv.lock
   - repo: local
     hooks:
       - id: pyright
@@ -66,7 +73,7 @@ repos:
         types:
           - directory
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.7
+    rev: v0.14.8
     hooks:
       - id: ruff
         args:

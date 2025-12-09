@@ -103,7 +103,7 @@ class VictimAsset(ObjectABC):
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
         # first-party
-        from tcex.api.tc.v3.groups.group import Groups
+        from tcex.api.tc.v3.groups.group import Groups  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
 

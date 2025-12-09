@@ -111,7 +111,7 @@ class Case(ObjectABC):
     def artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
         # first-party
-        from tcex.api.tc.v3.artifacts.artifact import Artifacts
+        from tcex.api.tc.v3.artifacts.artifact import Artifacts  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Artifacts)  # type: ignore
 
@@ -128,7 +128,7 @@ class Case(ObjectABC):
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
         # first-party
-        from tcex.api.tc.v3.groups.group import Groups
+        from tcex.api.tc.v3.groups.group import Groups  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
 
@@ -136,7 +136,7 @@ class Case(ObjectABC):
     def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
         # first-party
-        from tcex.api.tc.v3.indicators.indicator import Indicators
+        from tcex.api.tc.v3.indicators.indicator import Indicators  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Indicators)  # type: ignore
 
@@ -144,7 +144,7 @@ class Case(ObjectABC):
     def attributes(self) -> Generator['CaseAttribute', None, None]:
         """Yield Attribute from Attributes."""
         # first-party
-        from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttributes
+        from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttributes  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(CaseAttributes)  # type: ignore
 
@@ -152,7 +152,7 @@ class Case(ObjectABC):
     def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
         # first-party
-        from tcex.api.tc.v3.notes.note import Notes
+        from tcex.api.tc.v3.notes.note import Notes  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Notes)  # type: ignore
 
@@ -160,7 +160,7 @@ class Case(ObjectABC):
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
         # first-party
-        from tcex.api.tc.v3.tags.tag import Tags
+        from tcex.api.tc.v3.tags.tag import Tags  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore
 
@@ -168,7 +168,7 @@ class Case(ObjectABC):
     def tasks(self) -> Generator['Task', None, None]:
         """Yield Task from Tasks."""
         # first-party
-        from tcex.api.tc.v3.tasks.task import Tasks
+        from tcex.api.tc.v3.tasks.task import Tasks  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Tasks)  # type: ignore
 

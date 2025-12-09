@@ -81,7 +81,7 @@ class CaseAttributeFilter(FilterABC):
     def has_case(self):
         """Return **CaseFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.cases.case_filter import CaseFilter
+        from tcex.api.tc.v3.cases.case_filter import CaseFilter  # noqa: PLC0415
 
         cases = CaseFilter(Tql())
         self._tql.add_filter('hasCase', TqlOperator.EQ, cases, TqlType.SUB_QUERY)

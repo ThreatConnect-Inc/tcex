@@ -25,6 +25,14 @@ class GroupModel(
     _shared_type = PrivateAttr(default=False)
     _staged = PrivateAttr(default=False)
 
+    ai_provider: str | None = Field(
+        None,
+        allow_mutation=False,
+        applies_to=['Document', 'Report', 'Event'],
+        description='The provider of the AI generated insights.',
+        read_only=True,
+        title='aiProvider',
+    )
     assignments: 'TaskAssigneesModel' = Field(
         None,
         description=(
@@ -84,13 +92,13 @@ class GroupModel(
         read_only=False,
         title='body',
     )
-    # common_group: dict | None = Field(
-    #     None,
-    #     allow_mutation=False,
-    #     description='The common data shared across groups by name and type.',
-    #     read_only=True,
-    #     title='commonGroup',
-    # )
+    common_group: dict | None = Field(
+        None,
+        allow_mutation=False,
+        description='The common data shared across groups by name and type.',
+        read_only=True,
+        title='commonGroup',
+    )
     created_by: 'UserModel' = Field(
         None,
         allow_mutation=False,
@@ -270,7 +278,7 @@ class GroupModel(
     insights: dict | None = Field(
         None,
         allow_mutation=False,
-        applies_to=['Document', 'Report'],
+        applies_to=['Document', 'Report', 'Event'],
         description='An AI generated synopsis of the document.',
         read_only=True,
         title='insights',
