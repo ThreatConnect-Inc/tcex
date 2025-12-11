@@ -1,4 +1,4 @@
-"""TcEx Framework Module"""  # noqa: A005
+"""TcEx Framework Module"""
 
 from .token import Token
 

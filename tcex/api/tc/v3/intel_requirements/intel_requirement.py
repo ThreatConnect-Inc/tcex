@@ -98,7 +98,7 @@ class IntelRequirement(ObjectABC):
     def associated_artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
         # first-party
-        from tcex.api.tc.v3.artifacts.artifact import Artifacts
+        from tcex.api.tc.v3.artifacts.artifact import Artifacts  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Artifacts)  # type: ignore
 
@@ -106,7 +106,7 @@ class IntelRequirement(ObjectABC):
     def associated_cases(self) -> Generator['Case', None, None]:
         """Yield Case from Cases."""
         # first-party
-        from tcex.api.tc.v3.cases.case import Cases
+        from tcex.api.tc.v3.cases.case import Cases  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Cases)  # type: ignore
 
@@ -114,7 +114,7 @@ class IntelRequirement(ObjectABC):
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
         # first-party
-        from tcex.api.tc.v3.groups.group import Groups
+        from tcex.api.tc.v3.groups.group import Groups  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
 
@@ -122,7 +122,7 @@ class IntelRequirement(ObjectABC):
     def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
         # first-party
-        from tcex.api.tc.v3.indicators.indicator import Indicators
+        from tcex.api.tc.v3.indicators.indicator import Indicators  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Indicators)  # type: ignore
 
@@ -130,7 +130,7 @@ class IntelRequirement(ObjectABC):
     def associated_victim_assets(self) -> Generator['VictimAsset', None, None]:
         """Yield VictimAsset from VictimAssets."""
         # first-party
-        from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
+        from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(VictimAssets)  # type: ignore
 
@@ -138,7 +138,7 @@ class IntelRequirement(ObjectABC):
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
         # first-party
-        from tcex.api.tc.v3.tags.tag import Tags
+        from tcex.api.tc.v3.tags.tag import Tags  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore
 

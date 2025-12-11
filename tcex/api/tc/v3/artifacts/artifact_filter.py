@@ -69,7 +69,7 @@ class ArtifactFilter(FilterABC):
     def has_case(self):
         """Return **CaseFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.cases.case_filter import CaseFilter
+        from tcex.api.tc.v3.cases.case_filter import CaseFilter  # noqa: PLC0415
 
         cases = CaseFilter(Tql())
         self._tql.add_filter('hasCase', TqlOperator.EQ, cases, TqlType.SUB_QUERY)
@@ -79,7 +79,7 @@ class ArtifactFilter(FilterABC):
     def has_group(self):
         """Return **GroupFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.groups.group_filter import GroupFilter
+        from tcex.api.tc.v3.groups.group_filter import GroupFilter  # noqa: PLC0415
 
         groups = GroupFilter(Tql())
         self._tql.add_filter('hasGroup', TqlOperator.EQ, groups, TqlType.SUB_QUERY)
@@ -89,7 +89,7 @@ class ArtifactFilter(FilterABC):
     def has_indicator(self):
         """Return **IndicatorFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter
+        from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter  # noqa: PLC0415
 
         indicators = IndicatorFilter(Tql())
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
@@ -99,7 +99,7 @@ class ArtifactFilter(FilterABC):
     def has_note(self):
         """Return **NoteFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.notes.note_filter import NoteFilter
+        from tcex.api.tc.v3.notes.note_filter import NoteFilter  # noqa: PLC0415
 
         notes = NoteFilter(Tql())
         self._tql.add_filter('hasNote', TqlOperator.EQ, notes, TqlType.SUB_QUERY)
@@ -109,7 +109,7 @@ class ArtifactFilter(FilterABC):
     def has_task(self):
         """Return **TaskFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.tasks.task_filter import TaskFilter
+        from tcex.api.tc.v3.tasks.task_filter import TaskFilter  # noqa: PLC0415
 
         tasks = TaskFilter(Tql())
         self._tql.add_filter('hasTask', TqlOperator.EQ, tasks, TqlType.SUB_QUERY)

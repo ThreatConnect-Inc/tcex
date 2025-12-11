@@ -87,7 +87,7 @@ class Victim(ObjectABC):
     def victim_assets(self) -> Generator['VictimAsset', None, None]:
         """Yield VictimAsset from VictimAssets."""
         # first-party
-        from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
+        from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(VictimAssets)  # type: ignore
 
@@ -95,7 +95,7 @@ class Victim(ObjectABC):
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
         # first-party
-        from tcex.api.tc.v3.groups.group import Groups
+        from tcex.api.tc.v3.groups.group import Groups  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
 
@@ -103,7 +103,9 @@ class Victim(ObjectABC):
     def attributes(self) -> Generator['VictimAttribute', None, None]:
         """Yield Attribute from Attributes."""
         # first-party
-        from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttributes
+        from tcex.api.tc.v3.victim_attributes.victim_attribute import (  # noqa: PLC0415
+            VictimAttributes,
+        )
 
         yield from self._iterate_over_sublist(VictimAttributes)  # type: ignore
 
@@ -111,7 +113,7 @@ class Victim(ObjectABC):
     def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
         # first-party
-        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
 
@@ -119,7 +121,7 @@ class Victim(ObjectABC):
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
         # first-party
-        from tcex.api.tc.v3.tags.tag import Tags
+        from tcex.api.tc.v3.tags.tag import Tags  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore
 

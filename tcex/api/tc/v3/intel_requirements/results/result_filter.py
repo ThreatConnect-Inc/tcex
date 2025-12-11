@@ -47,7 +47,7 @@ class ResultFilter(FilterABC):
     def has_intel_requirement(self):
         """Return **IntelRequirementFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.intel_requirements.intel_requirement_filter import (
+        from tcex.api.tc.v3.intel_requirements.intel_requirement_filter import (  # noqa: PLC0415
             IntelRequirementFilter,
         )
 

@@ -77,7 +77,7 @@ class WorkflowEvent(ObjectABC):
     def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
         # first-party
-        from tcex.api.tc.v3.notes.note import Notes
+        from tcex.api.tc.v3.notes.note import Notes  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Notes)  # type: ignore
 

@@ -173,7 +173,7 @@ class Indicator(ObjectABC):
     def associated_artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
         # first-party
-        from tcex.api.tc.v3.artifacts.artifact import Artifacts
+        from tcex.api.tc.v3.artifacts.artifact import Artifacts  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Artifacts)  # type: ignore
 
@@ -181,7 +181,7 @@ class Indicator(ObjectABC):
     def associated_cases(self) -> Generator['Case', None, None]:
         """Yield Case from Cases."""
         # first-party
-        from tcex.api.tc.v3.cases.case import Cases
+        from tcex.api.tc.v3.cases.case import Cases  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Cases)  # type: ignore
 
@@ -189,7 +189,7 @@ class Indicator(ObjectABC):
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
         # first-party
-        from tcex.api.tc.v3.groups.group import Groups
+        from tcex.api.tc.v3.groups.group import Groups  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
 
@@ -211,7 +211,9 @@ class Indicator(ObjectABC):
     def attributes(self) -> Generator['IndicatorAttribute', None, None]:
         """Yield Attribute from Attributes."""
         # first-party
-        from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttributes
+        from tcex.api.tc.v3.indicator_attributes.indicator_attribute import (  # noqa: PLC0415
+            IndicatorAttributes,
+        )
 
         yield from self._iterate_over_sublist(IndicatorAttributes)  # type: ignore
 
@@ -219,7 +221,7 @@ class Indicator(ObjectABC):
     def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
         # first-party
-        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
 
@@ -227,7 +229,7 @@ class Indicator(ObjectABC):
     def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
         # first-party
-        from tcex.api.tc.v3.tags.tag import Tags
+        from tcex.api.tc.v3.tags.tag import Tags  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore
 

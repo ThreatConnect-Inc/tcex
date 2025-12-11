@@ -742,6 +742,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                     (
                         f'{self.i2}from {model_import_data.get("object_module")} '
                         f'import {model_import_data.get("object_collection_class")}'
+                        '  # noqa: PLC0415'
                     ),
                     '',
                 ]

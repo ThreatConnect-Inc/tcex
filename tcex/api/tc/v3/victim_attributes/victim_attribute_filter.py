@@ -65,7 +65,9 @@ class VictimAttributeFilter(FilterABC):
     def has_security_label(self):
         """Return **SecurityLabel** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.security_labels.security_label_filter import SecurityLabelFilter
+        from tcex.api.tc.v3.security_labels.security_label_filter import (  # noqa: PLC0415
+            SecurityLabelFilter,
+        )
 
         security_labels = SecurityLabelFilter(Tql())
         self._tql.add_filter('hasSecurityLabel', TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)
@@ -75,7 +77,7 @@ class VictimAttributeFilter(FilterABC):
     def has_victim(self):
         """Return **VictimFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.victims.victim_filter import VictimFilter
+        from tcex.api.tc.v3.victims.victim_filter import VictimFilter  # noqa: PLC0415
 
         victims = VictimFilter(Tql())
         self._tql.add_filter('hasVictim', TqlOperator.EQ, victims, TqlType.SUB_QUERY)

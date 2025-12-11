@@ -67,21 +67,21 @@ class VictimFilter(FilterABC):
 
         self._tql.add_filter('assetTypename', operator, asset_typename, TqlType.STRING)
 
-    def attribute(self, operator: Enum, attribute: list | str):
-        """Filter attribute based on **attribute** keyword.
+    def attack_tag(self, operator: Enum, attack_tag: list | str):
+        """Filter ATT&CK Tag based on **attackTag** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            attribute: No description provided.
+            attack_tag: The name of the ATT&CK Tag applied to a victim.
         """
-        if isinstance(attribute, list) and operator not in self.list_types:
+        if isinstance(attack_tag, list) and operator not in self.list_types:
             ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
             raise RuntimeError(ex_msg)
 
-        self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
+        self._tql.add_filter('attackTag', operator, attack_tag, TqlType.STRING)
 
     def description(self, operator: Enum, description: list | str):
         """Filter Description based on **description** keyword.
@@ -103,7 +103,7 @@ class VictimFilter(FilterABC):
     def has_all_tags(self):
         """Return **TagFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.tags.tag_filter import TagFilter
+        from tcex.api.tc.v3.tags.tag_filter import TagFilter  # noqa: PLC0415
 
         tags = TagFilter(Tql())
         self._tql.add_filter('hasAllTags', TqlOperator.EQ, tags, TqlType.SUB_QUERY)
@@ -113,7 +113,9 @@ class VictimFilter(FilterABC):
     def has_attribute(self):
         """Return **VictimAttributeFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.victim_attributes.victim_attribute_filter import VictimAttributeFilter
+        from tcex.api.tc.v3.victim_attributes.victim_attribute_filter import (  # noqa: PLC0415
+            VictimAttributeFilter,
+        )
 
         attributes = VictimAttributeFilter(Tql())
         self._tql.add_filter('hasAttribute', TqlOperator.EQ, attributes, TqlType.SUB_QUERY)
@@ -123,7 +125,7 @@ class VictimFilter(FilterABC):
     def has_group(self):
         """Return **GroupFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.groups.group_filter import GroupFilter
+        from tcex.api.tc.v3.groups.group_filter import GroupFilter  # noqa: PLC0415
 
         groups = GroupFilter(Tql())
         self._tql.add_filter('hasGroup', TqlOperator.EQ, groups, TqlType.SUB_QUERY)
@@ -133,7 +135,7 @@ class VictimFilter(FilterABC):
     def has_indicator(self):
         """Return **IndicatorFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter
+        from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter  # noqa: PLC0415
 
         indicators = IndicatorFilter(Tql())
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
@@ -143,7 +145,9 @@ class VictimFilter(FilterABC):
     def has_security_label(self):
         """Return **SecurityLabel** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.security_labels.security_label_filter import SecurityLabelFilter
+        from tcex.api.tc.v3.security_labels.security_label_filter import (  # noqa: PLC0415
+            SecurityLabelFilter,
+        )
 
         security_labels = SecurityLabelFilter(Tql())
         self._tql.add_filter('hasSecurityLabel', TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)
@@ -153,7 +157,7 @@ class VictimFilter(FilterABC):
     def has_tag(self):
         """Return **TagFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.tags.tag_filter import TagFilter
+        from tcex.api.tc.v3.tags.tag_filter import TagFilter  # noqa: PLC0415
 
         tags = TagFilter(Tql())
         self._tql.add_filter('hasTag', TqlOperator.EQ, tags, TqlType.SUB_QUERY)
@@ -170,7 +174,9 @@ class VictimFilter(FilterABC):
     def has_victim_asset(self):
         """Return **VictimAssetFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.victim_assets.victim_asset_filter import VictimAssetFilter
+        from tcex.api.tc.v3.victim_assets.victim_asset_filter import (  # noqa: PLC0415
+            VictimAssetFilter,
+        )
 
         victim_assets = VictimAssetFilter(Tql())
         self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)

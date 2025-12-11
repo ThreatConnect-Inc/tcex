@@ -101,7 +101,7 @@ class NoteFilter(FilterABC):
     def has_artifact(self):
         """Return **ArtifactFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.artifacts.artifact_filter import ArtifactFilter
+        from tcex.api.tc.v3.artifacts.artifact_filter import ArtifactFilter  # noqa: PLC0415
 
         artifacts = ArtifactFilter(Tql())
         self._tql.add_filter('hasArtifact', TqlOperator.EQ, artifacts, TqlType.SUB_QUERY)
@@ -111,7 +111,7 @@ class NoteFilter(FilterABC):
     def has_case(self):
         """Return **CaseFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.cases.case_filter import CaseFilter
+        from tcex.api.tc.v3.cases.case_filter import CaseFilter  # noqa: PLC0415
 
         cases = CaseFilter(Tql())
         self._tql.add_filter('hasCase', TqlOperator.EQ, cases, TqlType.SUB_QUERY)
@@ -121,7 +121,7 @@ class NoteFilter(FilterABC):
     def has_task(self):
         """Return **TaskFilter** for further filtering."""
         # first-party
-        from tcex.api.tc.v3.tasks.task_filter import TaskFilter
+        from tcex.api.tc.v3.tasks.task_filter import TaskFilter  # noqa: PLC0415
 
         tasks = TaskFilter(Tql())
         self._tql.add_filter('hasTask', TqlOperator.EQ, tasks, TqlType.SUB_QUERY)

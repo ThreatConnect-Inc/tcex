@@ -280,7 +280,7 @@ class ProcessingFunctions:
                             )
         except Exception as ex:
             # first-party
-            from tcex.api.tc.ti_transform import TransformException
+            from tcex.api.tc.ti_transform import TransformException  # noqa: PLC0415
 
             ex_msg = f'{context}{additional_context}'
             raise TransformException(ex_msg, ex, context=api_def) from ex

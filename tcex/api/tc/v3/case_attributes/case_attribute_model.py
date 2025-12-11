@@ -86,6 +86,13 @@ class CaseAttributeModel(
         read_only=False,
         title='securityLabels',
     )
+    shard_id: int | None = Field(
+        None,
+        allow_mutation=False,
+        description='The organization of the item this Attribute is attached to.',
+        read_only=True,
+        title='shardId',
+    )
     source: str | None = Field(
         None,
         description='The attribute source.',

@@ -88,7 +88,7 @@ class Artifact(ObjectABC):
     def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
         # first-party
-        from tcex.api.tc.v3.groups.group import Groups
+        from tcex.api.tc.v3.groups.group import Groups  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Groups)  # type: ignore
 
@@ -96,7 +96,7 @@ class Artifact(ObjectABC):
     def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
         # first-party
-        from tcex.api.tc.v3.indicators.indicator import Indicators
+        from tcex.api.tc.v3.indicators.indicator import Indicators  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Indicators)  # type: ignore
 
@@ -104,7 +104,7 @@ class Artifact(ObjectABC):
     def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
         # first-party
-        from tcex.api.tc.v3.notes.note import Notes
+        from tcex.api.tc.v3.notes.note import Notes  # noqa: PLC0415
 
         yield from self._iterate_over_sublist(Notes)  # type: ignore
 

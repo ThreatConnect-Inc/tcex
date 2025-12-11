@@ -1,5 +1,10 @@
 # Release Notes
 
+## 4.0.11
+
+-   APP-5036 - [Services] Update message broker connection to not set tls_version
+-   APP-5037 - [API] Updated V3 API to include new endpoints and/or updates to existing endpoints
+
 ## 4.0.10
 
 -   APP-4969 - [Util] Updated regex patterns for playbook to support "Global" app type
