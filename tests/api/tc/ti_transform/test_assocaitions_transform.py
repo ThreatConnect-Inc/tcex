@@ -25,7 +25,6 @@ class TestAssociationTransform:
     behavior for ThreatConnect association transformation and processing.
     """
 
-
     def test_association_types(self, tcex: TcEx) -> None:
         """Test Association Types for TcEx API TC TI Transform Module.
 
@@ -41,9 +40,9 @@ class TestAssociationTransform:
         """
         data = [{'xid2': 'group-2', 'indicator1': '1.2.3.4'}]
 
-
         transform = tcex.api.tc.association_transform(
-           {    'association': [
+            {
+                'associations': [
                     {
                         'xid_1': {'default': 'group-1'},
                         'xid_2': {'path': 'xid2'},
@@ -61,7 +60,8 @@ class TestAssociationTransform:
                         'custom_association_type': {'default': 'related-to'},
                     },
                 ],
-            })
+            }
+        )
 
         transforms = tcex.api.tc.ti_transforms(data, [transform])
 
@@ -69,15 +69,17 @@ class TestAssociationTransform:
 
         expected_result = {
             'group': [],
-            'indicator': [
+            'indicator': [],
+            'association': [
+                {'ref_1': 'group-1', 'ref_2': 'group-2'},
+                {'ref_1': 'group-2', 'ref_2': '1.2.3.4', 'type_2': 'Address'},
                 {
-                    'attribute': [
-                        {'type': 'Description', 'value': 'Description'},
-                        {'type': 'Foo', 'value': 'Foo'},
-                    ],
-                    'summary': '032AA7E4C76F747BE6ABFC8345FDDBB2FFB591AF',
-                    'type': 'File',
-                }
+                    'ref_1': '1.2.3.4',
+                    'type_1': 'Address',
+                    'ref_2': '1.2.3.4',
+                    'type_2': 'Address',
+                    'association_type': 'related-to',
+                },
             ],
         }
 

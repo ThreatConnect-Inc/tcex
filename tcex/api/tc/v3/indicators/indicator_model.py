@@ -87,6 +87,13 @@ class IndicatorModel(
         validate_default=True,
         json_schema_extra={'methods': ['POST', 'PUT']},
     )
+    cal_score: int | None = Field(
+        default=None,
+        description='The CAL score for this indicator.',
+        frozen=True,
+        title='calScore',
+        validate_default=True,
+    )
     confidence: int | None = Field(
         default=None,
         description='The indicator threat confidence.',

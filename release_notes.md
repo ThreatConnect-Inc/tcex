@@ -3,22 +3,46 @@
 ## 5.0.0
 -   APP-???? - Update to use pydantic v2
 
+## 4.x
 
-## 4.0.8
--   APP-4733 - Migrated to "uv" for package management
--   APP-4734 - Switched linters to "ruff" (including linting fixes)
+### 4.0.10
+
+-   APP-4969 - [Util] Updated regex patterns for playbook to support "Global" app type
+-   APP-4974 - [Transform] Updated transform lastSeen mapping to look for appropriate field
+
+### 4.0.9
+
+-   APP-4825 - [Token] Updated token logic to handle new long-lived tokens
+-   APP-4846 - [Transform] Added support for Batch API update which enables top-level associations
+-   APP-4851 - [Util] Updated regex patterns for Playbook and TC variable to be more specific
+-   APP-4852 - [API] Updated API logic to send query params in body when length exceeds max characters
+-   APP-4866 - [Transform] Added Support for "Severity" and "Status" fields to Case
+-   APP-4868 - (PREVIEW) [Transform] Added support for producing v3 API format
+-   APP-4869 - [Inputs] Added strip() option to always_array input validation
+-   APP-4870 - [Transform] Loosened restrictions for custom function transform definition
+-   APP-4886 - [API] Updated V3 API to include new endpoints and/or updates to existing endpoints
+
+### 4.0.8
+
+-   APP-4717 - [API] Updated V3 API to include new endpoints (exclusionList, etc)
+-   APP-4740 - Migrated to "uv" for package management
+-   APP-4741 - Switched linters to "ruff" (including linting fixes)
 -   APP-4743 - [API] Added support for "conditional-read-only" fields
+-   APP-4744 - [API] Added support for v2 batch association changes
+-   APP-4769 - [INPUT] Updated EditChoice input type to handle new value pattern
+-   APP-4806 - [API] Updated stage_assignee method for cases and tasks
 
-## 4.0.7
--   APP-4601 - [pleb] Added jmespath custom functions to pleb to centralize functionality
--   APP-4604 - [transform] Added standard processing functions class
--   APP-4605 - [transform] Normalized the way null/empty values are handled in transforms (includes '')
--   APP-4620 - [transform] Added structured/contextualized exceptions to transform
--   APP-4632 - [transform] Added support for attribute.pinned field
--   APP-4640 - [api] Updated API hashing method to use SHA256 for FIPS compliance
--   APP-4656 - [transform] refactor how the custom predefined function works
+### 4.0.7
 
-## 4.0.6
+-   APP-4601 - [Pleb] Added jmespath custom functions to pleb to centralize functionality
+-   APP-4604 - [Transform] Added standard processing functions class
+-   APP-4605 - [Transform] Normalized the way null/empty values are handled in transforms (includes '')
+-   APP-4620 - [Transform] Added structured/contextualized exceptions to transform
+-   APP-4632 - [Transform] Added support for attribute.pinned field
+-   APP-4640 - [API] Updated API hashing method to use SHA256 for FIPS compliance
+-   APP-4656 - [Transform] Refactored how the custom predefined function works
+
+### 4.0.6
 
 -   APP-4472 - [API] Added NAICS industry classification module
 -   APP-4482 - [API] Updated transforms to support new static methods
@@ -26,14 +50,14 @@
 -   APP-4521 - [API] Updated support for IR endpoints
 -   APP-4522 - [API] Updated batch module to support external date fields
 
-## 4.0.5
+### 4.0.5
 
 -   APP-4442 - [Mitre] Updated MITRE module to support default value and make logging optional
 -   APP-4443 - [API] Updated multiple API modules to be cached properties
 -   APP-4444 - [Util] Replaced inflect package with inflection package
 -   APP-4445 - [Util] Updated utils module to use inflection for case conversion
 
-## 4.0.4
+### 4.0.4
 
 -   APP-4307 - [API] Added support for paginating indicator custom associations
 -   APP-4334 - [API] Fixed issue where transform methods wasn't being called if value was not a string
@@ -43,18 +67,18 @@
 -   APP-4400 - [Input] Added support for KeyValue input type with None value
 -   APP-4401 - [API] Fixed issue with Assignee model not calculating appropriate model type
 
-## 4.0.3
+### 4.0.3
 
 -   APP-4245 - [Inputs] Added support for secure Redis (SSL and User/Pass)
 -   APP-4246 - [Playbook] Removed support for AOT execution
 
-## 4.0.2
+### 4.0.2
 
 -   APP-4155 - [API] Added Mitre Attack module for lookup by id or name
 -   APP-4175 - [API] Updated API to support TC 7.3 API changes
 -   APP-4187 - [Playbook] Updated inputs to support TC variable nested in a Playbook variable (Key Value List)
 
-## 4.0.1
+### 4.0.1
 
 -   APP-4055 - [API] Updated v3 gen body to allow 0 and false in body
 -   APP-4056 - [API] Updated Transforms to Support Email Group Type
@@ -63,7 +87,7 @@
 -   APP-4107 - [Config] Updated config submodule (tcex.json model) to support legacy App Builder Apps
 -   APP-4108 - [API] Removed max_length and min_length from TI models
 
-## 4.0.0
+### 4.0.0
 
 -   APP-3910 - [TcEx] Updated typing hint to Python 3.11 standards
 -   APP-3911 - [TcEx] General code enhancement

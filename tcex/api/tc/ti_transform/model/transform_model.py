@@ -298,4 +298,4 @@ class AssociationTransformModel(BaseModel, extra='forbid'):
     """."""
 
     applies: Callable | None = Field(None, description='')
-    associations: list[AssociationTypes] = Field([], description='')
+    associations: list[AssociationTypes] = Field(default_factory=list, description='')

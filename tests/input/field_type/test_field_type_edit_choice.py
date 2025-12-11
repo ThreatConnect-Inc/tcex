@@ -95,6 +95,36 @@ class TestInputsFieldTypes(InputTest):
     @pytest.mark.parametrize(
         'input_value,expected,optional,fail_test,transformations,allow_additional',
         [
+            #
+            # Pass Testing
+            #
+            pytest.param(
+                'bsummers@threatconnect.com',
+                'bsummers@threatconnect.com',
+                False,
+                False,
+                None,
+                False,
+                id='pass-normal-input'
+            ),
+            pytest.param(
+                '${users:bsummers@threatconnect.com}',
+                'bsummers@threatconnect.com',
+                False,
+                False,
+                None,
+                False,
+                id='pass-normal-users-variable'
+            ),
+            pytest.param(
+                '${user_groups:bsummers@threatconnect.com}',
+                'bsummers@threatconnect.com',
+                False,
+                False,
+                None,
+                False,
+                id='pass-normal-user_groups-variable'
+            ),
             pytest.param(
                 'choice_1', 'choice_1', False, False, None, False, id='pass-required-valid-choice'
             ),

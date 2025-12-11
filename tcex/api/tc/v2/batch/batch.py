@@ -13,6 +13,7 @@ from typing import Any
 
 from requests import Response, Session
 
+from tcex.api.tc.v2.batch.association import Association
 from tcex.api.tc.v2.batch.batch_submit import BatchSubmit
 from tcex.api.tc.v2.batch.batch_writer import BatchWriter, GroupType, IndicatorType
 from tcex.exit.error_code import handle_error
@@ -189,7 +190,7 @@ class Batch(BatchWriter, BatchSubmit):
         Returns:
             dict: A dictionary of group, indicators, and/or file data.
         """
-        data = {'file': {}, 'group': [], 'indicator': []}
+        data = {'file': {}, 'group': [], 'indicator': [], 'association': []}
         tracker = {'count': 0, 'bytes': 0}
 
         # process group from memory, returning if max values have been reached
@@ -206,6 +207,10 @@ class Batch(BatchWriter, BatchSubmit):
 
         # process indicator from shelf file, returning if max values have been reached
         if self.data_indicators(data, self.indicators_shelf, tracker) is True:
+            return data
+
+        # process associations, returning if max values have been reached
+        if self.data_associations(data, self.associations, tracker) is True:
             return data
 
         return data
@@ -349,6 +354,43 @@ class Batch(BatchWriter, BatchSubmit):
                     f"""count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}"""
                 )
 
+            if (
+                tracker['count'] >= self._batch_max_chunk
+                or tracker['bytes'] >= self._batch_max_size
+            ):
+                # stop processing xid once max limit are reached
+                self.log.info(
+                    """feature=batch, event=max-value-reached, """
+                    f"""count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}"""
+                )
+                return True
+        return False
+
+    def data_associations(self, data: dict, associations: set[Association], tracker: dict) -> bool:
+        """Process Association data.
+
+        Args:
+            data: The data dict to update with group and file data.
+            associations: The list of associations to process.
+            tracker: A dict containing total count of all entities collected and
+                the total size in bytes of all entities collected.
+
+        Returns:
+            bool: True if max values have been hit, else False.
+        """
+        # process the associations
+        for association in list(associations):
+            association_data = association.data
+            data['association'].append(association_data)
+            associations.remove(Association(**association_data))
+            tracker['count'] += 1
+            tracker['bytes'] += sys.getsizeof(json.dumps(association_data))
+            if tracker['count'] % 2_500 == 0:
+                # log count/size at a sane level
+                self.log.info(
+                    """feature=batch, action=data-associations, """
+                    f"""count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}"""
+                )
             if (
                 tracker['count'] >= self._batch_max_chunk
                 or tracker['bytes'] >= self._batch_max_size
@@ -631,7 +673,11 @@ class Batch(BatchWriter, BatchSubmit):
             content = self.data
 
             # break loop when end of data is reached
-            if not content.get('group') and not content.get('indicator'):
+            if (
+                not content.get('group')
+                and not content.get('indicator')
+                and not content.get('association')
+            ):
                 break
 
             if self.action.lower() == 'delete':

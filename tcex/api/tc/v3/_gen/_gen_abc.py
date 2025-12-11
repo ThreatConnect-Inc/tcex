@@ -144,6 +144,7 @@ class GenerateABC(ABC):  # noqa: B024
         """Return the TcEx Api Path."""
         type_ = self.util.snake_string(type_)
         if type_.plural().lower() in [
+            'exclusion_lists',
             'owners',
             'owner_roles',
             'system_roles',

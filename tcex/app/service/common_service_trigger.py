@@ -122,7 +122,7 @@ class CommonServiceTrigger(CommonService):
                         'triggerId': trigger_id,
                     }
                 ),
-                self.model.tc_svc_client_topic,
+                self.tc_svc_client_topic,
             )
         except Exception:
             self.log.exception(
@@ -152,7 +152,7 @@ class CommonServiceTrigger(CommonService):
                         'triggerId': trigger_id,
                     }
                 ),
-                self.model.tc_svc_client_topic,
+                self.tc_svc_client_topic,
             )
         except Exception:
             self.log.exception(
@@ -230,7 +230,7 @@ class CommonServiceTrigger(CommonService):
         }
 
         self.log.info(f'feature=service, event=update-trigger-value, msg={msg}')
-        self.message_broker.publish(json.dumps(msg), self.model.tc_svc_client_topic)
+        self.message_broker.publish(json.dumps(msg), self.tc_svc_client_topic)
 
     def fire_event_publish(self, trigger_id: int, session_id: str, request_key: str | None = None):
         """Send FireEvent command.
@@ -250,7 +250,7 @@ class CommonServiceTrigger(CommonService):
         self.log.info(f'feature=service, event=fire-event, msg={msg}')
 
         # publish FireEvent command to client topic
-        self.message_broker.publish(json.dumps(msg), self.model.tc_svc_client_topic)
+        self.message_broker.publish(json.dumps(msg), self.tc_svc_client_topic)
 
     def fire_event_trigger(
         self,

@@ -124,7 +124,7 @@ class ApiService(CommonService):
                 'type': 'RunService',
             }
             self.log.info('feature=api-service, event=response-sent')
-            self.message_broker.publish(json.dumps(response), self.model.tc_svc_client_topic)
+            self.message_broker.publish(json.dumps(response), self.tc_svc_client_topic)
             self.increment_metric('Responses')
         except Exception:
             self.log.exception('feature=api-service, event=failed-creating-response-body')

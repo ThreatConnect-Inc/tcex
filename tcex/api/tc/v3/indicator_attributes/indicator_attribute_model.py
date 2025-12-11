@@ -92,6 +92,13 @@ class IndicatorAttributeModel(
         validate_default=True,
         json_schema_extra={'methods': ['POST', 'PUT']},
     )
+    shard_id: int | None = Field(
+        default=None,
+        description='The organization of the item this Attribute is attached to.',
+        frozen=True,
+        title='shardId',
+        validate_default=True,
+    )
     source: str | None = Field(
         default=None,
         description='The attribute source.',

@@ -343,6 +343,7 @@ class TestIndicatorTransform:
         transforms = tcex.api.tc.ti_transforms(data, [transform])
 
         expected_result = {
+            'association': [],
             'group': [],
             'indicator': [
                 {
@@ -424,6 +425,7 @@ class TestIndicatorTransform:
         tcex.log.warning(transforms.batch)
 
         expected_result = {
+            'association': [],
             'group': [],
             'indicator': [
                 {

@@ -8,6 +8,9 @@ from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
 from tcex.api.tc.v3.notes.note_model import NoteModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
+from tcex.api.tc.v3.security.assignee_model import AssigneeModel
+from tcex.api.tc.v3.security.assignee_user_group_model import AssigneeUserGroupModel
+from tcex.api.tc.v3.security.assignee_user_model import AssigneeUserModel
 from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel
 from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.tasks.task_filter import TaskFilter
@@ -91,23 +94,38 @@ class Task(ObjectABC):
     def stage_assignee(
         self,
         type: str,  # noqa: A002
-        data: dict | ObjectABC | UserModel | UserGroupModel,
+        data: (
+            dict
+            | ObjectABC
+            | AssigneeModel
+            | AssigneeUserModel
+            | AssigneeUserGroupModel
+            | UserModel
+            | UserGroupModel
+        ),
     ):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
             data = data.model  # type: ignore
         elif type.lower() == 'user' and isinstance(data, dict):
-            data = UserModel(**data)
+            data = AssigneeModel(type='User', data=data)  # type: ignore
         elif type.lower() == 'group' and isinstance(data, dict):
-            data = UserGroupModel(**data)
+            data = AssigneeModel(type='Group', data=data)  # type: ignore
 
-        if not isinstance(data, UserModel | UserGroupModel):
+        if not isinstance(
+            data,
+            AssigneeModel | AssigneeUserModel | AssigneeUserGroupModel | UserModel | UserGroupModel,
+        ):
             ex_msg = 'Invalid type passed in to stage_assignee'
             raise RuntimeError(ex_msg)  # noqa: TRY004
-        data._staged = True  # noqa: SLF001
-        self.model.assignee._staged = True  # noqa: SLF001 # type: ignore
-        self.model.assignee.type = type  # type: ignore
-        self.model.assignee.data = data  # type: ignore
+
+        if isinstance(data, AssigneeModel):
+            self.model.assignee = data
+        elif isinstance(data, UserModel):
+            self.model.assignee.data = AssigneeUserModel(user_name=data.user_name)  # type: ignore
+        elif isinstance(data, UserGroupModel):
+            self.model.assignee.data = AssigneeUserGroupModel(name=data.name)  # type: ignore
+        self.model.assignee.data._staged = True  # type: ignore  # noqa: SLF001
 
     def stage_note(self, data: dict | ObjectABC | NoteModel):
         """Stage note on the object."""

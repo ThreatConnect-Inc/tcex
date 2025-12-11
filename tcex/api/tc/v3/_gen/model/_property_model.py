@@ -152,12 +152,13 @@ class PropertyModel(
         """Process standard type."""
         types = [
             'AiInsights',
+            'AttackFinancialImpact',
             'AttackSecurityCoverage',
             'AttributeSource',
             'CommonGroup',
             'DNSResolutions',
             'Enrichments',
-            'AttackFinancialImpact',
+            'Exclusions',
             'GeoLocation',
             'InvestigationLinks',
             'IntelligenceReviews',
@@ -166,8 +167,8 @@ class PropertyModel(
             'KeywordSection',
             'Links',
             'Map',
-            'ValidationRule',
             'Strings',
+            'ValidationRule',
             'WhoIs',
         ]
         if pm.type in types:
@@ -410,6 +411,7 @@ class PropertyModel(
     def __extra_tap(cls, type_: CamelString) -> str:
         """Return the TcEx Api Path."""
         if type_.snake_case().plural().lower() in [
+            'exclusion_lists',
             'owners',
             'owner_roles',
             'system_roles',

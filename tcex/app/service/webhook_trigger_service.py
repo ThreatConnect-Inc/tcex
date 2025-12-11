@@ -332,7 +332,7 @@ class WebhookTriggerService(CommonServiceTrigger):
                     'type': 'WebhookEvent',
                 }
             ),
-            self.model.tc_svc_client_topic,
+            self.tc_svc_client_topic,
         )
 
     def publish_webhook_marshall_event_acknowledge(self, message: dict):
@@ -361,7 +361,7 @@ class WebhookTriggerService(CommonServiceTrigger):
                     'type': 'WebhookMarshallEvent',
                 }
             ),
-            self.model.tc_svc_client_topic,
+            self.tc_svc_client_topic,
         )
 
     def publish_webhook_event_response(self, message: dict, callback_response: dict):
@@ -394,5 +394,5 @@ class WebhookTriggerService(CommonServiceTrigger):
                     'statusCode': callback_response.get('status_code', 200),
                 }
             ),
-            self.model.tc_svc_client_topic,
+            self.tc_svc_client_topic,
         )

@@ -223,6 +223,7 @@ class ObjectTypes(str, Enum):
     subtypes = 'subtypes'
 
     # security
+    exclusion_lists = 'exclusion_lists'
     owner_roles = 'owner_roles'
     owners = 'owners'
     users = 'users'
