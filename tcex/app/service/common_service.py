@@ -46,7 +46,6 @@ class CommonService:
         self._start_time = datetime.now(UTC)
         self.model = model
         self.configs = {}
-        self.heartbeat_max_misses = 3
         self.heartbeat_sleep_time = 1
         self.heartbeat_watchdog = 0
         self.ij = InstallJson()
@@ -211,7 +210,7 @@ class CommonService:
         else:
             self.log.error('feature=service, event=invalid-metric')
 
-    def on_connect_handler(self, client, userdata, flags, rc):  # noqa: ARG002
+    def on_connect_handler(self, _client, _userdata, _flags, _rc, _properties):
         """On connect method for mqtt broker."""
         self.log.info(
             f'feature=service, event=topic-subscription, topic={self.model.tc_svc_server_topic}'

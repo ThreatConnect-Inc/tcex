@@ -135,9 +135,10 @@ class MqttMessageBroker:
     @cached_property
     def client(self) -> mqtt.Client:
         """Return MQTT client."""
-        _client = mqtt.Client(client_id='', clean_session=True)
+        _client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id='', clean_session=True)
         try:
-            _client.reconnect_delay_set(min_delay=1, max_delay=5)
+            # min and max reconnect delay set to 15 seconds and 15 minutes
+            _client.reconnect_delay_set(min_delay=15, max_delay=900)
             _client.connect(self.broker_host, self.broker_port, self.broker_timeout)
             if self.broker_cacert is not None:
                 _client.tls_set(
@@ -180,18 +181,22 @@ class MqttMessageBroker:
         except Exception:
             self.log.exception('feature=message-broker, event=connection-error')
 
-    def on_connect(self, client, userdata, flags, rc):
+    def on_connect(self, client, userdata, flags, rc, properties):
         """Handle MQTT on_connect events."""
         self.log.info(f'feature=message-broker, event=broker-connect, status={rc!s}')
         self._connected = True
         for callback in self._on_connect_callbacks:
-            callback(client, userdata, flags, rc)
+            callback(client, userdata, flags, rc, properties)
 
-    def on_disconnect(self, client, userdata, rc):
+    def on_connect_fail(self, _client, _userdata):
+        """Handle MQTT on_connect_fail events."""
+        self.log.error('feature=message-broker, event=broker-connect-fail')
+
+    def on_disconnect(self, client, userdata, flags, rc, properties):
         """Handle MQTT on_disconnect events."""
         self.log.info(f'feature=message-broker, event=broker-disconnect, status={rc!s}')
         for callback in self._on_disconnect_callbacks:
-            callback(client, userdata, rc)
+            callback(client, userdata, flags, rc, properties)
 
     def on_log(self, client, userdata, level, buf):
         """Handle MQTT on_log events."""
@@ -202,32 +207,28 @@ class MqttMessageBroker:
         """Handle MQTT on_message events."""
         mp = message.payload.decode().replace('\n', '')
         self.log.trace(
-            f"""feature=message-broker, message-topic={message.topic}, message-payload={mp}"""
+            f'feature=message-broker, message-topic={message.topic}, message-payload={mp}'
         )
         for cd in self._on_message_callbacks:
             topics = cd.get('topics')
             if (topics is None or message.topic in topics) and callable(cd['callback']):
                 cd['callback'](client, userdata, message)
 
-    def on_publish(self, client, userdata, result):
+    def on_publish(self, client, userdata, mid, rc, properties):
         """Handle MQTT on_publish events."""
-        # self.log.trace(f'feature=message-broker, event=on_publish, result={result}')
         for callback in self._on_publish_callbacks:
-            callback(client, userdata, result)
+            callback(client, userdata, mid, rc, properties)
 
-    def on_subscribe(self, client, userdata, mid, granted_qos):
+    def on_subscribe(self, client, userdata, mid, rc, properties):
         """Handle MQTT on_subscribe events."""
-        # self.log.trace(
-        #     f'feature=message-broker, event=on_subscribe, mid={mid}, granted_qos={granted_qos}'
-        # )
         for callback in self._on_subscribe_callbacks:
-            callback(client, userdata, mid, granted_qos)
+            callback(client, userdata, mid, rc, properties)
 
-    def on_unsubscribe(self, client, userdata, mid):
+    def on_unsubscribe(self, client, userdata, mid, rc, properties):
         """Handle MQTT on_unsubscribe events."""
         # self.log.trace(f'feature=message-broker, event=on_subscribe, mid={mid}')
         for callback in self._on_unsubscribe_callbacks:
-            callback(client, userdata, mid)
+            callback(client, userdata, mid, rc, properties)
 
     def publish(self, message: str, topic: str):
         """Publish a message on client topic.
@@ -245,6 +246,7 @@ class MqttMessageBroker:
     def register_callbacks(self):
         """Register all the message broker callbacks."""
         self.client.on_connect = self.on_connect
+        self.client.on_connect_fail = self.on_connect_fail
         self.client.on_disconnect = self.on_disconnect
         self.client.on_log = self.on_log
         self.client.on_message = self.on_message
