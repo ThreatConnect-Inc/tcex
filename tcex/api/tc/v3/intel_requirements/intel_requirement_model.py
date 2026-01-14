@@ -25,6 +25,13 @@ class IntelRequirementModel(
     _shared_type = PrivateAttr(default=False)
     _staged = PrivateAttr(default=False)
 
+    active: bool = Field(
+        None,
+        description='If Intel Requirement is active.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='active',
+    )
     associated_artifacts: 'ArtifactsModel' = Field(
         None,
         description='A list of Artifacts associated with this Group.',
@@ -88,6 +95,13 @@ class IntelRequirementModel(
         read_only=False,
         title='description',
     )
+    earliest_timestamp: datetime | None = Field(
+        None,
+        description='How far in the past the system should look for matches.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='earliestTimestamp',
+    )
     id: int | None = Field(  # type: ignore
         None,
         description='The ID of the item.',
@@ -114,6 +128,13 @@ class IntelRequirementModel(
         description='The last date the results were retrieved for the intel requirement.',
         read_only=True,
         title='lastRetrievedDate',
+    )
+    latest_timestamp: datetime | None = Field(
+        None,
+        description='The cutoff point for future data to be considered.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='latestTimestamp',
     )
     requirement_text: str | None = Field(
         None,
