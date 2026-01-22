@@ -696,9 +696,7 @@ class Batch(BatchWriter, BatchSubmit):
                     batch_id = self.submit_job(halt_on_error)
                     if batch_id is not None:
                         batch_data = self.submit_data(
-                            batch_id=batch_id,
-                            content=content,
-                            halt_on_error=halt_on_error,
+                            batch_id=batch_id, content=content, halt_on_error=halt_on_error
                         )
                 else:
                     batch_data = {}
@@ -909,10 +907,7 @@ class Batch(BatchWriter, BatchSubmit):
         )
 
         try:
-            files = (
-                ('config', json.dumps(self.settings)),
-                ('content', json.dumps(content)),
-            )
+            files = (('config', json.dumps(self.settings)), ('content', json.dumps(content)))
             params = {'includeAdditional': 'true'}
             r = self.session_tc.post('/v2/batch/createAndUpload', files=files, params=params)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
