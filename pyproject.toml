@@ -240,6 +240,7 @@ ignore = [
   "PLR0915", # Too many statements
   "PT006", # Wrong name(s) type in ..., expected ...
   "TC001", # Move application import ... into a type-checking block
+  "TC003", # Use `if TYPE_CHECKING:` for imports only used for type checking
   "TC006", # Checks for unquoted type expressions in typing.cast() calls.
   "TID252", # Prefer absolute imports over relative imports from parent modules
 ]
