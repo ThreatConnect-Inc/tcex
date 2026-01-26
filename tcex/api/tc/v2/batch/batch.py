@@ -997,6 +997,8 @@ class Batch(BatchWriter, BatchSubmit):
         Returns:
             The content dictionary with cleaned, truncated, and deduplicated attributes.
         """
+        truncated_types: set[str] = set()
+
         for key in ['groups', 'indicators']:
             for item in content.get(key, []):
                 original_attrs = item.get('attributes') or []
@@ -1013,6 +1015,14 @@ class Batch(BatchWriter, BatchSubmit):
 
                     # Truncate/normalize value
                     truncated = self._auto_truncate_attribute(type_, value)
+
+                    # Log warning once per attribute type when truncation occurs
+                    if truncated != value and type_ not in truncated_types:
+                        truncated_types.add(type_)
+                        self.log.warning(
+                            f'feature=batch, event=attribute-truncated, '
+                            f'key={key}, attribute-type={type_}'
+                        )
 
                     # De-duplication is based on all fields, but with the truncated value
                     # Combine with the `seen` set to skip duplicates
