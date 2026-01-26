@@ -138,13 +138,14 @@ class MqttMessageBroker:
         _client = mqtt.Client(client_id='', clean_session=True)
         try:
             _client.reconnect_delay_set(min_delay=1, max_delay=5)
-            _client.connect(self.broker_host, self.broker_port, self.broker_timeout)
             if self.broker_cacert is not None:
                 _client.tls_set(
                     ca_certs=self.broker_cacert,
                     cert_reqs=ssl.CERT_REQUIRED,
                 )
                 _client.tls_insecure_set(value=False)
+            
+            _client.connect(self.broker_host, self.broker_port, self.broker_timeout)
             # add logger when logging in TRACE
             debug_log_level = 5
             if self.log.getEffectiveLevel() == debug_log_level:
@@ -206,7 +207,7 @@ class MqttMessageBroker:
         )
         for cd in self._on_message_callbacks:
             topics = cd.get('topics')
-            if (topics is None or message.topic in topics) and callable(cd['callback']):
+            if (not topics or message.topic in topics) and callable(cd['callback']):
                 cd['callback'](client, userdata, message)
 
     def on_publish(self, client, userdata, result):
