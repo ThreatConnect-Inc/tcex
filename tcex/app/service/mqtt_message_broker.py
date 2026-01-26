@@ -139,20 +139,26 @@ class MqttMessageBroker:
         try:
             # min and max reconnect delay set to 15 seconds and 15 minutes
             _client.reconnect_delay_set(min_delay=15, max_delay=900)
-            _client.connect(self.broker_host, self.broker_port, self.broker_timeout)
+
+            # configure TLS before connecting (must be set before connect)
             if self.broker_cacert is not None:
                 _client.tls_set(
                     ca_certs=self.broker_cacert,
                     cert_reqs=ssl.CERT_REQUIRED,
                 )
                 _client.tls_insecure_set(value=False)
+
+            # set credentials before connecting (must be set before connect)
+            if self.broker_token is not None:
+                _client.username_pw_set('', password=self.broker_token.value)
+
             # add logger when logging in TRACE
             debug_log_level = 5
             if self.log.getEffectiveLevel() == debug_log_level:
                 _client.enable_logger(logger=self.log)
-            # username must be a empty string
-            if self.broker_token is not None:
-                _client.username_pw_set('', password=self.broker_token.value)
+
+            # connect after all configuration is complete
+            _client.connect(self.broker_host, self.broker_port, self.broker_timeout)
 
         except Exception:
             self.log.exception('feature=message-broker, event=failed-connection')
@@ -210,8 +216,10 @@ class MqttMessageBroker:
             f'feature=message-broker, message-topic={message.topic}, message-payload={mp}'
         )
         for cd in self._on_message_callbacks:
+            # if there are no topic restrictions, or the current message
+            # topic is in the list of restrictions, call the callback
             topics = cd.get('topics')
-            if (topics is None or message.topic in topics) and callable(cd['callback']):
+            if (topics not in ([], None) or message.topic in topics) and callable(cd['callback']):
                 cd['callback'](client, userdata, message)
 
     def on_publish(self, client, userdata, mid, rc, properties):
