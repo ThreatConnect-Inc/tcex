@@ -219,7 +219,7 @@ class MqttMessageBroker:
             # if there are no topic restrictions, or the current message
             # topic is in the list of restrictions, call the callback
             topics = cd.get('topics')
-            if (topics not in ([], None) or message.topic in topics) and callable(cd['callback']):
+            if (topics in ([], None) or message.topic in topics) and callable(cd['callback']):
                 cd['callback'](client, userdata, message)
 
     def on_publish(self, client, userdata, mid, rc, properties):
