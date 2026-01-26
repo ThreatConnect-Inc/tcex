@@ -10,6 +10,7 @@ import threading
 import time
 from collections import deque
 from collections.abc import Callable
+from functools import cached_property
 from typing import Any
 
 # third-party
@@ -111,11 +112,11 @@ class Batch(BatchWriter, BatchSubmit):
         """Return previously stored group or new group.
 
         Args:
-            group_data: An Group dict or instance of GroupType.
-            store: If True the group data will be stored in instance list.
+            group_data: The group data as a dict or GroupType object.
+            store: If True, store the group in memory or shelf. Defaults to True.
 
         Returns:
-            (dict|GroupType): The new Group dict/GroupType or the previously stored dict/GroupType.
+            The existing group from memory/shelf if found, otherwise the new group data.
         """
         if store is False:
             return group_data
@@ -139,8 +140,11 @@ class Batch(BatchWriter, BatchSubmit):
         """Return previously stored indicator or new indicator.
 
         Args:
-            indicator_data: An Indicator dict or instance of IndicatorType.
-            store: If True the indicator data will be stored in instance list.
+            indicator_data: The indicator data as a dict or IndicatorType object.
+            store: If True, store the indicator in memory or shelf. Defaults to True.
+
+        Returns:
+            The existing indicator from memory/shelf if found, otherwise the new indicator data.
         """
         if store is False:
             return indicator_data
@@ -159,7 +163,7 @@ class Batch(BatchWriter, BatchSubmit):
             self.indicators[xid] = indicator_data
         return indicator_data
 
-    def close(self):
+    def close(self) -> None:
         """Cleanup batch job."""
         # allow pol thread to complete before wrapping up
         if self._submit_thread and hasattr(self._submit_thread, 'is_alive'):
@@ -217,17 +221,16 @@ class Batch(BatchWriter, BatchSubmit):
 
         return data
 
-    def data_group_association(self, data: dict, tracker: dict, xid: str):
+    def data_group_association(self, data: dict, tracker: dict, xid: str) -> None:
         """Return group dict array following all associations.
 
         The *data* dict is passed by reference to make it easier to update both the group data
         and file data inline versus passing the data all the way back up to the calling methods.
 
         Args:
-            data: The data dict to update with group and file data.
-            tracker: A dict containing total count of all entities collected and
-                the total size in bytes of all entities collected.
-            xid: The xid of the group to retrieve associations.
+            data: The data dictionary to populate with group and file data.
+            tracker: A dictionary tracking count and bytes of processed data.
+            xid: The external ID of the group to process.
         """
         xids = deque()
         xids.append(xid)
@@ -261,10 +264,10 @@ class Batch(BatchWriter, BatchSubmit):
         """Return dict representation of group data and file data.
 
         Args:
-            group_data: The group data dict or GroupType.
+            group_data: The group data as a dict or GroupType object.
 
         Returns:
-            Tuple[dict, dict]: A tuple containing file_data and group_data.
+            A tuple containing (file_data, group_data) dictionaries.
         """
         file_data = {}
         if isinstance(group_data, dict):
@@ -288,13 +291,12 @@ class Batch(BatchWriter, BatchSubmit):
         """Process Group data.
 
         Args:
-            data: The data dict to update with group and file data.
-            groups: The list of groups to process.
-            tracker: A dict containing total count of all entities collected and
-                the total size in bytes of all entities collected.
+            data: The data dictionary to populate with group and file data.
+            groups: The groups dictionary or shelf containing group data.
+            tracker: A dictionary tracking count and bytes of processed data.
 
         Returns:
-            bool: True if max values have been hit, else False.
+            True if max batch limits have been reached, False otherwise.
         """
         # convert groups.keys() to a list to prevent dictionary change error caused by
         # the data_group_association function deleting items from the GroupType.
@@ -329,13 +331,12 @@ class Batch(BatchWriter, BatchSubmit):
         """Process Indicator data.
 
         Args:
-            data: The data dict to update with group and file data.
-            indicators: The list of indicators to process.
-            tracker: A dict containing total count of all entities collected and
-                the total size in bytes of all entities collected.
+            data: The data dictionary to populate with indicator data.
+            indicators: The indicators dictionary or shelf containing indicator data.
+            tracker: A dictionary tracking count and bytes of processed data.
 
         Returns:
-            bool: True if max values have been hit, else False.
+            True if max batch limits have been reached, False otherwise.
         """
         # process the indicators
         for xid, indicator_data in list(indicators.items()):
@@ -368,19 +369,16 @@ class Batch(BatchWriter, BatchSubmit):
                 return True
         return False
 
-    def data_associations(
-        self, data: dict, associations: dict | shelve.Shelf[Any], tracker: dict
-    ) -> bool:
+    def data_associations(self, data: dict, associations: set[Association], tracker: dict) -> bool:
         """Process Association data.
 
         Args:
-            data: The data dict to update with group and file data.
-            associations: The list of associations to process.
-            tracker: A dict containing total count of all entities collected and
-                the total size in bytes of all entities collected.
+            data: The data dictionary to populate with association data.
+            associations: The set of Association objects to process.
+            tracker: A dictionary tracking count and bytes of processed data.
 
         Returns:
-            bool: True if max values have been hit, else False.
+            True if max batch limits have been reached, False otherwise.
         """
         # convert groups.keys() to a list to prevent dictionary change error caused by
         # the data_group_association function deleting items from the GroupType.
@@ -412,8 +410,8 @@ class Batch(BatchWriter, BatchSubmit):
         return False
 
     @property
-    def debug(self):
-        """Return debug setting"""
+    def debug(self) -> bool:
+        """Return debug setting."""
         if self._debug is None:
             self._debug = False
 
@@ -439,16 +437,16 @@ class Batch(BatchWriter, BatchSubmit):
         return self._halt_on_file_error or False
 
     @halt_on_file_error.setter
-    def halt_on_file_error(self, value: bool):
+    def halt_on_file_error(self, value: bool) -> None:
         """Set halt on file post error value."""
         if isinstance(value, bool):
             self._halt_on_file_error = value
 
-    def process_all(self, process_files: bool = True):
+    def process_all(self, process_files: bool = True) -> None:
         """Process Batch request to ThreatConnect API.
 
         Args:
-            process_files: Send any document or report attachments to the API.
+            process_files: If True, process file data for Documents and Reports. Defaults to True.
         """
         while True:
             content = self.data
@@ -472,11 +470,11 @@ class Batch(BatchWriter, BatchSubmit):
         if process_files:
             self.process_files(file_data)
 
-    def process_files(self, file_data: dict):
+    def process_files(self, file_data: dict) -> None:
         """Process Files for Documents and Reports to ThreatConnect API.
 
         Args:
-            file_data: The file data to be processed.
+            file_data: A dictionary mapping xid to file content data.
         """
         for xid, content_data in list(file_data.items()):
             del file_data[xid]  # win or loose remove the entry
@@ -561,7 +559,7 @@ class Batch(BatchWriter, BatchSubmit):
         return self._saved_xids
 
     @saved_xids.setter
-    def saved_xids(self, xid: str):
+    def saved_xids(self, xid: str) -> None:
         """Append xid to xids saved file."""
         with self.debug_path_xids.open('a') as fh:
             fh.write(f'{xid}\n')
@@ -588,13 +586,13 @@ class Batch(BatchWriter, BatchSubmit):
         process.
 
         Args:
-            poll: If True poll batch for status.
-            errors: If True retrieve any batch errors (only if poll is True).
-            process_files: If true send any document or report attachments to the API.
-            halt_on_error: If True any exception will raise an error.
+            poll: If True, poll for batch job status. Defaults to True.
+            errors: If True, retrieve errors after polling. Defaults to True.
+            process_files: If True, upload file content for Documents/Reports. Defaults to True.
+            halt_on_error: If True, halt on any batch error. Defaults to True.
 
-        Returns.
-            dict: The Batch Status from the ThreatConnect API.
+        Returns:
+            A dictionary containing the batch status data.
         """
         # get file, group, and indicator data
         content = self.data
@@ -663,13 +661,13 @@ class Batch(BatchWriter, BatchSubmit):
         process.
 
         Args:
-            poll: If True poll batch for status.
-            errors: If True retrieve any batch errors (only if poll is True).
-            process_files: If true send any document or report attachments to the API.
-            halt_on_error: If True any exception will raise an error.
+            poll: If True, poll for batch job status. Defaults to True.
+            errors: If True, retrieve errors after polling. Defaults to True.
+            process_files: If True, upload file content for Documents/Reports. Defaults to True.
+            halt_on_error: If True, halt on any batch error. Defaults to True.
 
-        Returns.
-            dict: The Batch Status from the ThreatConnect API.
+        Returns:
+            A list of dictionaries containing batch status data for each batch submission.
         """
         batch_data_array = []
         file_data = {}
@@ -774,16 +772,12 @@ class Batch(BatchWriter, BatchSubmit):
         critical errors returned from batch can be handled before submitting a new batch job.
 
         Args:
-            callback: The callback method that will handle
-                the batch status when polling is complete.
-            content: The dict of groups and indicator data (e.g., {"group": [], "indicator": []}).
-            halt_on_error: If True the process should halt if any errors are encountered.
-
-        Raises:
-            RuntimeError: Raised on invalid callback method.
+            callback: A callable to invoke with the batch status when polling completes.
+            content: Optional batch content to submit. If None, uses data from local lists.
+            halt_on_error: If True, halt on any batch error. Defaults to True.
 
         Returns:
-            bool: False when there is not data to process, else True
+            True if data was submitted, False if no data was available to submit.
         """
         # user provided content or grab content from local group/indicator lists
         if content is not None:
@@ -832,8 +826,15 @@ class Batch(BatchWriter, BatchSubmit):
         callback: Callable[..., Any],
         file_data: dict,
         halt_on_error: bool = True,
-    ):
-        """Submit data in a thread."""
+    ) -> None:
+        """Submit data in a thread.
+
+        Args:
+            batch_data: The batch status data from the initial submission.
+            callback: A callable to invoke with the batch status when polling completes.
+            file_data: A dictionary mapping xid to file content data.
+            halt_on_error: If True, halt on any batch error. Defaults to True.
+        """
         batch_id = batch_data.get('id')
         self.log.info(f'feature=batch, event=progress, batch-id={batch_id}')
         if batch_id:
@@ -882,11 +883,11 @@ class Batch(BatchWriter, BatchSubmit):
         """Submit Batch request to ThreatConnect API.
 
         Args:
-            content: The dict of groups and indicator data.
-            halt_on_error: If True the process should halt if any errors are encountered.
+            content: The batch content dictionary containing groups and indicators.
+            halt_on_error: If True, halt on any batch error. Defaults to True.
 
-        Returns.
-            dict: The Batch Status from the ThreatConnect API.
+        Returns:
+            A dictionary containing the API response with batch status data.
         """
         # check global setting for override
         if self.halt_on_batch_error is not None:
@@ -921,19 +922,151 @@ class Batch(BatchWriter, BatchSubmit):
 
         return {}
 
-    def submit_files(self, file_data: dict, halt_on_error: bool = True) -> list[dict] | None:
-        """Submit Files for Documents and Reports to ThreatConnect API.
+    @cached_property
+    def attribute_config(self) -> dict:
+        """Return a dict of attribute types keyed by 'name', fetched across all pages."""
+        attributes: dict[str, dict] = {}
 
-        Critical Errors
+        # Start with the initial endpoint
+        url = '/v3/attributeTypes'
+        while True:
+            # Fetch page (first call uses relative path; subsequent calls use absolute next_ URL)
+            resp = self.session_tc.get(url, params={'resultLimit': 10_000})
+            payload = resp.json()
 
-        * There is insufficient document storage allocated to this account.
+            # Collect items from this page
+            for attribute_type in payload.get('data', []):
+                name = attribute_type.get('name')
+                if name is None:
+                    # Skip entries without a name key (defensive)
+                    continue
+                attributes[name] = attribute_type
+
+            # Get the next page URL; stop if none
+            next_ = payload.get('next')
+            if not next_:
+                break
+
+            # next_ is the full URL for the next page
+            url = next_
+
+        return attributes
+
+    def _auto_truncate_attribute(
+        self, attribute_type: str, attribute_value: str, ellipsis: str = '...'
+    ) -> str:
+        """Truncate attribute value if it exceeds the maximum length for its type.
 
         Args:
-            halt_on_error: If True any exception will raise an error.
-            file_data: The file data to be submitted.
+            attribute_type: The name of the attribute type.
+            attribute_value: The attribute value to potentially truncate.
+            ellipsis: The string to append when truncating. Defaults to '...'.
 
         Returns:
-            dict: The upload status for each xid.
+            The original value if within limits, or the truncated value with ellipsis.
+        """
+        attribute_config = self.attribute_config.get(attribute_type)
+        if not attribute_config:
+            return attribute_value
+
+        max_length = attribute_config.get('maxSize')
+        if not max_length:
+            return attribute_value
+
+        # Only strings can be truncated
+        if not isinstance(attribute_value, str):
+            return attribute_value
+
+        # If within limit, keep as-is
+        if len(attribute_value) <= max_length:
+            return attribute_value
+
+        # If max is tiny, avoid negative slicing; fall back to hard cut
+        if max_length <= len(ellipsis):
+            return attribute_value[:max_length]
+
+        # Truncate and append the msg
+        return attribute_value[: max_length - len(ellipsis)] + ellipsis
+
+    def _clean_attributes(self, content: dict) -> dict:
+        """Clean, truncate, and deduplicate attributes for groups and indicators.
+
+        Args:
+            content: The content dictionary containing groups and/or indicators with attributes.
+
+        Returns:
+            The content dictionary with cleaned, truncated, and deduplicated attributes.
+        """
+        truncated_types: set[str] = set()
+
+        for key in ['groups', 'indicators']:
+            for item in content.get(key, []):
+                original_attrs = item.get('attributes') or []
+                cleaned_attrs = []
+                seen = set()  # track normalized tuples of the entire attribute
+
+                for attr in original_attrs:
+                    type_ = attr.get('type')
+                    value = attr.get('value')
+
+                    # Skip if type missing or value explicitly empty/None
+                    if not type_ or value is None or value == '':
+                        continue
+
+                    # Truncate/normalize value
+                    truncated = self._auto_truncate_attribute(type_, value)
+
+                    # Log warning once per attribute type when truncation occurs
+                    if truncated != value and type_ not in truncated_types:
+                        truncated_types.add(type_)
+                        self.log.warning(
+                            f'feature=batch, event=attribute-truncated, '
+                            f'key={key}, attribute-type={type_}'
+                        )
+
+                    # De-duplication is based on all fields, but with the truncated value
+                    # Combine with the `seen` set to skip duplicates
+                    normalized_items = tuple(
+                        (k, truncated if k == 'value' else attr.get(k)) for k in sorted(attr.keys())
+                    )
+
+                    if normalized_items in seen:
+                        continue
+                    seen.add(normalized_items)
+
+                    new_attr = dict(attr)
+                    new_attr['value'] = truncated
+                    cleaned_attrs.append(new_attr)
+
+                item['attributes'] = cleaned_attrs
+
+        return content
+
+    def clean_content(self, content: dict) -> dict:
+        """Clean content before upload.
+
+        Args:
+            content: The content dictionary to clean.
+
+        Returns:
+            The cleaned content dictionary.
+        """
+        return self._clean_attributes(content)
+
+    def submit_files(
+        self, file_data: dict, halt_on_error: bool = True, clean_content: bool = False
+    ) -> list[dict] | None:
+        """Submit Files for Documents and Reports to ThreatConnect API.
+
+        Critical Errors: There is insufficient document storage allocated to this account.
+
+        Args:
+            file_data: A dictionary mapping xid to file content data.
+            halt_on_error: If True, halt on any file upload error. Defaults to True.
+            clean_content: If True, clean the content before upload. Defaults to False.
+
+        Returns:
+            A list of dictionaries with upload status for each file, or None on critical error.
         """
         # check global setting for override
         if self.halt_on_file_error is not None:
@@ -963,6 +1096,9 @@ class Batch(BatchWriter, BatchSubmit):
                     content = content_data.get('fileContent')(xid)
                 except Exception as e:
                     self.log.warning(f'feature=batch, event=file-download-exception, err="""{e}"""')
+
+            if clean_content is True:
+                content = self.clean_content(content)
 
             if content is None:
                 upload_status.append({'uploaded': False, 'xid': xid})
@@ -1032,15 +1168,15 @@ class Batch(BatchWriter, BatchSubmit):
         """Submit File Content for Documents and Reports to ThreatConnect API.
 
         Args:
-            method: The HTTP method for the request (POST, PUT).
-            url: The URL for the request.
-            data: The body (data) for the request.
-            headers: The headers for the request.
-            params: The query string parameters for the request.
-            halt_on_error: If True any exception will raise an error.
+            method: The HTTP method to use (e.g., 'POST', 'PUT').
+            url: The API endpoint URL.
+            data: The file content as bytes or string.
+            headers: The HTTP headers for the request.
+            params: The query parameters for the request.
+            halt_on_error: If True, halt on any error. Defaults to True.
 
         Returns:
-            Response: The response from the request.
+            The Response object from the API call, or None on error.
         """
         r = None
         try:
@@ -1053,10 +1189,10 @@ class Batch(BatchWriter, BatchSubmit):
         """Submit Batch request to ThreatConnect API.
 
         Args:
-            halt_on_error: If True any exception will raise an error.
+            halt_on_error: If True, halt on any batch error. Defaults to True.
 
         Returns:
-            int: The batch id from the API response.
+            The batch ID if successful, or None on error.
         """
         # check global setting for override
         if self.halt_on_batch_error is not None:
@@ -1090,14 +1226,17 @@ class Batch(BatchWriter, BatchSubmit):
         target: Callable,
         args: tuple | None = None,
         kwargs: dict | None = None,
-    ):
+    ) -> threading.Thread | None:
         """Start a submit thread.
 
         Args:
             name: The name of the thread.
-            target: The method to call for the thread.
-            args: The args to pass to the target method.
-            kwargs: Additional args.
+            target: The callable to run in the thread.
+            args: Positional arguments to pass to the target. Defaults to None.
+            kwargs: Keyword arguments to pass to the target. Defaults to None.
+
+        Returns:
+            The Thread object if started successfully, or None on error.
         """
         self.log.info(f'feature=batch, event=submit-thread, name={name}')
         args = args or ()
@@ -1109,11 +1248,11 @@ class Batch(BatchWriter, BatchSubmit):
             self.log.exception('feature=batch, event=submit-thread')
         return t
 
-    def write_error_json(self, errors: list):
+    def write_error_json(self, errors: list) -> None:
         """Write the errors to a JSON file for debugging purposes.
 
         Args:
-            errors: A list of errors to write out.
+            errors: A list of error dictionaries to write to the debug file.
         """
         if self.debug:
             if not errors:
@@ -1124,8 +1263,12 @@ class Batch(BatchWriter, BatchSubmit):
             with gzip.open(error_json_file, mode='wt', encoding='utf-8') as fh:
                 json.dump(errors, fh)
 
-    def write_batch_json(self, content: dict):
-        """Write batch json data to a file."""
+    def write_batch_json(self, content: dict) -> None:
+        """Write batch json data to a file.
+
+        Args:
+            content: The batch content dictionary to write to the debug file.
+        """
         if self.debug and content:
             # get timestamp as a string without decimal place and consistent length
             timestamp = str(int(time.time() * 10000000))
