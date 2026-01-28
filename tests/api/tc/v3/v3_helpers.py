@@ -807,6 +807,9 @@ class TestV3:
                 # linkedGroups -> provides all the groups/buckets linked to common group:
                 #     share the same name and type
 
+                if 'aliases' in names:
+                    names = ['commonGroup']
+
                 if 'common' in names:
                     # fix discrepancy between <endpoint>/fields and <endpoint>
                     names = ['commonGroup']

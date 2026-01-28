@@ -29,7 +29,7 @@ dependencies = [
   "inflection>=0.5.1",
   "isort>=6.0.0",
   "jmespath>=1.0.1",
-  "paho-mqtt<2.0.0",
+  "paho-mqtt<3.0.0",
   "pyaes>=1.6.1",
   "pydantic-core>=2.10.0,<3.0.0",
   "pydantic>=2.10.0,<3.0.0",
