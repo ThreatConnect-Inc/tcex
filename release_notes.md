@@ -5,6 +5,16 @@
 
 ## 4.x
 
+## 4.0.11
+
+-   APP-5036 - [Services] Updated message broker connection to not set tls_version
+-   APP-5037 - [API] Updated V3 API to include new endpoints and/or updates to existing endpoints
+-   APP-5055 - [Services] Updated Paho MQTT library and message broker reconnect logic
+-   APP-5067 - [Services] Fixed issue with redis connection on each new thread
+-   APP-5068 - [Batch] Added auto truncate of attribute values and deduplication of attributes
+-   APP-5072 - [Services] Applied PR #356
+-   APP-5077 - [API] Updated V3 objects to allow setting a request timeout via property
+
 ### 4.0.10
 
 -   APP-4969 - [Util] Updated regex patterns for playbook to support "Global" app type
