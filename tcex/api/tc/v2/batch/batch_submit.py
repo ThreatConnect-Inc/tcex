@@ -231,9 +231,8 @@ class BatchSubmit:
         Returns:
             The cleaned content dictionary.
         """
-        if isinstance(content, str):
-            content = json.loads(content)
-        return self._clean_attributes(content)  # type: ignore
+        content_dict = json.loads(content) if isinstance(content, str) else content
+        return self._clean_attributes(content_dict)
 
     def create_job(self, halt_on_error: bool = True) -> int | None:
         """Submit Batch request to ThreatConnect API.
