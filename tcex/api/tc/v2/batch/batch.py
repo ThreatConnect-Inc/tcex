@@ -10,7 +10,6 @@ import threading
 import time
 from collections import deque
 from collections.abc import Callable
-from functools import cached_property
 from typing import Any
 
 # third-party
@@ -922,140 +921,7 @@ class Batch(BatchWriter, BatchSubmit):
 
         return {}
 
-    @cached_property
-    def attribute_config(self) -> dict:
-        """Return a dict of attribute types keyed by 'name', fetched across all pages."""
-        attributes: dict[str, dict] = {}
-
-        # Start with the initial endpoint
-        url = '/v3/attributeTypes'
-        while True:
-            # Fetch page (first call uses relative path; subsequent calls use absolute next_ URL)
-            resp = self.session_tc.get(url, params={'resultLimit': 10_000})
-            payload = resp.json()
-
-            # Collect items from this page
-            for attribute_type in payload.get('data', []):
-                name = attribute_type.get('name')
-                if name is None:
-                    # Skip entries without a name key (defensive)
-                    continue
-                attributes[name] = attribute_type
-
-            # Get the next page URL; stop if none
-            next_ = payload.get('next')
-            if not next_:
-                break
-
-            # next_ is the full URL for the next page
-            url = next_
-
-        return attributes
-
-    def _auto_truncate_attribute(
-        self, attribute_type: str, attribute_value: str, ellipsis: str = '...'
-    ) -> str:
-        """Truncate attribute value if it exceeds the maximum length for its type.
-
-        Args:
-            attribute_type: The name of the attribute type.
-            attribute_value: The attribute value to potentially truncate.
-            ellipsis: The string to append when truncating. Defaults to '...'.
-
-        Returns:
-            The original value if within limits, or the truncated value with ellipsis.
-        """
-        attribute_config = self.attribute_config.get(attribute_type)
-        if not attribute_config:
-            return attribute_value
-
-        max_length = attribute_config.get('maxSize')
-        if not max_length:
-            return attribute_value
-
-        # Only strings can be truncated
-        if not isinstance(attribute_value, str):
-            return attribute_value
-
-        # If within limit, keep as-is
-        if len(attribute_value) <= max_length:
-            return attribute_value
-
-        # If max is tiny, avoid negative slicing; fall back to hard cut
-        if max_length <= len(ellipsis):
-            return attribute_value[:max_length]
-
-        # Truncate and append the msg
-        return attribute_value[: max_length - len(ellipsis)] + ellipsis
-
-    def _clean_attributes(self, content: dict) -> dict:
-        """Clean, truncate, and deduplicate attributes for groups and indicators.
-
-        Args:
-            content: The content dictionary containing groups and/or indicators with attributes.
-
-        Returns:
-            The content dictionary with cleaned, truncated, and deduplicated attributes.
-        """
-        truncated_types: set[str] = set()
-
-        for key in ['groups', 'indicators']:
-            for item in content.get(key, []):
-                original_attrs = item.get('attributes') or []
-                cleaned_attrs = []
-                seen = set()  # track normalized tuples of the entire attribute
-
-                for attr in original_attrs:
-                    type_ = attr.get('type')
-                    value = attr.get('value')
-
-                    # Skip if type missing or value explicitly empty/None
-                    if not type_ or value is None or value == '':
-                        continue
-
-                    # Truncate/normalize value
-                    truncated = self._auto_truncate_attribute(type_, value)
-
-                    # Log warning once per attribute type when truncation occurs
-                    if truncated != value and type_ not in truncated_types:
-                        truncated_types.add(type_)
-                        self.log.warning(
-                            f'feature=batch, event=attribute-truncated, '
-                            f'key={key}, attribute-type={type_}'
-                        )
-
-                    # De-duplication is based on all fields, but with the truncated value
-                    # Combine with the `seen` set to skip duplicates
-                    normalized_items = tuple(
-                        (k, truncated if k == 'value' else attr.get(k)) for k in sorted(attr.keys())
-                    )
-
-                    if normalized_items in seen:
-                        continue
-                    seen.add(normalized_items)
-
-                    new_attr = dict(attr)
-                    new_attr['value'] = truncated
-                    cleaned_attrs.append(new_attr)
-
-                item['attributes'] = cleaned_attrs
-
-        return content
-
-    def clean_content(self, content: dict) -> dict:
-        """Clean content before upload.
-
-        Args:
-            content: The content dictionary to clean.
-
-        Returns:
-            The cleaned content dictionary.
-        """
-        return self._clean_attributes(content)
-
-    def submit_files(
-        self, file_data: dict, halt_on_error: bool = True, clean_content: bool = False
-    ) -> list[dict] | None:
+    def submit_files(self, file_data: dict, halt_on_error: bool = True) -> list[dict] | None:
         """Submit Files for Documents and Reports to ThreatConnect API.
 
         Critical Errors: There is insufficient document storage allocated to this account.
@@ -1096,9 +962,6 @@ class Batch(BatchWriter, BatchSubmit):
                     content = content_data.get('fileContent')(xid)
                 except Exception as e:
                     self.log.warning(f'feature=batch, event=file-download-exception, err="""{e}"""')
-
-            if clean_content is True:
-                content = self.clean_content(content)
 
             if content is None:
                 upload_status.append({'uploaded': False, 'xid': xid})
