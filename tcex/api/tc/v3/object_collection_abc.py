@@ -277,12 +277,12 @@ class ObjectCollectionABC(ABC):  # noqa: B024
 
     @property
     def timeout(self) -> int | None:
-        """Return the timeout of the case management object collection."""
+        """Return the current timeout value for all requests."""
         return self._timeout
 
     @timeout.setter
     def timeout(self, timeout: int | None):
-        """Set the timeout of the case management object collection."""
+        """Set the current timeout value for all requests."""
         self._timeout = timeout
 
     @cached_property
