@@ -15,6 +15,7 @@ from requests import Session
 from tcex.exit.error_code import handle_error
 from tcex.input.input import Input
 from tcex.logger.trace_logger import TraceLogger
+from tcex.pleb.cached_property import cached_property
 
 # get tcex logger
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
@@ -73,6 +74,96 @@ class BatchSubmit:
         self._poll_interval_times = []
         self._poll_timeout = 3600
 
+    def _auto_truncate_attribute(
+        self, attribute_type: str, attribute_value: str, ellipsis: str = '...'
+    ) -> str:
+        """Truncate attribute value if it exceeds the maximum length for its type.
+
+        Args:
+            attribute_type: The name of the attribute type.
+            attribute_value: The attribute value to potentially truncate.
+            ellipsis: The string to append when truncating. Defaults to '...'.
+
+        Returns:
+            The original value if within limits, or the truncated value with ellipsis.
+        """
+        attribute_config = self.attribute_config.get(attribute_type)
+        if not attribute_config:
+            return attribute_value
+
+        max_length = attribute_config.get('maxSize')
+        if not max_length:
+            return attribute_value
+
+        # Only strings can be truncated
+        if not isinstance(attribute_value, str):
+            return attribute_value
+
+        # If within limit, keep as-is
+        if len(attribute_value) <= max_length:
+            return attribute_value
+
+        # If max is tiny, avoid negative slicing; fall back to hard cut
+        if max_length <= len(ellipsis):
+            return attribute_value[:max_length]
+
+        # Truncate and append the msg
+        return attribute_value[: max_length - len(ellipsis)] + ellipsis
+
+    def _clean_attributes(self, content: dict) -> dict:
+        """Clean, truncate, and deduplicate attributes for groups and indicators.
+
+        Args:
+            content: The content dictionary containing groups and/or indicators with attributes.
+
+        Returns:
+            The content dictionary with cleaned, truncated, and deduplicated attributes.
+        """
+        truncated_types: set[str] = set()
+
+        for key in ['groups', 'indicators']:
+            for item in content.get(key, []):
+                original_attrs = item.get('attributes') or []
+                cleaned_attrs = []
+                seen = set()  # track normalized tuples of the entire attribute
+
+                for attr in original_attrs:
+                    type_ = attr.get('type')
+                    value = attr.get('value')
+
+                    # Skip if type missing or value explicitly empty/None
+                    if not type_ or value is None or value == '':
+                        continue
+
+                    # Truncate/normalize value
+                    truncated = self._auto_truncate_attribute(type_, value)
+
+                    # Log warning once per attribute type when truncation occurs
+                    if truncated != value and type_ not in truncated_types:
+                        truncated_types.add(type_)
+                        self.log.warning(
+                            f'feature=batch, event=attribute-truncated, '
+                            f'key={key}, attribute-type={type_}'
+                        )
+
+                    # De-duplication is based on all fields, but with the truncated value
+                    # Combine with the `seen` set to skip duplicates
+                    normalized_items = tuple(
+                        (k, truncated if k == 'value' else attr.get(k)) for k in sorted(attr.keys())
+                    )
+
+                    if normalized_items in seen:
+                        continue
+                    seen.add(normalized_items)
+
+                    new_attr = dict(attr)
+                    new_attr['value'] = truncated
+                    cleaned_attrs.append(new_attr)
+
+                item['attributes'] = cleaned_attrs
+
+        return content
+
     @property
     def _critical_failures(self) -> list[str]:  # pragma: no cover
         """Return Batch critical failure messages."""
@@ -91,6 +182,36 @@ class BatchSubmit:
         """Set batch action."""
         self._action = action
 
+    @cached_property
+    def attribute_config(self) -> dict:
+        """Return a dict of attribute types keyed by 'name', fetched across all pages."""
+        attributes: dict[str, dict] = {}
+
+        # Start with the initial endpoint
+        url = '/v3/attributeTypes'
+        while True:
+            # Fetch page (first call uses relative path; subsequent calls use absolute next_ URL)
+            resp = self.session_tc.get(url, params={'resultLimit': 10_000})
+            payload = resp.json()
+
+            # Collect items from this page
+            for attribute_type in payload.get('data', []):
+                name = attribute_type.get('name')
+                if name is None:
+                    # Skip entries without a name key (defensive)
+                    continue
+                attributes[name] = attribute_type
+
+            # Get the next page URL; stop if none
+            next_ = payload.get('next')
+            if not next_:
+                break
+
+            # next_ is the full URL for the next page
+            url = next_
+
+        return attributes
+
     @property
     def attribute_write_type(self) -> str:
         """Return batch attribute write type."""
@@ -100,6 +221,19 @@ class BatchSubmit:
     def attribute_write_type(self, write_type: str):
         """Set batch attribute write type."""
         self._attribute_write_type = write_type
+
+    def clean_content(self, content: dict | str) -> dict:
+        """Clean content before upload.
+
+        Args:
+            content: The content dictionary to clean.
+
+        Returns:
+            The cleaned content dictionary.
+        """
+        if isinstance(content, str):
+            content = json.loads(content)
+        return self._clean_attributes(content)  # type: ignore
 
     def create_job(self, halt_on_error: bool = True) -> int | None:
         """Submit Batch request to ThreatConnect API.
@@ -341,7 +475,7 @@ class BatchSubmit:
             if data.get('data', {}).get('batchStatus', {}).get('status') == 'Completed':
                 # store last 5 poll times to use in calculating average poll time
                 modifier = poll_time_total * 0.7
-                self._poll_interval_times = self._poll_interval_times[-4:] + [modifier]  # noqa: RUF005
+                self._poll_interval_times = [*self._poll_interval_times[-4:], modifier]
 
                 weights: list[float | int] = [1]
                 poll_interval_time_weighted_sum = 0
@@ -447,7 +581,11 @@ class BatchSubmit:
         return {}
 
     def submit_data(
-        self, batch_id: int, content: dict | str, halt_on_error: bool = True
+        self,
+        batch_id: int,
+        content: dict | str,
+        halt_on_error: bool = True,
+        clean_content: bool = False,
     ) -> dict | None:
         """Submit Batch request to ThreatConnect API.
 
@@ -456,6 +594,7 @@ class BatchSubmit:
             content: The dict of groups and indicator data.
             halt_on_error (bool = True): If True the process
                 should halt if any errors are encountered.
+            clean_content: If True the content will be cleaned before upload.
 
         Returns:
             dict: The response data
@@ -467,6 +606,9 @@ class BatchSubmit:
         # TC Core requires the header to be application/octet-stream
         headers = {'Content-Type': 'application/octet-stream'}
         try:
+            if clean_content is True:
+                content = self.clean_content(content)
+
             if isinstance(content, dict):
                 content = json.dumps(content)
 
