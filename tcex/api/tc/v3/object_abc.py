@@ -54,6 +54,7 @@ class ObjectABC(ABC):  # noqa: B024
         self._model: V3ModelABC
         self._nested_field_name: str | None = None
         self._nested_filter: str | None = None
+        self._timeout = None
         self.type_: str
 
     @property
@@ -141,7 +142,7 @@ class ObjectABC(ABC):  # noqa: B024
         try:
             self.log_request(method, url, body, params)
             self.request = self._session.request(
-                method, url, data=body, headers=headers, params=params
+                method, url, data=body, headers=headers, params=params, timeout=self.timeout
             )
         except (ConnectionError, ProxyError, RetryError):  # pragma: no cover
             handle_error(
@@ -392,6 +393,16 @@ class ObjectABC(ABC):  # noqa: B024
         else:
             status = False
         return status
+
+    @property
+    def timeout(self) -> int | None:
+        """Return the timeout of the case management object collection."""
+        return self._timeout
+
+    @timeout.setter
+    def timeout(self, timeout: int | None):
+        """Set the timeout of the case management object collection."""
+        self._timeout = timeout
 
     def update(self, mode: str | None = None, params: dict | None = None) -> Response:
         """Create or Update the Case Management object.

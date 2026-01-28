@@ -47,6 +47,7 @@ class ObjectCollectionABC(ABC):  # noqa: B024
         self.log = _logger
         self.request: Response
         self.tql = Tql()
+        self._timeout = None
         self._model = None
         self.type_ = None  # defined in child class
         self.util = Util()
@@ -121,7 +122,7 @@ class ObjectCollectionABC(ABC):  # noqa: B024
         try:
             self.log_request(method, url, body, params)
             self.request = self._session.request(
-                method, url, data=body, headers=headers, params=params
+                method, url, data=body, headers=headers, params=params, timeout=self.timeout
             )
         except (ConnectionError, ProxyError, RetryError):  # pragma: no cover
             handle_error(
@@ -275,12 +276,12 @@ class ObjectCollectionABC(ABC):  # noqa: B024
         return status
 
     @property
-    def timeout(self) -> int:
+    def timeout(self) -> int | None:
         """Return the timeout of the case management object collection."""
         return self._timeout
 
     @timeout.setter
-    def timeout(self, timeout: int):
+    def timeout(self, timeout: int | None):
         """Set the timeout of the case management object collection."""
         self._timeout = timeout
 
