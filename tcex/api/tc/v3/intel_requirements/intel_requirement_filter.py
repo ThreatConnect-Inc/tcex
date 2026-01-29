@@ -25,7 +25,7 @@ class IntelRequirementFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            category: The subtype of the intel requirement.
+            category: The category of the Intelligence Requirement.
         """
         if isinstance(category, list) and operator not in self.list_types:
             ex_msg = (
@@ -213,7 +213,7 @@ class IntelRequirementFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            requirement: The Requirement of the intel requirement.
+            requirement: The requirement of the Intelligence Requirement.
         """
         if isinstance(requirement, list) and operator not in self.list_types:
             ex_msg = (
@@ -229,7 +229,7 @@ class IntelRequirementFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            subtype: The subtype of the intel requirement.
+            subtype: The subtype of the Intelligence Requirement.
         """
         if isinstance(subtype, list) and operator not in self.list_types:
             ex_msg = (
@@ -245,7 +245,7 @@ class IntelRequirementFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            tag: The name of a tag applied to the group.
+            tag: The name of the Tag applied to the Intelligence Requirement.
         """
         if isinstance(tag, list) and operator not in self.list_types:
             ex_msg = (
@@ -261,7 +261,7 @@ class IntelRequirementFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            unique_id: The unique ID of the intel requirement.
+            unique_id: The unique ID of the Intelligence Requirement.
         """
         if isinstance(unique_id, list) and operator not in self.list_types:
             ex_msg = (

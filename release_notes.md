@@ -1,11 +1,12 @@
 # Release Notes
 
 ## 5.0.0
--   APP-???? - Update to use pydantic v2
+
+-   APP-4971 - Updated TcEx to use Pydantic v2
 
 ## 4.x
 
-## 4.0.11
+### 4.0.11
 
 -   APP-5036 - [Services] Updated message broker connection to not set tls_version
 -   APP-5037 - [API] Updated V3 API to include new endpoints and/or updates to existing endpoints

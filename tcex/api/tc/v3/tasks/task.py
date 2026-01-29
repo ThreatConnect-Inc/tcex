@@ -121,10 +121,10 @@ class Task(ObjectABC):
 
         if isinstance(data, AssigneeModel):
             self.model.assignee = data
-        elif isinstance(data, UserModel):
-            self.model.assignee.data = AssigneeUserModel(user_name=data.user_name)  # type: ignore
-        elif isinstance(data, UserGroupModel):
-            self.model.assignee.data = AssigneeUserGroupModel(name=data.name)  # type: ignore
+        elif isinstance(
+            data, AssigneeUserModel | AssigneeUserGroupModel | UserModel | UserGroupModel
+        ):
+            self.model.assignee.data = data  # type: ignore
         self.model.assignee.data._staged = True  # type: ignore  # noqa: SLF001
 
     def stage_note(self, data: dict | ObjectABC | NoteModel):

@@ -406,11 +406,11 @@ class GroupFilter(FilterABC):
         return cases
 
     def has_common_group(self, operator: Enum, has_common_group: int | list):
-        """Filter Associated Attribute based on **hasCommonGroup** keyword.
+        """Filter Linked Groups based on **hasCommonGroup** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            has_common_group: A nested query for association to attributes.
+            has_common_group: A nested query for links to other groups.
         """
         if isinstance(has_common_group, list) and operator not in self.list_types:
             ex_msg = (
@@ -489,6 +489,25 @@ class GroupFilter(FilterABC):
         tags = TagFilter(Tql())
         self._tql.add_filter('hasTag', TqlOperator.EQ, tags, TqlType.SUB_QUERY)
         return tags
+
+    def has_threat_actor_profile(self, operator: Enum, has_threat_actor_profile: int | list):
+        """Filter Linked Groups based on **hasThreatActorProfile** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_threat_actor_profile: A nested query for links to Intrusion Sets, Threats and
+                Adversaries.
+        """
+        if isinstance(has_threat_actor_profile, list) and operator not in self.list_types:
+            ex_msg = (
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+            raise RuntimeError(ex_msg)
+
+        self._tql.add_filter(
+            'hasThreatActorProfile', operator, has_threat_actor_profile, TqlType.INTEGER
+        )
 
     @property
     def has_victim(self):
