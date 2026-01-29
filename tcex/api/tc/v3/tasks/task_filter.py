@@ -301,7 +301,7 @@ class TaskFilter(FilterABC):
         self._tql.add_filter('status', operator, status, TqlType.STRING)
 
     def target_id(self, operator: Enum, target_id: int | list):
-        """Filter Assignee based on **targetId** keyword.
+        """Filter Target ID based on **targetId** keyword.
 
         Args:
             operator: The operator enum for the filter.

@@ -4,6 +4,8 @@ from pydantic import ConfigDict, Field, field_validator
 
 from tcex.api.tc.v3.security.assignee_user_group_model import AssigneeUserGroupModel
 from tcex.api.tc.v3.security.assignee_user_model import AssigneeUserModel
+from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel
+from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
@@ -38,6 +40,15 @@ class AssigneeModel(V3ModelABC):
         title='data',
         json_schema_extra={'methods': ['POST', 'PUT']},
     )
+
+    @field_validator('data', mode='before')
+    @classmethod
+    def _validate_data(cls, v):
+        if isinstance(v, UserModel) and not isinstance(v, AssigneeUserModel):
+            return AssigneeUserModel.model_validate(v, from_attributes=True)
+        if isinstance(v, UserGroupModel) and not isinstance(v, AssigneeUserGroupModel):
+            return AssigneeUserGroupModel.model_validate(v, from_attributes=True)
+        return v
 
     @field_validator('type')
     @classmethod

@@ -658,14 +658,11 @@ class GenerateObjectABC(GenerateABC, ABC):
                 '',
                 f'{self.i2}if isinstance(data, AssigneeModel):',
                 f'{self.i3}self.model.assignee = data',
-                f'{self.i2}elif isinstance(data, UserModel):',
-                f'{self.i3}self.model.assignee.data = AssigneeUserModel(',
-                f'{self.i4}user_name=data.user_name',
-                f'{self.i3})  # type: ignore',
-                f'{self.i2}elif isinstance(data, UserGroupModel):',
-                f'{self.i3}self.model.assignee.data = AssigneeUserGroupModel(',
-                f'{self.i4}name=data.name',
-                f'{self.i3})  # type: ignore',
+                f'{self.i2}elif isinstance(',
+                f'{self.i3}data, AssigneeUserModel | AssigneeUserGroupModel '
+                f'| UserModel | UserGroupModel',
+                f'{self.i2}):',
+                f'{self.i3}self.model.assignee.data = data  # type: ignore',
                 # f'{self.i2}data._staged = True
                 # f'{self.i2}self.model.assignee._staged = True
                 # f'{self.i2}self.model.assignee.type = type',

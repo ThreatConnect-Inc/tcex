@@ -24,6 +24,13 @@ class IntelRequirementModel(
     _shared_type: bool = PrivateAttr(default=False)
     _staged: bool = PrivateAttr(default=False)
 
+    active: bool | None = Field(
+        default=None,
+        description='If Intel Requirement is active.',
+        title='active',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
+    )
     associated_artifacts: ArtifactsModel | None = Field(
         default=None,
         description='A list of Artifacts associated with this Group.',
@@ -87,6 +94,13 @@ class IntelRequirementModel(
         validate_default=True,
         json_schema_extra={'methods': ['POST', 'PUT']},
     )
+    earliest_timestamp: datetime | None = Field(
+        default=None,
+        description='How far in the past the system should look for matches.',
+        title='earliestTimestamp',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
+    )
     id: int | None = Field(  # type: ignore
         default=None,
         description='The ID of the item.',
@@ -113,6 +127,13 @@ class IntelRequirementModel(
         frozen=True,
         title='lastRetrievedDate',
         validate_default=True,
+    )
+    latest_timestamp: datetime | None = Field(
+        default=None,
+        description='The cutoff point for future data to be considered.',
+        title='latestTimestamp',
+        validate_default=True,
+        json_schema_extra={'methods': ['POST', 'PUT']},
     )
     requirement_text: str | None = Field(
         default=None,
