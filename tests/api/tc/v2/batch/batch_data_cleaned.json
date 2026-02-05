@@ -1,0 +1,540 @@
+{
+  "group": [
+    {
+      "associatedGroupXid": [
+        "my-xid-001",
+        "my-xid-001-dup"
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Example Description"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Duplicate of doc-01-xid"
+        }
+      ],
+      "fileContent": "document 01",
+      "fileName": "test-01.txt",
+      "name": "document-01",
+      "tag": [
+        {
+          "name": "Group: 1"
+        },
+        {
+          "name": "Group: 1 (dup)"
+        }
+      ],
+      "type": "Document",
+      "xid": "doc-01-xid"
+    },
+    {
+      "associatedGroupXid": [
+        "my-xid-002"
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Example Description"
+        }
+      ],
+      "fileContent": "document 02",
+      "fileName": "test-02.txt",
+      "name": "document-02",
+      "tag": [
+        {
+          "name": "Group: 2"
+        }
+      ],
+      "type": "Document",
+      "xid": "doc-02-xid"
+    },
+    {
+      "associatedGroupXid": [
+        "my-xid-003"
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Example Description"
+        }
+      ],
+      "fileContent": "document 03",
+      "fileName": "test-03.txt",
+      "name": "document-03",
+      "tag": [
+        {
+          "name": "Group: 3"
+        }
+      ],
+      "type": "Document",
+      "xid": "doc-03-xid"
+    },
+    {
+      "associatedGroupXid": [
+        "my-xid-004"
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Example Description"
+        }
+      ],
+      "fileContent": "document 04",
+      "fileName": "test-04.txt",
+      "name": "document-04",
+      "tag": [
+        {
+          "name": "Group: 4"
+        }
+      ],
+      "type": "Document",
+      "xid": "doc-04-xid"
+    },
+    {
+      "associatedGroupXid": [
+        "my-xid-005"
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Example Description"
+        }
+      ],
+      "fileContent": "document 05",
+      "fileName": "test-05.txt",
+      "name": "document-05",
+      "tag": [
+        {
+          "name": "Group: 5"
+        }
+      ],
+      "type": "Document",
+      "xid": "doc-05-xid"
+    }
+  ],
+  "indicator": [
+    {
+      "associatedGroups": [
+        {
+          "groupXid": "my-xid-001"
+        },
+        {
+          "groupXid": "my-xid-005"
+        }
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-01T10:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 1: full hash set, primary sample"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Malware sample with complete hash triple for baseline testing"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Duplicate, you should only see this once after merge"
+        },
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-05T14:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 5: duplicate of indicator 1, different source feed"
+        }
+      ],
+      "confidence": 95,
+      "externalDateAdded": "2026-01-01T08:00:00Z",
+      "externalDateLastModified": "2026-01-15T01:07:33Z",
+      "fileOccurrence": [
+        {
+          "date": "2017-03-03T18:00:00-06:00",
+          "fileName": "win_update.exe"
+        },
+        {
+          "date": "2017-03-05T10:00:00-06:00",
+          "fileName": "win_update.exe"
+        }
+      ],
+      "rating": 5,
+      "summary": "430318DCC507E876CB026D4E5DF21E28 : 629BF3768084B4FF249DFB993EB1D5FAB4BFBE12 : 7AFAF15505D4DB53303EF288EB3EE64DD9BF1399033CB033D0E748EB4AC52B02",
+      "tag": [
+        {
+          "name": "Indicator: 1"
+        },
+        {
+          "name": "T1055.001 - Process Injection: Dynamic-link Library Injection"
+        },
+        {
+          "name": "NAICS: 111199 - All Other Grain Farming"
+        },
+        {
+          "name": "Indicator: 5"
+        }
+      ],
+      "type": "File"
+    },
+    {
+      "associatedGroups": [
+        {
+          "groupXid": "my-xid-002"
+        },
+        {
+          "groupXid": "my-xid-007"
+        }
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-02T11:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 2: full hash set, secondary sample"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Trojan dropper identified in phishing campaign"
+        },
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-07T16:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 7: partial hash (md5+sha1 only), overlaps with indicator 2"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Partial hash entry missing sha256, shares md5 and sha1 with indicator 2"
+        }
+      ],
+      "confidence": 85,
+      "externalDateAdded": "2026-01-02T09:00:00Z",
+      "externalDateLastModified": "2026-01-15T01:07:33Z",
+      "fileOccurrence": [
+        {
+          "date": "2017-04-15T12:00:00-06:00",
+          "fileName": "payload.dll"
+        }
+      ],
+      "rating": 4,
+      "summary": "33450821F54CA06E4F151098295F72DB : 1A3C8B69F6A349AE9606C63AB625D1A55120458B : 35A781FFAE445C1DABA1D11D8B615DFB792F0C8E216E41E3E6A42A1B18027E4F",
+      "tag": [
+        {
+          "name": "Indicator: 2"
+        },
+        {
+          "name": "Indicator: 7"
+        }
+      ],
+      "type": "File"
+    },
+    {
+      "associatedGroups": [
+        {
+          "groupXid": "my-xid-003"
+        },
+        {
+          "groupXid": "my-xid-008"
+        }
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-03T12:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 3: full hash set, tertiary sample"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Ransomware payload observed in targeted attack"
+        },
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-08T17:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 8: partial hash (md5+sha256 only), overlaps with indicator 3"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Partial hash entry missing sha1, shares md5 and sha256 with indicator 3"
+        }
+      ],
+      "confidence": 70,
+      "externalDateAdded": "2026-01-03T10:00:00Z",
+      "externalDateLastModified": "2026-01-15T01:07:33Z",
+      "fileOccurrence": [
+        {
+          "date": "2017-05-20T09:00:00-06:00",
+          "fileName": "ransomware.bin"
+        }
+      ],
+      "rating": 3,
+      "summary": "BF9E14C6DFE3A82762F04A7CDE78034B : 6D9C0825583D536B41FFBF491B366677A5FDACDC : 907FFCED1E675F495A486B5F77C872FDAF928E795CB2A693490399CEDFEA16B4",
+      "tag": [
+        {
+          "name": "Indicator: 3"
+        },
+        {
+          "name": "Indicator: 8"
+        }
+      ],
+      "type": "File"
+    },
+    {
+      "associatedGroups": [
+        {
+          "groupXid": "my-xid-004"
+        },
+        {
+          "groupXid": "my-xid-009"
+        }
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-04T13:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 4: full hash set, quaternary sample"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Backdoor executable used for lateral movement"
+        },
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-09T18:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 9: partial hash (sha1+sha256 only), overlaps with indicator 4"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Partial hash entry missing md5, shares sha1 and sha256 with indicator 4"
+        }
+      ],
+      "confidence": 60,
+      "externalDateAdded": "2026-01-04T11:00:00Z",
+      "externalDateLastModified": "2026-01-15T01:07:33Z",
+      "rating": 3,
+      "summary": "CF1ACF4B1C240F03516315CE0B2BA154 : C27D702ADF5B45A8B580D009A381B8452A9D2729 : DC8E5F58E009073729AB8479C2F571E2A0709D6C4440427B3270943814B11EC4",
+      "tag": [
+        {
+          "name": "Indicator: 4"
+        },
+        {
+          "name": "Indicator: 9"
+        }
+      ],
+      "type": "File"
+    },
+    {
+      "associatedGroups": [
+        {
+          "groupXid": "my-xid-006"
+        }
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-06T15:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 6: duplicate of indicator 2, different source feed"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Duplicate, you should only see this once after merge"
+        }
+      ],
+      "confidence": 75,
+      "externalDateAdded": "2026-01-06T13:00:00Z",
+      "externalDateLastModified": "2026-01-15T01:07:33Z",
+      "rating": 3,
+      "summary": "098F6BCD4621D373CADE4E832627B4F6 : A94A8FE5CCB19BA61C4C0873D391E987982FBBD3 : 9F86D081884C7D659A2FEAA0C55AD015A3BF4F1B2B0B822CD15D6C15B0F00A08",
+      "tag": [
+        {
+          "name": "Indicator: 6"
+        }
+      ],
+      "type": "File"
+    },
+    {
+      "associatedGroups": [
+        {
+          "groupXid": "my-xid-010"
+        },
+        {
+          "groupXid": "my-xid-011"
+        }
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-10T19:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 10: md5 only, first occurrence for merge testing"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "MD5-only entry from primary feed, should merge with indicator 11"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Duplicate, you should only see this once after merge"
+        },
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-11T20:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 11: md5 only, second occurrence for merge testing"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "MD5-only entry from secondary feed, should merge with indicator 10"
+        }
+      ],
+      "confidence": 100,
+      "externalDateAdded": "2026-01-10T17:00:00Z",
+      "externalDateLastModified": "2026-01-15T01:07:33Z",
+      "rating": 5,
+      "summary": "AB56B4D92B40713ACC5AF89985D4B786",
+      "tag": [
+        {
+          "name": "Indicator: 10"
+        },
+        {
+          "name": "Indicator: 11"
+        }
+      ],
+      "type": "File"
+    },
+    {
+      "associatedGroups": [
+        {
+          "groupXid": "my-xid-012"
+        },
+        {
+          "groupXid": "my-xid-013"
+        }
+      ],
+      "attribute": [
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-12T21:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 12: md5 only, shares fileOccurrence filename with indicator 13"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "MD5-only entry with fileOccurrence for combine-on-filename merge testing"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "Duplicate, you should only see this once after merge"
+        },
+        {
+          "displayed": true,
+          "type": "External Date Created",
+          "value": "2026-01-13T22:00:00Z"
+        },
+        {
+          "displayed": true,
+          "type": "Additional Analysis and Context",
+          "value": "File indicator 13: sha1 only, shares fileOccurrence filename with indicator 13"
+        },
+        {
+          "displayed": true,
+          "type": "Description",
+          "value": "SHA1-only entry with fileOccurrence for combine-on-filename merge testing"
+        }
+      ],
+      "confidence": 70,
+      "externalDateAdded": "2026-01-12T19:00:00Z",
+      "externalDateLastModified": "2026-01-15T01:07:33Z",
+      "fileOccurrence": [
+        {
+          "date": "2017-03-03T18:00:00-06:00",
+          "fileName": "drop1.exe"
+        }
+      ],
+      "rating": 4,
+      "summary": "E10ADC3949BA59ABBE56E057F20F883E : 7C4A8D09CA3762AF61E59520943DC26494F8941B",
+      "tag": [
+        {
+          "name": "Indicator: 12"
+        },
+        {
+          "name": "Indicator: 13"
+        }
+      ],
+      "type": "File"
+    }
+  ]
+}
