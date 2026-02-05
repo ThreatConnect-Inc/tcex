@@ -617,7 +617,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         def stage_assignee(
             self, type: str, data: dict | ObjectABC | AssigneeModel]
         ):
-            '''Stage artifact on the object.'''
+            '''Stage assignee on the object.'''
             if isinstance(data, ObjectABC):
                 data = data.model
             elif type.lower() == 'user' and isinstance(data, dict):
@@ -653,11 +653,11 @@ class GenerateObjectABC(GenerateABC, ABC):
                     f'{self.i1}def stage_assignee(\n'
                     f'{self.i2}self,\n'
                     f'{self.i2}type: str,  # noqa: A002\n'
-                    f'{self.i2}data: dict | ObjectABC | AssigneeModel '
-                    f'| UserModel | UserGroupModel,\n'
+                    f'{self.i2}data: dict | ObjectABC | AssigneeModel | AssigneeUserModel '
+                    f'| AssigneeUserGroupModel | UserModel | UserGroupModel,\n'
                     f'{self.i1}):\n'
                 ),
-                f'{self.i2}"""Stage artifact on the object."""',
+                f'{self.i2}"""Stage assignee on the object."""',
                 f'{self.i2}if isinstance(data, ObjectABC):',
                 f'{self.i3}data = data.model  # type: ignore',
                 f'{self.i2}elif type.lower() == "user" and isinstance(data, dict):',

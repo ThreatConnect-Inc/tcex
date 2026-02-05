@@ -16,7 +16,6 @@ from tcex.api.tc.v3.indicator_attributes.indicator_attribute import (
 )
 from tcex.api.tc.v3.indicators.indicator import Indicator, Indicators
 from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
-from tcex.api.tc.v3.tags.default_naics_tags import NAICS_TAGS
 from tcex.api.tc.v3.tags.mitre_tags import MitreTags
 from tcex.api.tc.v3.tags.naics_tags import NAICSTags
 from tcex.api.tc.v3.tags.tag import Tags
@@ -199,11 +198,6 @@ class ThreatIntelligence:
         """
         return Groups(session=self.session, **kwargs)
 
-    @cached_property
-    def naics_tags(self) -> NAICSTags:
-        """NAICS Tags"""
-        return NAICSTags(naics_tags=NAICS_TAGS)
-
     def indicator(self, **kwargs) -> Indicator:
         """Return a instance of Group object.
 
@@ -332,6 +326,11 @@ class ThreatIntelligence:
             self.log.exception('Error downloading Mitre Tags')
             raise
         return MitreTags(mitre_tags)
+
+    @cached_property
+    def naics_tags(self) -> NAICSTags:
+        """NAICS Tags"""
+        return NAICSTags()
 
     def security_label(self, **kwargs) -> SecurityLabel:
         """Return a instance of Case Attributes object.
