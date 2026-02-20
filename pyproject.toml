@@ -86,6 +86,7 @@ test = [
   "pytest-html>=4.1.1",
   "pytest-ordering>=0.6",
   "pytest-xdist>=3.6.1",
+  "python-dotenv>=1.2.1",
 ]
 
 # Dynamic configuration for setuptools
@@ -100,16 +101,6 @@ exclude = ["tests*", "local-*"]
 #
 # Tool configurations
 #
-
-# This must remain while code_operations still uses isort directly.
-[tool.isort]
-dedup_headings = false
-include_trailing_comma = true
-known_first_party = ""
-known_local_folder = "."
-known_third_party = ""
-line_length = 100
-profile = "black"
 
 [tool.uv.extra-build-dependencies]
 tcex = [
@@ -364,18 +355,18 @@ split-on-trailing-comma = true
 
 convention = "google"
 
-[tool.cibuildwheel]
-# You can also put cibuildwheel config here instead of env vars
-build = "cp38-* cp39-* cp310-* cp311-* cp312-*"
-skip = "*-win32 *-manylinux_i686 *-musllinux_i686 pp*"
-
-[tool.cibuildwheel.linux]
-before-build = "pip install -U pip setuptools wheel"
-repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
-
-[tool.cibuildwheel.macos]
-before-build = "pip install -U pip setuptools wheel"
-repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
-
-[tool.cibuildwheel.windows]
-before-build = "pip install -U pip setuptools wheel"
+# [tool.cibuildwheel]
+# # You can also put cibuildwheel config here instead of env vars
+# build = "cp38-* cp39-* cp310-* cp311-* cp312-*"
+# skip = "*-win32 *-manylinux_i686 *-musllinux_i686 pp*"
+#
+# [tool.cibuildwheel.linux]
+# before-build = "pip install -U pip setuptools wheel"
+# repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
+#
+# [tool.cibuildwheel.macos]
+# before-build = "pip install -U pip setuptools wheel"
+# repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
+#
+# [tool.cibuildwheel.windows]
+# before-build = "pip install -U pip setuptools wheel"

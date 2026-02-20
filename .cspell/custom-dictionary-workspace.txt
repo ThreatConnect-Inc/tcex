@@ -5,9 +5,11 @@ ajfmuyodhscwegea
 apiservice
 apng
 appbuilderconfig
+archs
 attackpatterns
 ATTCK
 AttributeDatas
+auditwheel
 autoclear
 autofix
 autouse
@@ -19,6 +21,7 @@ bpurdy
 brokercheck
 bsummers
 builtins
+bumpversion
 cacert
 caplog
 caseid
@@ -116,6 +119,7 @@ loadgroup
 loadscope
 loggingchange
 lowerlower
+manylinux
 maxkb
 maxsplit
 mccabe
@@ -129,6 +133,7 @@ nargs
 nbproject
 networkaccount
 newstr
+noqa
 occured # misspelled in core
 openapi
 outdir

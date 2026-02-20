@@ -3,7 +3,7 @@
 
 import pytest
 
-
+from tcex.pleb.cached_property_filesystem import cached_property_filesystem
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
@@ -11,6 +11,10 @@ class TestMitreTags(TestV3):
     """Test TcEx Mitre Tags."""
 
     v3_helper = V3Helper('cases')
+
+    # def teardown_method(self):
+    #     """Clear the filesystem and in-memory caches after each test."""
+    #     cached_property_filesystem._reset()
 
     @pytest.mark.parametrize(
         'mitre_id,output',

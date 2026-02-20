@@ -12,9 +12,11 @@
 -   APP-5037 - [API] Updated V3 API to include new endpoints and/or updates to existing endpoints
 -   APP-5055 - [Services] Updated Paho MQTT library and message broker reconnect logic
 -   APP-5067 - [Services] Fixed issue with redis connection on each new thread
--   APP-5068 - [Batch] Added auto truncate of attribute values and deduplication of attributes
+-   APP-5068 - [Batch] Added cleaner to batch submit; deduplication and merging of indicators and groups, auto truncate of attribute values, deduplication of attributes
 -   APP-5072 - [Services] Applied PR #356
 -   APP-5077 - [API] Updated V3 objects to allow setting a request timeout via property
+-   APP-5094 - [API] Added filesystem cache dict for attribute_types, owners, owner_roles, system_roles, users, and user_groups
+-   APP-5101 - [Inputs] Updated the inputs module to set the tempfile.tempdir to be the temp directory passed in by the Platform
 
 ### 4.0.10
 

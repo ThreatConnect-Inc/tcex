@@ -7,6 +7,7 @@ from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.security.owner_roles.owner_role_filter import OwnerRoleFilter
 from tcex.api.tc.v3.security.owner_roles.owner_role_model import OwnerRoleModel, OwnerRolesModel
+from tcex.pleb.cached_property_filesystem import cached_property_filesystem
 
 
 class OwnerRole(ObjectABC):
@@ -78,6 +79,15 @@ class OwnerRoles(ObjectCollectionABC):
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.OWNER_ROLES.value
+
+    @cached_property_filesystem(ttl=86400)
+    def cached_dict(self) -> dict[str, dict]:
+        """Return cached data as a dict keyed by name."""
+        return {
+            at.model.name: at.model.dict()
+            for at in self.iterate(base_class=OwnerRole)
+            if at.model.name
+        }
 
     @property
     def filter(self) -> OwnerRoleFilter:

@@ -50,6 +50,46 @@ class GenerateObjectABC(GenerateABC, ABC):
             ]
         )
 
+    def _gen_code_container_cached_dict_property(self) -> str:
+        """Return the method code.
+
+        @cached_property_filesystem(ttl=86400)
+        def cached_dict(self) -> dict[str, dict]:
+            '''Return cached data as a dict keyed by name.'''
+            return {
+                at.model.name: at.model.dict()
+                for at in self.iterate(base_class=AttributeType)
+                if at.model.name
+            }
+        """
+        if self.type_.lower() in (
+            'attribute_types',
+            'owners',
+            'owner_roles',
+            'system_roles',
+            'users',
+            'user_groups',
+        ):
+            key_field = 'user_name' if self.type_.lower() == 'users' else 'name'
+            self.requirements['first-party'].append(
+                'from tcex.pleb.cached_property_filesystem import cached_property_filesystem'
+            )
+            base_class = self.type_.pascal_case().singular()
+            return '\n'.join(
+                [
+                    f'{self.i1}@cached_property_filesystem(ttl=86400)',
+                    f'{self.i1}def cached_dict(self) -> dict[str, dict]:',
+                    f'{self.i2}"""Return cached data as a dict keyed by name."""',
+                    f'{self.i2}return {{',
+                    f'{self.i3}at.model.{key_field}: at.model.dict()',
+                    f'{self.i3}for at in self.iterate(base_class={base_class})',
+                    f'{self.i3}if at.model.{key_field}',
+                    f'{self.i2}}}',
+                    '',
+                ]
+            )
+        return ''
+
     def _gen_code_container_init_method(self) -> str:
         """Return the method code.
 
@@ -601,7 +641,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         def stage_assignee(
             self, type: str, data: dict | ObjectABC | AssigneeModel]
         ):
-            '''Stage artifact on the object.'''
+            '''Stage assignee on the object.'''
             if isinstance(data, ObjectABC):
                 data = data.model
             elif type.lower() == 'user' and isinstance(data, dict):
@@ -641,7 +681,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                     f'| AssigneeUserGroupModel | UserModel | UserGroupModel,\n'
                     f'{self.i1}):\n'
                 ),
-                f'{self.i2}"""Stage artifact on the object."""',
+                f'{self.i2}"""Stage assignee on the object."""',
                 f'{self.i2}if isinstance(data, ObjectABC):',
                 f'{self.i3}data = data.model  # type: ignore',
                 f'{self.i2}elif type.lower() == "user" and isinstance(data, dict):',
@@ -858,6 +898,9 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         # generate api_endpoint property method
         _code += self._gen_code_api_endpoint_property()
+
+        # generate cached_dict property method
+        _code += self._gen_code_container_cached_dict_property()
 
         # generate filter property method
         _code += self._gen_code_container_filter_property()

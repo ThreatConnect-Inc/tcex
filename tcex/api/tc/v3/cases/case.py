@@ -158,7 +158,7 @@ class Case(ObjectABC):
             | UserGroupModel
         ),
     ):
-        """Stage artifact on the object."""
+        """Stage assignee on the object."""
         if isinstance(data, ObjectABC):
             data = data.model  # type: ignore
         elif type.lower() == 'user' and isinstance(data, dict):

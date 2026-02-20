@@ -77,7 +77,7 @@ class MockApp:
             'tc_in_path': self.getenv('tc_in_path', ''),
             'tc_log_path': self.getenv('tc_log_path', ''),
             'tc_out_path': self.getenv('tc_out_api', ''),
-            'tc_temp_path': self.getenv('tc_temp_path', ''),
+            'tc_temp_path': self.getenv('tc_temp_path', str(Path(__file__).parent)),
             # proxy
             'tc_proxy_tc': self.getenv('tc_proxy_tc', 'false', True),
             'tc_proxy_external': self.getenv('tc_proxy_external', 'false', True),
