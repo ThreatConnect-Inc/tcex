@@ -643,6 +643,16 @@ class GroupFilter(FilterABC):
 
         self._tql.add_filter('parentGroup', operator, parent_group, TqlType.INTEGER)
 
+    def publish_date(self, operator: Enum, publish_date: Arrow | datetime | int | str):
+        """Filter Publish Date based on **publishDate** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            publish_date: The publish date of the report group.
+        """
+        publish_date = self.util.any_to_datetime(publish_date).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('publishDate', operator, publish_date, TqlType.STRING)
+
     def security_label(self, operator: Enum, security_label: list | str):
         """Filter Security Label based on **securityLabel** keyword.
 

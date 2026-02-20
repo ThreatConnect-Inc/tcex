@@ -188,13 +188,15 @@ class Case(ObjectABC):
     def stage_assignee(
         self,
         type: str,  # noqa: A002
-        data: dict
-        | ObjectABC
-        | AssigneeModel
-        | AssigneeUserModel
-        | AssigneeUserGroupModel
-        | UserModel
-        | UserGroupModel,
+        data: (
+            dict
+            | ObjectABC
+            | AssigneeModel
+            | AssigneeUserModel
+            | AssigneeUserGroupModel
+            | UserModel
+            | UserGroupModel
+        ),
     ):
         """Stage assignee on the object."""
         if isinstance(data, ObjectABC):

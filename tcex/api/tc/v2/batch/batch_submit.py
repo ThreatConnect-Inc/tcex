@@ -13,8 +13,8 @@ from requests import Session
 
 # first-party
 from tcex.api.tc.v2.batch.batch_cleaner import BatchCleaner
-from tcex.api.tc.v3.tags.tag import Tags
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
+from tcex.api.tc.v3.attribute_types.attribute_type import AttributeTypes
+from tcex.api.tc.v3.tags.mitre_tags import MitreTags
 from tcex.exit.error_code import handle_error
 from tcex.input.input import Input
 from tcex.logger.trace_logger import TraceLogger
@@ -128,9 +128,22 @@ class BatchSubmit:
         Returns:
             BatchCleaner: A BatchCleaner instance.
         """
+        # Best effort: if attribute types can't be retrieved, skip truncation.
+        try:
+            attribute_types_obj = AttributeTypes(
+                session=self.session_tc, params={'resultLimit': 10_000}
+            )
+            attribute_types = attribute_types_obj.cached_dict
+        except Exception:
+            self.log.warning(
+                'feature=batch, event=fetch-attribute-types-failed, '
+                'action=falling-back-to-empty, truncation-disabled'
+            )
+            attribute_types = {}
+
         return BatchCleaner(
-            fetch_attribute_types=self.fetch_attribute_types,
-            fetch_mitre_tags=self.fetch_mitre_tags,
+            attribute_types=attribute_types,
+            mitre_tags=MitreTags(self.session_tc),
             combine_on_filename=combine_on_filename,
             convert_to_mitre_tags=convert_to_mitre_tags,
             convert_to_naics_tags=convert_to_naics_tags,
@@ -240,65 +253,6 @@ class BatchSubmit:
             handle_error(code=560, message_values=[e], raise_error=halt_on_error)
 
         return errors
-
-    def fetch_attribute_types(self) -> dict:
-        """Return a dict of attribute types keyed by 'name', fetched across all pages."""
-        attributes: dict[str, dict] = {}
-        max_pages = 100
-        url = '/v3/attributeTypes'
-
-        try:
-            for _ in range(max_pages):
-                resp = self.session_tc.get(url, params={'resultLimit': 10_000})
-
-                if not resp.ok:
-                    self.log.warning(
-                        f'feature=batch, event=fetch-attribute-types, '
-                        f'status-code={resp.status_code}, url={url}'
-                    )
-                    break
-
-                try:
-                    payload = resp.json()
-                except ValueError:
-                    self.log.warning(
-                        'feature=batch, event=fetch-attribute-types, error=invalid-json-response'
-                    )
-                    break
-
-                for attribute_type in payload.get('data', []):
-                    name = attribute_type.get('name')
-                    if name is None:
-                        continue
-                    attributes[name] = attribute_type
-
-                next_ = payload.get('next')
-                if not next_:
-                    break
-                url = next_
-            else:
-                self.log.warning(
-                    f'feature=batch, event=fetch-attribute-types, '
-                    f'error=max-pages-reached, max-pages={max_pages}'
-                )
-        except Exception:
-            self.log.exception('feature=batch, event=fetch-attribute-types, error=request-failed')
-            raise
-
-        return attributes
-
-    def fetch_mitre_tags(self) -> dict:
-        """Return a dict of Tags."""
-        mitre_tags = {}
-        try:
-            tags = Tags(session=self.session_tc, params={'resultLimit': 1_000})
-            tags.filter.technique_id(TqlOperator.NE, None)  # type: ignore
-            for tag in tags:
-                mitre_tags[str(tag.model.technique_id)] = tag.model.name
-        except Exception:
-            self.log.exception('Error downloading Mitre Tags')
-            raise
-        return mitre_tags
 
     def file_merge_mode(self, value: str):
         """Set the file merge mode for the entire batch job.

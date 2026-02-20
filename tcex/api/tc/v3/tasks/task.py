@@ -118,9 +118,17 @@ class Task(ObjectABC):
     def stage_assignee(
         self,
         type: str,  # noqa: A002
-        data: dict | ObjectABC | AssigneeModel | UserModel | UserGroupModel,
+        data: (
+            dict
+            | ObjectABC
+            | AssigneeModel
+            | AssigneeUserModel
+            | AssigneeUserGroupModel
+            | UserModel
+            | UserGroupModel
+        ),
     ):
-        """Stage artifact on the object."""
+        """Stage assignee on the object."""
         if isinstance(data, ObjectABC):
             data = data.model  # type: ignore
         elif type.lower() == 'user' and isinstance(data, dict):

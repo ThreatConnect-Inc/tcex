@@ -35,6 +35,7 @@ class IntelRequirement(ObjectABC):
     """IntelRequirements Object.
 
     Args:
+        active (bool, kwargs): If Intel Requirement is active.
         associated_artifacts (Artifacts, kwargs): A list of Artifacts associated with this Group.
         associated_cases (Cases, kwargs): A list of Cases associated with this Group.
         associated_groups (Groups, kwargs): A list of groups associated with this group.
@@ -43,8 +44,10 @@ class IntelRequirement(ObjectABC):
             this group.
         category (IntelReqType, kwargs): The category of the intel requirement.
         description (str, kwargs): The description of the intel requirement.
+        earliest_timestamp (str, kwargs): How far in the past the system should look for matches.
         keyword_sections (array, kwargs): The section of the intel requirement that contains the
             keywords.
+        latest_timestamp (str, kwargs): The cutoff point for future data to be considered.
         requirement_text (str, kwargs): The detailed text of the intel requirement.
         reset_results (bool, kwargs): Flag to reset results when updating keywords.
         subtype (IntelReqType, kwargs): The subtype of the intel requirement.

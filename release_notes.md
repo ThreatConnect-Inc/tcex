@@ -9,6 +9,8 @@
 -   APP-5068 - [Batch] Added cleaner to batch submit; deduplication and merging of indicators and groups, auto truncate of attribute values, deduplication of attributes
 -   APP-5072 - [Services] Applied PR #356
 -   APP-5077 - [API] Updated V3 objects to allow setting a request timeout via property
+-   APP-5094 - [API] Added filesystem cache dict for attribute_types, owners, owner_roles, system_roles, users, and user_groups
+-   APP-5101 - [Inputs] Updated the inputs module to set the tempfile.tempdir to be the temp directory passed in by the Platform
 
 ## 4.0.10
 
@@ -26,6 +28,7 @@
 -   APP-4869 - [Inputs] Added strip() option to always_array input validation
 -   APP-4870 - [Transform] Loosened restrictions for custom function transform definition
 -   APP-4886 - [API] Updated V3 API to include new endpoints and/or updates to existing endpoints
+-   APP-5100 - [Mitre] Updated MITRE tag module to add a filesystem cache property
 
 ## 4.0.8
 
@@ -34,7 +37,7 @@
 -   APP-4741 - Switched linters to "ruff" (including linting fixes)
 -   APP-4743 - [API] Added support for "conditional-read-only" fields
 -   APP-4744 - [API] Added support for v2 batch association changes
--   APP-4769 - [INPUT] Updated EditChoice input type to handle new value pattern
+-   APP-4769 - [Inputs] Updated EditChoice input type to handle new value pattern
 -   APP-4806 - [API] Updated stage_assignee method for cases and tasks
 
 ## 4.0.7

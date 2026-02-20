@@ -12,6 +12,7 @@ from tcex.api.tc.v3.attribute_types.attribute_type_model import (
 )
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
+from tcex.pleb.cached_property_filesystem import cached_property_filesystem
 
 
 class AttributeType(ObjectABC):
@@ -93,6 +94,15 @@ class AttributeTypes(ObjectCollectionABC):
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.ATTRIBUTE_TYPES.value
+
+    @cached_property_filesystem(ttl=86400)
+    def cached_dict(self) -> dict[str, dict]:
+        """Return cached data as a dict keyed by name."""
+        return {
+            at.model.name: at.model.dict()
+            for at in self.iterate(base_class=AttributeType)
+            if at.model.name
+        }
 
     @property
     def filter(self) -> AttributeTypeFilter:

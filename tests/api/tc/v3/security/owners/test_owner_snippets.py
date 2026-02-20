@@ -1,5 +1,8 @@
 """TcEx Framework Module"""
 
+# third-party
+import pytest
+
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
@@ -86,3 +89,17 @@ class TestOwnerSnippets(TestV3):
         assert owner.model.perm_victim == 'FULL'
         assert owner.model.perm_workflow_template == 'FULL'
         assert owner.model.type == 'Organization'
+
+    @pytest.mark.parametrize(
+        'name',
+        [
+            ('TCI'),
+        ],
+    )
+    def test_cached_dict(self, name: str):
+        """Test that the cached data contains the expected name."""
+        # Manual runs of this test case return a runtime of 9 seconds when not cached and
+        # less than 0.1 seconds when cached, so the cache is providing a significant performance
+        # improvement.
+        data = self.tcex.api.tc.v3.owners()
+        assert name in data.cached_dict, f'Owner name {name!r} not found in cache'

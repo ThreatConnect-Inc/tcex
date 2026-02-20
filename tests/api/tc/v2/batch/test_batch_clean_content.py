@@ -3,9 +3,10 @@
 # standard library
 import json
 import logging
-from collections.abc import Callable
+import re
 from pathlib import Path
 from typing import Any
+from unittest.mock import Mock
 
 # third-party
 import pytest
@@ -31,24 +32,40 @@ ATTRIBUTE_CONFIG: dict[str, dict[str, int]] = {
 
 
 # ---------------------------------------------------------------------------
-# Noop fetch callables for BatchCleaner construction
+# Mock helpers for BatchCleaner construction
 # ---------------------------------------------------------------------------
-def _noop_fetch_attribute_types() -> dict:
-    """Return an empty attribute type config.
+def _noop_mitre_tags() -> Mock:
+    """Return a mock MitreTags whose lookups always return None.
 
     Returns:
-        An empty dict standing in for attribute type configuration.
+        A Mock standing in for a MitreTags instance.
     """
-    return {}
+    mock = Mock()
+    mock.get_by_id_regex = Mock(return_value=None)
+    return mock
 
 
-def _noop_fetch_mitre_tags() -> dict:
-    """Return an empty mitre tags dict.
+def _mock_mitre_tags(data: dict[str, str]) -> Mock:
+    """Return a mock MitreTags that resolves technique ids from *data*.
+
+    Args:
+        data: A dict mapping technique ids to names (e.g. ``{"T1059": "..."}``).
 
     Returns:
-        An empty dict standing in for MITRE tag mappings.
+        A Mock whose ``get_by_id_regex`` formats matching tags.
     """
-    return {}
+    mock = Mock()
+
+    def get_by_id_regex(value: str, default: str | None = None) -> str | None:
+        matches = re.findall(r'([Tt]\d+(?:\.\d+)?)', value)
+        if len(matches) != 1:
+            return default
+        id_ = matches[0].upper()
+        name = data.get(id_)
+        return f'{id_} - {name}' if name else default
+
+    mock.get_by_id_regex = get_by_id_regex
+    return mock
 
 
 # ---------------------------------------------------------------------------
@@ -189,7 +206,7 @@ def count_log_warnings(
 
 
 def _make_cleaner(**kwargs: Any) -> BatchCleaner:
-    """Create a BatchCleaner with noop fetchers and the given flags.
+    """Create a BatchCleaner with noop defaults and the given flags.
 
     Args:
         **kwargs: Keyword arguments forwarded to the ``BatchCleaner`` constructor.
@@ -197,27 +214,27 @@ def _make_cleaner(**kwargs: Any) -> BatchCleaner:
     Returns:
         A configured ``BatchCleaner`` instance.
     """
-    kwargs.setdefault('fetch_attribute_types', _noop_fetch_attribute_types)
-    kwargs.setdefault('fetch_mitre_tags', _noop_fetch_mitre_tags)
+    kwargs.setdefault('attribute_types', {})
+    kwargs.setdefault('mitre_tags', _noop_mitre_tags())
     return BatchCleaner(**kwargs)
 
 
 def cleaner_with_all_flags(
-    fetch_attribute_types: Callable[..., dict] = _noop_fetch_attribute_types,
-    fetch_mitre_tags: Callable[..., dict] = _noop_fetch_mitre_tags,
+    attribute_types: dict[str, dict] | None = None,
+    mitre_tags: Any = None,
 ) -> BatchCleaner:
     """Create a BatchCleaner with every flag enabled.
 
     Args:
-        fetch_attribute_types: Callable that returns attribute type config.
-        fetch_mitre_tags: Callable that returns MITRE tag mappings.
+        attribute_types: Attribute type config dict keyed by name.
+        mitre_tags: A MitreTags instance or mock.
 
     Returns:
         A ``BatchCleaner`` instance with all cleaning flags set to ``True``.
     """
     return BatchCleaner(
-        fetch_attribute_types=fetch_attribute_types,
-        fetch_mitre_tags=fetch_mitre_tags,
+        attribute_types=attribute_types or {},
+        mitre_tags=mitre_tags or _noop_mitre_tags(),
         combine_on_filename=True,
         convert_to_mitre_tags=True,
         convert_to_naics_tags=True,
@@ -816,7 +833,7 @@ def test_clean_handles_empty_content() -> None:
 
 
 def test_clean_skips_truncation_when_no_attribute_config() -> None:
-    """Verify truncation is a no-op when fetch_attribute_types returns empty config."""
+    """Verify truncation is a no-op when attribute_types is empty."""
     content = make_content(indicators=[
         make_indicator('1.2.3.4', attribute=make_attributes(('Source', 'x' * 50))),
     ])
@@ -873,7 +890,7 @@ def test_clean_full_pipeline_with_all_flags() -> None:
         ],
     )
     result = cleaner_with_all_flags(
-        fetch_attribute_types=lambda: ATTRIBUTE_CONFIG,
+        attribute_types=ATTRIBUTE_CONFIG,
     ).clean(content)
 
     # indicators merged by filename, hashes combined
@@ -909,7 +926,7 @@ def test_clean_logs_truncation_warning_once_per_attribute_type(
     )
     with caplog.at_level(logging.WARNING):
         _make_cleaner(
-            fetch_attribute_types=lambda: ATTRIBUTE_CONFIG,
+            attribute_types=ATTRIBUTE_CONFIG,
             truncate_attributes=True,
         ).clean(content)
     assert count_log_warnings(caplog) == 1
@@ -1077,7 +1094,7 @@ MITRE_TAG_DATA: dict[str, str] = {'T1059': 'Command and Scripting Interpreter'}
 def test_normalize_tags_converts_mitre_id() -> None:
     """Verify a MITRE technique ID tag is converted to formatted MITRE tag name."""
     cleaner = _make_cleaner(
-        fetch_mitre_tags=lambda: MITRE_TAG_DATA,
+        mitre_tags=_mock_mitre_tags(MITRE_TAG_DATA),
         convert_to_mitre_tags=True,
     )
     tags = [{'name': 'T1059'}]
@@ -1096,7 +1113,7 @@ def test_normalize_tags_converts_naics_id() -> None:
 def test_normalize_tags_leaves_unmatched_unchanged() -> None:
     """Verify tags that match neither MITRE nor NAICS are left unchanged."""
     cleaner = _make_cleaner(
-        fetch_mitre_tags=lambda: MITRE_TAG_DATA,
+        mitre_tags=_mock_mitre_tags(MITRE_TAG_DATA),
         convert_to_mitre_tags=True,
         convert_to_naics_tags=True,
     )
@@ -1108,7 +1125,7 @@ def test_normalize_tags_leaves_unmatched_unchanged() -> None:
 def test_normalize_tags_skips_empty_name() -> None:
     """Verify tags with empty or missing names are skipped without error."""
     cleaner = _make_cleaner(
-        fetch_mitre_tags=lambda: MITRE_TAG_DATA,
+        mitre_tags=_mock_mitre_tags(MITRE_TAG_DATA),
         convert_to_mitre_tags=True,
         convert_to_naics_tags=True,
     )
@@ -1122,7 +1139,7 @@ def test_normalize_tags_skips_empty_name() -> None:
 def test_normalize_tags_mitre_takes_priority_over_naics() -> None:
     """Verify MITRE conversion is checked first and short-circuits NAICS."""
     cleaner = _make_cleaner(
-        fetch_mitre_tags=lambda: MITRE_TAG_DATA,
+        mitre_tags=_mock_mitre_tags(MITRE_TAG_DATA),
         convert_to_mitre_tags=True,
         convert_to_naics_tags=True,
     )

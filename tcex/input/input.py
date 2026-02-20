@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import re
+import tempfile
 from base64 import b64decode
 from pathlib import Path
 
@@ -143,6 +144,21 @@ class Input:
 
         return file_content
 
+    def _set_temp_dir(self, _contents: dict):
+        """Set temp directory for tempfile."""
+        if _contents.get('tc_temp_path'):
+            tc_temp_path = Path(_contents['tc_temp_path'])
+            if tc_temp_path.is_dir():
+                tempdir = str(tc_temp_path.resolve())
+                tempfile.tempdir = tempdir
+                os.environ['TMPDIR'] = tempdir
+            else:
+                self.log.error(
+                    'feature=inputs, event=validate-tc-temp-path, '
+                    f'exception=invalid-directory, tc_temp_path={tc_temp_path}'
+                )
+                return
+
     def add_model(self, model: type[BaseModel]):
         """Add additional input model."""
         if model:
@@ -175,6 +191,9 @@ class Input:
 
         # file params
         _contents.update(self._load_file_params())
+
+        # set temp directory for tempfile
+        self._set_temp_dir(_contents)
 
         return _contents
 

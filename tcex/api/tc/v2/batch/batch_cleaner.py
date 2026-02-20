@@ -25,8 +25,8 @@ class BatchCleaner:
 
     def __init__(
         self,
-        fetch_attribute_types: Callable[[], dict],
-        fetch_mitre_tags: Callable[[], dict],
+        attribute_types: dict[str, dict],
+        mitre_tags: MitreTags,
         *,
         combine_on_filename: bool = False,
         convert_to_mitre_tags: bool = False,
@@ -39,8 +39,8 @@ class BatchCleaner:
         """Initialize instance properties.
 
         Args:
-            fetch_attribute_types: A callable that returns attribute type config dict.
-            fetch_mitre_tags: A callable that returns mitre tags dict.
+            attribute_types: A dictionary of attribute type config.
+            mitre_tags: A MitreTags instance.
             combine_on_filename: Whether to combine items based on filename.
             convert_to_mitre_tags: Whether to convert Mitre tags.
             convert_to_naics_tags: Whether to convert NAICS tags.
@@ -49,8 +49,8 @@ class BatchCleaner:
             deduplicate_attributes: Whether to deduplicate attributes.
             truncate_attributes: Whether to truncate attributes.
         """
-        self.fetch_attribute_types = fetch_attribute_types
-        self.fetch_mitre_tags = fetch_mitre_tags
+        self.attribute_types = attribute_types
+        self.mitre_tags = mitre_tags
 
         self.combine_on_filename = combine_on_filename
         self.convert_to_mitre_tags = convert_to_mitre_tags
@@ -444,17 +444,6 @@ class BatchCleaner:
             A set of individual hash strings with whitespace stripped.
         """
         return {h.strip() for h in summary.split(' : ') if h.strip()}
-
-    @cached_property
-    def attribute_types(self) -> dict:
-        """Attribute Types"""
-        # Best effort, if the attribute types can't be retrieved no truncation will happen.
-        return self.fetch_attribute_types() or {}
-
-    @cached_property
-    def mitre_tags(self) -> MitreTags:
-        """Mitre Tags"""
-        return MitreTags(self.fetch_mitre_tags())
 
     @cached_property
     def naics_tags(self) -> NAICSTags:

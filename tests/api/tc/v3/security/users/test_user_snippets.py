@@ -1,5 +1,8 @@
 """TcEx Framework Module"""
 
+# third-party
+import pytest
+
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
@@ -36,3 +39,17 @@ class TestUserSnippets(TestV3):
         user.get()
         print(user.model.dict(exclude_none=True))
         # End Snippet
+
+    @pytest.mark.parametrize(
+        'name',
+        [
+            ('22222222222222222222'),
+        ],
+    )
+    def test_cached_dict(self, name: str):
+        """Test that the cached data contains the expected name."""
+        # Manual runs of this test case return a runtime of 9 seconds when not cached and
+        # less than 0.1 seconds when cached, so the cache is providing a significant performance
+        # improvement.
+        data = self.tcex.api.tc.v3.users()
+        assert name in data.cached_dict, f'User name {name!r} not found in cache'

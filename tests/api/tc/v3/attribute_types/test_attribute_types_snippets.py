@@ -1,5 +1,8 @@
 """TcEx Framework Module"""
 
+# third-party
+import pytest
+
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
@@ -34,3 +37,22 @@ class TestAttributeTypeSnippets(TestV3):
         attribute_type.get()
         print(attribute_type.model.dict(exclude_none=True))
         # End Snippet
+
+    @pytest.mark.parametrize(
+        'name',
+        [
+            ('WebMoney ID'),
+            ('Yara Detection Rule'),
+            ('Whois Record'),
+            ('Sandbox Score'),
+            ('Target'),
+            ('Criticality'),
+        ],
+    )
+    def test_cached_dict(self, name: str):
+        """Test that the attribute type cache contains the expected name."""
+        # Manual runs of this test case return a runtime of 9 seconds when not cached and
+        # less than 0.1 seconds when cached, so the cache is providing a significant performance
+        # improvement.
+        data = self.tcex.api.tc.v3.attribute_types()
+        assert name in data.cached_dict, f'Attribute type {name!r} not found in cache'

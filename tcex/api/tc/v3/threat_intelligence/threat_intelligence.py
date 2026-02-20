@@ -18,8 +18,6 @@ from tcex.api.tc.v3.indicators.indicator import Indicator, Indicators
 from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
 from tcex.api.tc.v3.tags.mitre_tags import MitreTags
 from tcex.api.tc.v3.tags.naics_tags import NAICSTags
-from tcex.api.tc.v3.tags.tag import Tags
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.victim_assets.victim_asset import VictimAsset, VictimAssets
 from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttribute, VictimAttributes
 from tcex.api.tc.v3.victims.victim import Victim, Victims
@@ -316,16 +314,7 @@ class ThreatIntelligence:
     @cached_property
     def mitre_tags(self) -> MitreTags:
         """Mitre Tags"""
-        mitre_tags = {}
-        try:
-            tags = Tags(session=self.session, params={'resultLimit': 1_000})
-            tags.filter.technique_id(TqlOperator.NE, None)  # type: ignore
-            for tag in tags:
-                mitre_tags[str(tag.model.technique_id)] = tag.model.name
-        except Exception:
-            self.log.exception('Error downloading Mitre Tags')
-            raise
-        return MitreTags(mitre_tags)
+        return MitreTags(session_tc=self.session)
 
     @cached_property
     def naics_tags(self) -> NAICSTags:
