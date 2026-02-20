@@ -1,13 +1,10 @@
 """TcEx Framework Module"""
 
-# standard library
 import os
 from datetime import datetime, timedelta
 
-# third-party
 import pytest
 
-# first-party
 from tcex import TcEx
 from tcex.api.tc.v2.batch.association import Association
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator

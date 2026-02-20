@@ -1,6 +1,5 @@
 """Tests for BatchCleaner."""
 
-# standard library
 import json
 import logging
 import re
@@ -8,11 +7,9 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import Mock
 
-# third-party
 import pytest
 from deepdiff.diff import DeepDiff
 
-# first-party
 from tcex import TcEx
 from tcex.api.tc.v2.batch.batch_cleaner import BatchCleaner
 

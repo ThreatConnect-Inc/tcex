@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
-# standard library
 from datetime import datetime
 
-# first-party
 from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
 from tcex.api.tc.ti_transform.transform_abc import (
     AssociationTransformModel,

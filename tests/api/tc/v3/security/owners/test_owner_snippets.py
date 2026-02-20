@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# first-party
 import pytest
 
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator

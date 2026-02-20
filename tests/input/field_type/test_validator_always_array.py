@@ -1,12 +1,8 @@
 """TcEx Framework Module"""
 
-# standard library
-
-# third-party
 import pytest
 from pydantic import BaseModel, Field
 
-# first-party
 from tcex.input.field_type import always_array
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_type.util import InputTest

@@ -1,14 +1,11 @@
 """TcEx Framework Module"""
 
-# standard library
 import logging
 import re
 
-# third-party
 from pydantic import BaseModel
 from requests import Session
 
-# first-party
 from tcex.logger.trace_logger import TraceLogger
 from tcex.pleb.cached_property_filesystem import cached_property_filesystem
 

@@ -1,6 +1,5 @@
 """Tests for tcex.pleb.cached_property_filesystem."""
 
-# standard library
 import pickle
 import tempfile
 import time
@@ -8,11 +7,9 @@ from collections.abc import Generator
 from pathlib import Path
 from unittest.mock import patch
 
-# third-party
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
 
-# first-party
 from tcex.pleb.cached_property_filesystem import cached_property_filesystem
 
 

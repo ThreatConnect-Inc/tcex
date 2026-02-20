@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# standard library
 import gzip
 import json
 import logging
@@ -8,10 +7,8 @@ import math
 import re
 import time
 
-# third-party
 from requests import Session
 
-# first-party
 from tcex.api.tc.v2.batch.batch_cleaner import BatchCleaner
 from tcex.api.tc.v3.attribute_types.attribute_type import AttributeTypes
 from tcex.api.tc.v3.tags.mitre_tags import MitreTags
