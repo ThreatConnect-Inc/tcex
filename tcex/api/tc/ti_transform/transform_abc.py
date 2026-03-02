@@ -270,7 +270,7 @@ class TransformABC(ABC):
         for i, association in enumerate(associations or [], 1):
             try:
                 summary = self._process_metadata_transform_model(association.summary)
-                indicator_type = self._process_metadata_transform_model(association.type)
+                indicator_type = self._process_metadata_transform_model(association.indicator_type)
                 association_type = self._process_metadata_transform_model(
                     association.association_type
                 )
@@ -499,6 +499,8 @@ class TransformABC(ABC):
         if self.transformed_item['type'] == 'Host':
             self._process_metadata('dnsActive', self.transform.dns_active)
             self._process_metadata('whoisActive', self.transform.whois_active)
+
+        self._process_custom_association(self.transform.associated_indicators)
 
     def _process_indicator_values(self):
         """Process Indicator value."""

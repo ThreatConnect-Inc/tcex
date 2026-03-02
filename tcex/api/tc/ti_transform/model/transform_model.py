@@ -129,7 +129,7 @@ class AssociatedIndicatorFromIndicatorTransform(BaseModel, extra='forbid'):
     """."""
 
     summary: str | MetadataTransformModel = Field(..., description='')
-    type: str | MetadataTransformModel = Field(..., description='')
+    indicator_type: str | MetadataTransformModel = Field(..., description='')
     association_type: str | MetadataTransformModel = Field(..., description='')
 
 
