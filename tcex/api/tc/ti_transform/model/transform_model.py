@@ -129,7 +129,7 @@ class AssociatedIndicatorFromIndicatorTransform(BaseModel, extra='forbid'):
     """."""
 
     summary: str | MetadataTransformModel = Field(..., description='')
-    type: str | MetadataTransformModel = Field(..., description='')
+    indicator_type: str | MetadataTransformModel = Field(..., description='')
     association_type: str | MetadataTransformModel = Field(..., description='')
 
 
@@ -298,4 +298,4 @@ class AssociationTransformModel(BaseModel, extra='forbid'):
     """."""
 
     applies: Callable | None = Field(None, description='')
-    associations: list[AssociationTypes] = Field([], description='')
+    associations: list[AssociationTypes] = Field(default_factory=list, description='')
