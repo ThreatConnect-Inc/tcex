@@ -334,6 +334,15 @@ class ProcessingFunctions:
         return name.replace('_', ' ').title()
 
     @staticmethod
+    def _get_type_string_from_annotation(annotation) -> str:
+        """Get a string representation of a type annotation."""
+        if annotation is None:
+            return 'str'
+        if hasattr(annotation, '__name__'):
+            return annotation.__name__
+        return str(annotation)
+
+    @staticmethod
     def _get_params_defs(fn) -> list[ParamDefinition]:
         """Get the arguments for a function.
 
@@ -352,8 +361,8 @@ class ProcessingFunctions:
                 ),
                 'name': p,
                 'label': ProcessingFunctions._snake_to_titlecase(p),
-                'type': (
-                    sig.parameters[p].annotation.__name__ if sig.parameters[p].annotation else 'str'
+                'type': ProcessingFunctions._get_type_string_from_annotation(
+                    sig.parameters[p].annotation
                 ),
                 'help': '',
                 'required': True,
