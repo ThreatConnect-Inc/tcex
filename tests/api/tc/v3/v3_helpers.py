@@ -166,6 +166,11 @@ class V3Helper:
                 'class_name': 'Category',
                 'collection_class_name': 'Categories',
             },
+            'exclusion_lists': {
+                'module': 'tcex.api.tc.v3.security.exclusion_lists.exclusion_list',
+                'class_name': 'ExclusionList',
+                'collection_class_name': 'ExclusionLists',
+            },
             'group_attributes': {
                 'module': 'tcex.api.tc.v3.group_attributes.group_attribute',
                 'class_name': 'GroupAttribute',
@@ -801,6 +806,9 @@ class TestV3:
                 #     what was used to determine it was a vulnerability CVE or KEV
                 # linkedGroups -> provides all the groups/buckets linked to common group:
                 #     share the same name and type
+
+                if 'aliases' in names:
+                    names = ['commonGroup']
 
                 if 'common' in names:
                     # fix discrepancy between <endpoint>/fields and <endpoint>

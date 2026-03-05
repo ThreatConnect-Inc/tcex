@@ -4,6 +4,7 @@ import logging
 
 from pydantic import BaseModel
 
+from tcex.api.tc.v3.tags.default_naics_tags import NAICS_TAGS
 from tcex.logger.trace_logger import TraceLogger
 from tcex.pleb.cached_property import cached_property
 
@@ -25,15 +26,22 @@ class NAICSTag(BaseModel):
 class NAICSTags:
     """NAICTags Class"""
 
-    def __init__(self, naics_tags: dict[str, str], verbose: bool = False):
+    def __init__(self, verbose: bool = False):
         """Initialize instance properties."""
-        self._naics_tags = {id_: NAICSTag(id=id_, name=name) for id_, name in naics_tags.items()}
+        self._naics_tags = {
+            id_: NAICSTag(id=id_, name=name) for id_, name in self.naics_tags.items()
+        }
         self.verbose = verbose
         self.log = _logger
 
     @cached_property
+    def naics_tags(self) -> dict[str, str]:
+        """Return a dict of default NAICS tags."""
+        return NAICS_TAGS
+
+    @cached_property
     def naics_tags_name_id(self) -> dict[str, list[NAICSTag]]:
-        """Return a dict of MitreTags keyed by name."""
+        """Return a dict of NAICS keyed by name."""
         naics_tags = {}
         for tag in self._naics_tags.values():
             naics_tags.setdefault(tag.name.lower(), []).append(NAICSTag(id=tag.id, name=tag.name))

@@ -50,6 +50,46 @@ class GenerateObjectABC(GenerateABC, ABC):
             ]
         )
 
+    def _gen_code_container_cached_dict_property(self) -> str:
+        """Return the method code.
+
+        @cached_property_filesystem(ttl=86400)
+        def cached_dict(self) -> dict[str, dict]:
+            '''Return cached data as a dict keyed by name.'''
+            return {
+                at.model.name: at.model.dict()
+                for at in self.iterate(base_class=AttributeType)
+                if at.model.name
+            }
+        """
+        if self.type_.lower() in (
+            'attribute_types',
+            'owners',
+            'owner_roles',
+            'system_roles',
+            'users',
+            'user_groups',
+        ):
+            key_field = 'user_name' if self.type_.lower() == 'users' else 'name'
+            self.requirements['first-party'].append(
+                'from tcex.pleb.cached_property_filesystem import cached_property_filesystem'
+            )
+            base_class = self.type_.pascal_case().singular()
+            return '\n'.join(
+                [
+                    f'{self.i1}@cached_property_filesystem(ttl=86400)',
+                    f'{self.i1}def cached_dict(self) -> dict[str, dict]:',
+                    f'{self.i2}"""Return cached data as a dict keyed by name."""',
+                    f'{self.i2}return {{',
+                    f'{self.i3}at.model.{key_field}: at.model.dict()',
+                    f'{self.i3}for at in self.iterate(base_class={base_class})',
+                    f'{self.i3}if at.model.{key_field}',
+                    f'{self.i2}}}',
+                    '',
+                ]
+            )
+        return ''
+
     def _gen_code_container_init_method(self) -> str:
         """Return the method code.
 
@@ -601,7 +641,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         def stage_assignee(
             self, type: str, data: dict | ObjectABC | AssigneeModel]
         ):
-            '''Stage artifact on the object.'''
+            '''Stage assignee on the object.'''
             if isinstance(data, ObjectABC):
                 data = data.model
             elif type.lower() == 'user' and isinstance(data, dict):
@@ -621,6 +661,12 @@ class GenerateObjectABC(GenerateABC, ABC):
             [
                 'from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel',
                 'from tcex.api.tc.v3.security.users.user_model import UserModel',
+                'from tcex.api.tc.v3.security.assignee_model import AssigneeModel',
+                (
+                    'from tcex.api.tc.v3.security.assignee_user_group_model '
+                    'import AssigneeUserGroupModel'
+                ),
+                'from tcex.api.tc.v3.security.assignee_user_model import AssigneeUserModel',
             ]
         )
 
@@ -631,25 +677,38 @@ class GenerateObjectABC(GenerateABC, ABC):
                     f'{self.i1}def stage_assignee(\n'
                     f'{self.i2}self,\n'
                     f'{self.i2}type: str,  # noqa: A002\n'
-                    f'{self.i2}data: dict | ObjectABC | UserModel | UserGroupModel,\n'
+                    f'{self.i2}data: dict | ObjectABC | AssigneeModel | AssigneeUserModel '
+                    f'| AssigneeUserGroupModel | UserModel | UserGroupModel,\n'
                     f'{self.i1}):\n'
                 ),
-                f'{self.i2}"""Stage artifact on the object."""',
+                f'{self.i2}"""Stage assignee on the object."""',
                 f'{self.i2}if isinstance(data, ObjectABC):',
                 f'{self.i3}data = data.model  # type: ignore',
                 f'{self.i2}elif type.lower() == "user" and isinstance(data, dict):',
-                f'{self.i3}data = UserModel(**data)',
+                f'{self.i3}data = AssigneeModel(type="User", data=data)  # type: ignore',
                 f'{self.i2}elif type.lower() == "group" and isinstance(data, dict):',
-                f'{self.i3}data = UserGroupModel(**data)',
+                f'{self.i3}data = AssigneeModel(type="Group", data=data)  # type: ignore',
                 '',
-                f'{self.i2}if not isinstance(data, UserModel | UserGroupModel):',
+                f'{self.i2}if not isinstance(',
+                f'{self.i3}data,',
+                f'{self.i3}AssigneeModel | AssigneeUserModel | AssigneeUserGroupModel ',
+                '| UserModel | UserGroupModel):',
                 f'{self.i3}ex_msg = "Invalid type passed in to stage_assignee"',
                 f'{self.i3}raise RuntimeError(ex_msg)  # noqa: TRY004',
-                f'{self.i2}data._staged = True  # noqa: SLF001',
-                f'{self.i2}self.model.assignee._staged = True  # noqa: SLF001',
-                f'{self.i2}self.model.assignee.type = type',
+                '',
+                f'{self.i2}if isinstance(data, AssigneeModel):',
+                f'{self.i3}self.model.assignee = data',
+                f'{self.i2}elif isinstance(',
+                f'{self.i3}data, AssigneeUserModel | AssigneeUserGroupModel '
+                f'| UserModel | UserGroupModel',
+                f'{self.i2}):',
+                f'{self.i3}self.model.assignee.data = data  # type: ignore',
+                # f'{self.i2}data._staged = True
+                # f'{self.i2}self.model.assignee._staged = True
+                # f'{self.i2}self.model.assignee.type = type',
                 # pylance shows a warning on type here, but it in not handling inheritance properly.
-                f'{self.i2}self.model.assignee.data = data  # type: ignore',
+                # f'{self.i2}self.model.assignee.data = data  # type: ignore',
+                f'{self.i2}self.model.assignee.data._staged = True  # type: ignore  # noqa: SLF001',
                 '',
                 '',
             ]
@@ -840,6 +899,9 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate api_endpoint property method
         _code += self._gen_code_api_endpoint_property()
 
+        # generate cached_dict property method
+        _code += self._gen_code_container_cached_dict_property()
+
         # generate filter property method
         _code += self._gen_code_container_filter_property()
 
@@ -908,6 +970,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         # skip object that don't require as_entity method
         if self.type_ not in [
             'case_attributes',
+            'exclusion_lists',
             'victim_attributes',
             'group_attributes',
             'indicator_attributes',

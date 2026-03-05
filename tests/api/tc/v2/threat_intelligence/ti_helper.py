@@ -74,7 +74,7 @@ class TIHelper:
     @staticmethod
     def rand_cidr() -> str:
         """Return a random CIDR block."""
-        return f'{randint(0,255)}.{randint(0,255)}.{randint(0,255)}.0/{randint(16,24)}'
+        return f'{randint(0,255)}.{randint(0,255)}.{randint(0,255)}.0/{randint(24,32)}'
 
     def rand_email_address(self) -> str:
         """Return a random email subject."""

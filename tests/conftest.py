@@ -8,6 +8,7 @@ import re
 import shutil
 import socket
 from collections.abc import Callable, Iterator
+from pathlib import Path
 from threading import Thread
 
 
@@ -15,6 +16,7 @@ import fakeredis
 import pytest
 import redis
 from _pytest.monkeypatch import MonkeyPatch
+from dotenv import load_dotenv
 from fakeredis import TcpFakeServer
 
 
@@ -190,6 +192,9 @@ def pytest_configure(config):
     Allows plugins and conftest files to perform initial configuration. This hook is called for
     every plugin and initial conftest file after command line options have been parsed.
     """
+
+    # load environment variables from .env file (does not override existing env vars)
+    load_dotenv(Path(__file__).parent.parent / '.env')
 
     os.environ['TCEX_TEST_DIR'] = os.path.join(os.getcwd(), 'tests')
 
