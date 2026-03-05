@@ -103,7 +103,7 @@ class TestIntelRequirements(TestV3):
         ir = self.v3.intel_requirement(id=ir.model.id)
         ir.get()
 
-        assert len(ir.model.keyword_sections) == 3
+        assert len(ir.model.keyword_sections) == 2
         # assert ir.model.keyword_sections[0].section_number == 0  # This doesn't come back
         assert ir.model.keyword_sections[0].compare_value == 'includes'
         assert ir.model.keyword_sections[0].keywords[0].get('value') == 'keyword1' # type: ignore

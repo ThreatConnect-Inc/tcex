@@ -24,6 +24,14 @@ class GroupModel(
     _shared_type: bool = PrivateAttr(default=False)
     _staged: bool = PrivateAttr(default=False)
 
+    ai_provider: str | None = Field(
+        default=None,
+        description='The provider of the AI generated insights.',
+        frozen=True,
+        title='aiProvider',
+        validate_default=True,
+        json_schema_extra={'applies_to': ['Document', 'Report', 'Event']},
+    )
     assignments: TaskAssigneesModel | None = Field(
         default=None,
         description=(
@@ -265,7 +273,7 @@ class GroupModel(
         frozen=True,
         title='insights',
         validate_default=True,
-        json_schema_extra={'applies_to': ['Document', 'Report']},
+        json_schema_extra={'applies_to': ['Document', 'Report', 'Event']},
     )
     last_modified: datetime | None = Field(
         default=None,

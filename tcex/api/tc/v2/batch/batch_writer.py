@@ -17,6 +17,7 @@ from typing import Any
 from requests import Session  # TYPE-CHECKING
 
 from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
+from tcex.api.tc.v2.batch.association import Association
 from tcex.api.tc.v2.batch.group import (
     Adversary,
     AttackPattern,
@@ -129,6 +130,7 @@ class BatchWriter:
         self._indicator_shelf_fqfn = None
 
         # containers
+        self._associations = None
         self._groups = None
         self._groups_shelf = None
         self._indicators = None
@@ -404,6 +406,13 @@ class BatchWriter:
                 indicator_data['flag2'] = whois_active
 
         return self._indicator(indicator_data, kwargs.get('store', True))
+
+    def add_association(self, association: Association | dict) -> Association:
+        """Add an association to Batch Job."""
+        if isinstance(association, dict):
+            association = Association(**association)
+        self.associations.add(association)
+        return association
 
     def address(self, ip: str, **kwargs) -> Address | dict:
         """Add Address data to Batch.
@@ -896,6 +905,13 @@ class BatchWriter:
             # new shelf file
             self._group_shelf_fqfn = self.inputs.model.tc_temp_path / f'groups-{uuid.uuid4()!s}'
         return self._group_shelf_fqfn
+
+    @property
+    def associations(self) -> set:
+        """Return dictionary of all Associations data."""
+        if self._associations is None:
+            self._associations = set()
+        return self._associations
 
     @property
     def groups(self) -> dict:

@@ -2,6 +2,7 @@
 
 import os
 import threading
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -156,6 +157,13 @@ class App:
             self.model.tc_verify,
             _proxies,
         )
+
+        # handle long-lived TC tokens
+        if self.model.tc_token is not None and self.model.tc_token.value.startswith('APIV2'):
+            # a epoch timestamp 5 years in the future
+            self.model.tc_token_expires = int(
+                (datetime.now(UTC) + timedelta(days=365 * 5)).timestamp()
+            )
 
         # register token for Apps that pass token on start
         if all([self.model.tc_token, self.model.tc_token_expires]):

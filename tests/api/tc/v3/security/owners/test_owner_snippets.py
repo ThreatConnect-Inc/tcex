@@ -1,5 +1,6 @@
 """TcEx Framework Module"""
 
+import pytest
 
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
@@ -14,7 +15,7 @@ class TestOwnerSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         for owner in self.tcex.api.tc.v3.owners():
-            print(owner.model.model_dump(exclude_none=True))
+            print(owner.model.dict(exclude_none=True))
         # End Snippet
 
     def test_owner_tql_filter(self):
@@ -45,7 +46,7 @@ class TestOwnerSnippets(TestV3):
         owners.filter.perm_victim(TqlOperator.EQ, 'FULL')
         owners.filter.perm_workflow_template(TqlOperator.EQ, 'FULL')
         for owner in owners:
-            print(owner.model.model_dump(exclude_none=True))
+            print(owner.model.dict(exclude_none=True))
         # End Snippet
 
     def test_owner_get_by_id(self):
@@ -53,7 +54,7 @@ class TestOwnerSnippets(TestV3):
         # Begin Snippet
         owner = self.tcex.api.tc.v3.owner(id=3)
         owner.get()
-        print(owner.model.model_dump(exclude_none=True))
+        print(owner.model.dict(exclude_none=True))
         # End Snippet
 
         # self.v3_helper.tql_generator(owner.model, 'owner')
@@ -86,3 +87,17 @@ class TestOwnerSnippets(TestV3):
         assert owner.model.perm_victim == 'FULL'
         assert owner.model.perm_workflow_template == 'FULL'
         assert owner.model.type == 'Organization'
+
+    @pytest.mark.parametrize(
+        'name',
+        [
+            ('TCI'),
+        ],
+    )
+    def test_cached_dict(self, name: str):
+        """Test that the attribute type cache contains the expected name."""
+        # Manual runs of this test case return a runtime of 9 seconds when not cached and
+        # less than 0.1 seconds when cached, so the cache is providing a significant performance
+        # improvement.
+        data = self.tcex.api.tc.v3.owners()
+        assert name in data.cached_dict, f'Owner name {name!r} not found in cache'

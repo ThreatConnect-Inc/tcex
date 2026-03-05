@@ -9,6 +9,9 @@ import time
 
 from requests import Session
 
+from tcex.api.tc.v2.batch.batch_cleaner import BatchCleaner
+from tcex.api.tc.v3.attribute_types.attribute_type import AttributeTypes
+from tcex.api.tc.v3.tags.mitre_tags import MitreTags
 from tcex.exit.error_code import handle_error
 from tcex.input.input import Input
 from tcex.logger.trace_logger import TraceLogger
@@ -97,6 +100,55 @@ class BatchSubmit:
     def attribute_write_type(self, write_type: str):
         """Set batch attribute write type."""
         self._attribute_write_type = write_type
+
+    def cleaner(
+        self,
+        combine_on_filename: bool = False,
+        convert_to_mitre_tags: bool = False,
+        convert_to_naics_tags: bool = False,
+        deduplicate_indicators: bool = False,
+        deduplicate_groups: bool = False,
+        deduplicate_attributes: bool = False,
+        truncate_attributes: bool = False,
+    ) -> BatchCleaner:
+        """Return a BatchCleaner instance.
+
+        Args:
+            combine_on_filename: Whether to combine items based on filename.
+            convert_to_mitre_tags: Whether to convert Mitre tags.
+            convert_to_naics_tags: Whether to convert NAICS tags.
+            deduplicate_indicators: Whether to deduplicate indicators.
+            deduplicate_groups: Whether to deduplicate groups.
+            deduplicate_attributes: Whether to deduplicate attributes.
+            truncate_attributes: Whether to truncate attributes.
+
+        Returns:
+            BatchCleaner: A BatchCleaner instance.
+        """
+        # Best effort: if attribute types can't be retrieved, skip truncation.
+        try:
+            attribute_types_obj = AttributeTypes(
+                session=self.session_tc, params={'resultLimit': 10_000}
+            )
+            attribute_types = attribute_types_obj.cached_dict
+        except Exception:
+            self.log.warning(
+                'feature=batch, event=fetch-attribute-types-failed, '
+                'action=falling-back-to-empty, truncation-disabled'
+            )
+            attribute_types = {}
+
+        return BatchCleaner(
+            attribute_types=attribute_types,
+            mitre_tags=MitreTags(self.session_tc),
+            combine_on_filename=combine_on_filename,
+            convert_to_mitre_tags=convert_to_mitre_tags,
+            convert_to_naics_tags=convert_to_naics_tags,
+            deduplicate_indicators=deduplicate_indicators,
+            deduplicate_groups=deduplicate_groups,
+            deduplicate_attributes=deduplicate_attributes,
+            truncate_attributes=truncate_attributes,
+        )
 
     def create_job(self, halt_on_error: bool = True) -> int | None:
         """Submit Batch request to ThreatConnect API.
@@ -444,7 +496,11 @@ class BatchSubmit:
         return {}
 
     def submit_data(
-        self, batch_id: int, content: dict | str, halt_on_error: bool = True
+        self,
+        batch_id: int,
+        content: dict | str,
+        halt_on_error: bool = True,
+        clean_content: 'BatchCleaner | None' = None,
     ) -> dict | None:
         """Submit Batch request to ThreatConnect API.
 
@@ -453,6 +509,7 @@ class BatchSubmit:
             content: The dict of groups and indicator data.
             halt_on_error (bool = True): If True the process
                 should halt if any errors are encountered.
+            clean_content: A BatchCleaner instance to clean content before upload.
 
         Returns:
             dict: The response data
@@ -464,6 +521,9 @@ class BatchSubmit:
         # TC Core requires the header to be application/octet-stream
         headers = {'Content-Type': 'application/octet-stream'}
         try:
+            if clean_content is not None:
+                content = clean_content.clean(content)
+
             if isinstance(content, dict):
                 content = json.dumps(content)
 
