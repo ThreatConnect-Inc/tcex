@@ -27,7 +27,7 @@ class GenerateArgsABC(GenerateABC, ABC):
             prop_type = self._prop_type_map(prop_data.get('type'))  # type: ignore
         elif 'allOf' in prop_data and prop_data.get('allOf'):
             ref: str = prop_data.get('allOf')[0].get('$ref')  # type: ignore
-            prop_type = ref.split('/')[-1].replace('Model', '')
+            prop_type = ref.rsplit('/', maxsplit=1)[-1].replace('Model', '')
         elif 'items' in prop_data and prop_data.get('items'):
             ref: str = prop_data.get('items', {}).get('$ref')  # type: ignore
             prop_type = ref.split('/')[-1].replace('Model', '')

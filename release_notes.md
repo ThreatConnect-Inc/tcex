@@ -3,6 +3,8 @@
 ## 5.0.0
 
 -   APP-4971 - Updated TcEx to use Pydantic v2
+-   APP-4995 - [Transform] Added AssociationTransformModel (Similar to GroupTransformModel and IndicatorTransformModel)
+-   APP-5106 - [Transform] Update transform for indicator associations and compatibility with transform builder
 
 ## 4.x
 

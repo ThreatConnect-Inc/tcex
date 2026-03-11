@@ -5,6 +5,7 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 import wrapt
+
 from tcex.logger.trace_logger import TraceLogger
 
 if TYPE_CHECKING:

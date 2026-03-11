@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING, Any, cast
 
 import wrapt
+
 from tcex.tcex import TcEx
 
 if TYPE_CHECKING:

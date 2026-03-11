@@ -9,6 +9,7 @@ from inspect import signature
 from typing import Any, cast
 
 import jmespath
+
 from tcex.api.tc.ti_transform import ti_predefined_functions
 from tcex.api.tc.ti_transform.model import (
     AttributeTransformModel,

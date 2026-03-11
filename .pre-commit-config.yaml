@@ -27,7 +27,7 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/pycqa/bandit
-    rev: 1.9.2
+    rev: 1.9.4
     hooks:
       - id: bandit
         exclude: |
@@ -35,11 +35,11 @@ repos:
               ^tests/
           )
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.1
+    rev: v2.4.2
     hooks:
       - id: codespell
   - repo: https://github.com/google/osv-scanner/
-    rev: v2.3.0
+    rev: v2.3.3
     hooks:
       - id: osv-scanner
         args:
@@ -69,9 +69,9 @@ repos:
         types:
           - directory
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.8
+    rev: v0.15.5
     hooks:
-      - id: ruff
+      - id: ruff-check
         args:
           - --fix
         types_or:

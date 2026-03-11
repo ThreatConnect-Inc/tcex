@@ -3,9 +3,8 @@
 from collections.abc import Callable
 from typing import Annotated, Any, TypeAlias
 
-from pydantic import BaseModel, Discriminator, Field, Tag, field_validator, model_validator
-
 from jmespath import compile as jmespath_compile
+from pydantic import BaseModel, Discriminator, Field, Tag, field_validator, model_validator
 
 
 # reusable validator
