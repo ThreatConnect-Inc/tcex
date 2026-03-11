@@ -6,6 +6,7 @@ import time
 from collections.abc import Callable
 
 import paho.mqtt.client as mqtt
+
 from tcex.input.field_type.sensitive import Sensitive
 from tcex.logger.trace_logger import TraceLogger
 from tcex.pleb.cached_property import cached_property

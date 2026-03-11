@@ -8,10 +8,11 @@
 # debugpy.wait_for_client()
 
 import os
-from enum import Enum
+from enum import Enum, StrEnum
 from pathlib import Path
 
 import typer
+
 from tcex.api.tc.v3._gen._gen_args_abc import GenerateArgsABC
 from tcex.api.tc.v3._gen._gen_filter_abc import GenerateFilterABC
 from tcex.api.tc.v3._gen._gen_model_abc import GenerateModelABC
@@ -200,7 +201,7 @@ def gen_object(type_: SnakeString):
 #
 
 
-class ObjectTypes(str, Enum):
+class ObjectTypes(StrEnum, Enum):
     """Object Types"""
 
     # shared
@@ -242,7 +243,7 @@ class ObjectTypes(str, Enum):
     victim_attributes = 'victim_attributes'
 
 
-class GenTypes(str, Enum):
+class GenTypes(StrEnum, Enum):
     """Object Types"""
 
     all = 'all'

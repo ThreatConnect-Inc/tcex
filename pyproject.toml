@@ -129,7 +129,7 @@ commit = false
 # Additional arguments to pass to the git commit command
 commit_args = "--no-verify"
 # The current version of the project
-current_version = "5.0.0-dev0"
+current_version = "5.0.0-dev2"
 # The commit message template used when committing version bumps
 message = "Version updated from {current_version} to {new_version}"
 # Regular expression for parsing version strings
@@ -207,6 +207,8 @@ exclude = [
 line-length = 100
 # set the python target
 target-version = "py311"
+# define a default section for any imports that don't fit into the specified section-order.
+src = ["tcex"]
 
 # Configuration for ruff formatter
 [tool.ruff.format]
@@ -320,28 +322,8 @@ select = [
 # Define a default section for any imports that don't fit into the specified section-order.
 default-section = "first-party"
 
-# A list of modules to consider standard-library, in addition to those known to Ruff in advance
-extra-standard-library = []
-
-# Map known_first_party to known-first-party
-known-first-party = ["tcex"]
-
 # Map known_local_folder to known-local-folder
-known-local-folder = ["."]
-
-# Map known_third_party to known-third-party
-known-third-party = [
-  "arrow",
-  "cryptography",
-  "dotenv",
-  "pydantic",
-  "pydantic_core",
-  "pydantic_settings",
-  "pytest",
-  "redis",
-  "requests",
-  "semantic_version",
-]
+known-local-folder = ["tcex"]
 
 # Override in which order the sections should be output. Can be used to move custom sections.
 section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]

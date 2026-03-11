@@ -4,9 +4,9 @@ import logging
 import re
 from urllib.parse import quote
 
+import jmespath
 from requests import Session
 
-import jmespath
 from tcex.exit.error_code import handle_error
 from tcex.logger.trace_logger import TraceLogger
 from tcex.pleb.cached_property import cached_property

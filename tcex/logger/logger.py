@@ -8,9 +8,9 @@ from importlib.metadata import version
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from certifi import where
 from requests import Session  # TYPE-CHECKING
 
-from certifi import where
 from tcex.app.config.install_json import InstallJson
 from tcex.input.model.common_model import CommonModel  # TYPE-CHECKING
 from tcex.logger.api_handler import ApiHandler, ApiHandlerFormatter

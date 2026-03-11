@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 from datetime import datetime
-from enum import Enum
+from enum import Enum, StrEnum
 
 from pydantic import BaseModel, Field, PrivateAttr
 from pydantic.alias_generators import to_camel
@@ -11,7 +11,7 @@ from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.util import Util
 
 
-class AssigneeTypes(str, Enum):
+class AssigneeTypes(StrEnum, Enum):
     """Enum for install_json.params[].exposePlaybookAs"""
 
     Escalate = 'Escalate'

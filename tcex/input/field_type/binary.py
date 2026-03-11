@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from pydantic.annotated_handlers import GetCoreSchemaHandler  # noqa: TC002
+from pydantic.annotated_handlers import GetCoreSchemaHandler
 from pydantic_core import core_schema  # TYPE-CHECKING
 
 from tcex.input.field_type.exception import InvalidEmptyValue, InvalidType
