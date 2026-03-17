@@ -26,8 +26,12 @@ from tcex.api.tc.ti_transform.model.transform_model import (
     AssociatedGroupTransform,
     AssociatedIndicatorFromGroupTransform,
     AssociatedIndicatorFromIndicatorTransform,
+    AssociationTransformModel,
     DatetimeTransformModel,
     FileOccurrenceTransformModel,
+    GroupToGroupAssociation,
+    GroupToIndicatorAssociation,
+    IndicatorToIndicatorAssociation,
     PredefinedFunctionModel,
 )
 from tcex.logger.trace_logger import TraceLogger
@@ -63,10 +67,10 @@ class TransformsABC(ABC):  # noqa: B024
     def __init__(
         self,
         ti_dicts: list[dict],
-        transforms: list[GroupTransformModel | IndicatorTransformModel],
+        transforms: list[AssociationTransformModel | GroupTransformModel | IndicatorTransformModel],
         raise_exceptions: bool = False,
         *,
-        seperate_batch_associations: bool = False,
+        separate_batch_associations: bool = False,
     ):
         """Initialize instance properties."""
         self.ti_dicts = ti_dicts
@@ -75,7 +79,7 @@ class TransformsABC(ABC):  # noqa: B024
         # properties
         self.log = _logger
         self.raise_exceptions = raise_exceptions
-        self.seperate_batch_associations = seperate_batch_associations
+        self.separate_batch_associations = separate_batch_associations
         self.transformed_collection: list[TransformABC] = []
 
         # validate transforms
@@ -99,21 +103,21 @@ class TransformABC(ABC):
     def __init__(
         self,
         ti_dict: dict,
-        transforms: list[GroupTransformModel | IndicatorTransformModel],
+        transforms: list[AssociationTransformModel | GroupTransformModel | IndicatorTransformModel],
         *,
-        seperate_batch_associations: bool = False,
+        separate_batch_associations: bool = False,
     ):
         """Initialize instance properties."""
         self.ti_dict = ti_dict
         self.transforms = transforms if isinstance(transforms, list) else [transforms]
-        self.seperate_batch_associations = seperate_batch_associations
+        self.separate_batch_associations = separate_batch_associations
 
         # properties
         self.adhoc_groups: list[dict] = []
         self.adhoc_indicators: list[dict] = []
         self.log = _logger
         # the current active transform
-        self.transform: GroupTransformModel | IndicatorTransformModel
+        self.transform: AssociationTransformModel | GroupTransformModel | IndicatorTransformModel
         self.transformed_item = {}
         self.util = Util()
         self.jmespath_options = jmespath.Options(
@@ -124,7 +128,7 @@ class TransformABC(ABC):
         self._validate_transforms()
 
     @staticmethod
-    def _always_array(value: str | list | None) -> list:
+    def _always_array(value: str | int | list | None) -> list:
         """Ensure value is always an array."""
         if value is None:
             value = []
@@ -154,34 +158,114 @@ class TransformABC(ABC):
         # choose the correct transform model before processing TI data
         self._select_transform()
 
-        # process type first, fail early
-        self._process_type()
+        if isinstance(self.transform, AssociationTransformModel):
+            self.transformed_item['association'] = []
+            for association_model in self.transform.associations or []:
+                match association_model:
+                    case GroupToGroupAssociation():
+                        ref_1 = self._transform_value(association_model.xid_1)
+                        ref_2 = self._transform_value(association_model.xid_2)
+                        if not ref_1 or not ref_2:
+                            self.log.warning(
+                                'feature=transform, action=process-group-to-group-association, '
+                                'transform=%s, error=no-ref-1-or-ref-2',
+                                association_model.dict(exclude_unset=True),
+                            )
+                            continue
 
-        # xid
-        self._process_metadata('xid', self.transform.xid)
+                        ref_1, ref_2 = self._make_arrays_even(ref_1, ref_2)
+                        for r1, r2 in zip(ref_1, ref_2, strict=True):
+                            self.transformed_item['association'].append({'ref_1': r1, 'ref_2': r2})
+                    case GroupToIndicatorAssociation():
+                        ref_1 = self._transform_value(association_model.xid)
+                        ref_2 = self._transform_value(association_model.indicator_value)
+                        type_2 = self._transform_value(association_model.indicator_type)
 
-        # process type specific data
-        if isinstance(self.transform, GroupTransformModel):
-            self._process_group()
-        elif isinstance(self.transform, IndicatorTransformModel):
-            self._process_indicator()
+                        if not ref_1 or not ref_2 or not type_2:
+                            self.log.warning(
+                                'feature=transform, action=process-group-to-indicator-association, '
+                                'transform=%s, error=no-ref-1-or-ref-2-or-type-2',
+                                association_model.dict(exclude_unset=True),
+                            )
+                            continue
 
-        # self.process_associations(self.transform.associations)
-        self._process_associated_group(self.transform.associated_groups)
-        self._process_attributes(self.transform.attributes or [])
-        self._process_security_labels(self.transform.security_labels or [])
-        self._process_tags(self.transform.tags or [])
+                        ref_1, ref_2 = self._make_arrays_even(ref_1, ref_2)
+                        ref_2, type_2 = self._make_arrays_even(ref_2, type_2)
 
-        # date fields
-        self._process_metadata_datetime('dateAdded', self.transform.date_added)
-        self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
-        self._process_metadata_datetime('externalDateExpires', self.transform.external_date_expires)
-        self._process_metadata_datetime(
-            'externalLastModified', self.transform.external_last_modified
-        )
-        self._process_metadata_datetime('firstSeen', self.transform.first_seen)
-        self._process_metadata_datetime('lastSeen', self.transform.last_seen)
-        self._process_metadata_datetime('lastModified', self.transform.last_modified)
+                        for r1, r2, t2 in zip(ref_1, ref_2, type_2, strict=True):
+                            self.transformed_item['association'].append(
+                                {'ref_1': r1, 'ref_2': r2, 'type_2': t2}
+                            )
+                    case IndicatorToIndicatorAssociation():
+                        ref_1 = self._transform_value(association_model.indicator_value_1)
+                        type_1 = self._transform_value(association_model.indicator_type_1)
+                        ref_2 = self._transform_value(association_model.indicator_value_2)
+                        type_2 = self._transform_value(association_model.indicator_type_2)
+                        association_type = self._transform_value(
+                            association_model.custom_association_type
+                        )
+
+                        if (
+                            not ref_1
+                            or not type_1
+                            or not ref_2
+                            or not type_2
+                            or not association_type
+                        ):
+                            self.log.warning(
+                                'feature=transform, '
+                                'action=process-indicator-to-indicator-association, '
+                                'transform=%s, '
+                                'error=no-ref-1-or-type-1-or-ref-2-or-type-2-or-association-type',
+                                association_model.dict(exclude_unset=True),
+                            )
+                            continue
+
+                        ref_1, ref_2 = self._make_arrays_even(ref_1, ref_2)
+                        ref_1, type_1 = self._make_arrays_even(ref_1, type_1)
+                        ref_2, type_2 = self._make_arrays_even(ref_2, type_2)
+
+                        for r1, t1, r2, t2 in zip(ref_1, type_1, ref_2, type_2, strict=True):
+                            self.transformed_item['association'].append(
+                                {
+                                    'ref_1': r1,
+                                    'type_1': t1,
+                                    'ref_2': r2,
+                                    'type_2': t2,
+                                    'association_type': association_type,
+                                }
+                            )
+        else:
+            # process type first, fail early
+            self._process_type()
+
+            # xid
+            self._process_metadata('xid', self.transform.xid)
+
+            # process type specific data
+            if isinstance(self.transform, GroupTransformModel):
+                self._process_group()
+            elif isinstance(self.transform, IndicatorTransformModel):
+                self._process_indicator()
+
+            # self.process_associations(self.transform.associations)
+            self._process_associated_group(self.transform.associated_groups)
+            self._process_attributes(self.transform.attributes or [])
+            self._process_security_labels(self.transform.security_labels or [])
+            self._process_tags(self.transform.tags or [])
+
+            # date fields
+            self._process_metadata_datetime('dateAdded', self.transform.date_added)
+            self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
+            self._process_metadata_datetime(
+                'externalDateExpires', self.transform.external_date_expires
+            )
+            self._process_metadata_datetime(
+                'externalLastModified', self.transform.external_last_modified
+            )
+            self._process_metadata_datetime('firstSeen', self.transform.first_seen)
+            self._process_metadata_datetime('lastSeen', self.transform.last_seen)
+            self._process_metadata_datetime('lastModified', self.transform.last_modified)
 
     def _process_custom_association(
         self, associations: list[AssociatedIndicatorFromIndicatorTransform]
@@ -190,7 +274,7 @@ class TransformABC(ABC):
         for i, association in enumerate(associations or [], 1):
             try:
                 summary = self._process_metadata_transform_model(association.summary)
-                indicator_type = self._process_metadata_transform_model(association.type)
+                indicator_type = self._process_metadata_transform_model(association.indicator_type)
                 association_type = self._process_metadata_transform_model(
                     association.association_type
                 )
@@ -419,6 +503,8 @@ class TransformABC(ABC):
             self._process_metadata('dnsActive', self.transform.dns_active)
             self._process_metadata('whoisActive', self.transform.whois_active)
 
+        self._process_custom_association(self.transform.associated_indicators)
+
     def _process_indicator_values(self):
         """Process Indicator value."""
         if not isinstance(self.transform, IndicatorTransformModel):
@@ -445,7 +531,7 @@ class TransformABC(ABC):
 
         name = self._transform_value(self.transform.name)
 
-        if name is None:
+        if not name:
             self.log.error(
                 'feature=ti-transform, event=process-group-name, message=no-name-found, '
                 f'path={self.transform.name.path}'
@@ -453,7 +539,7 @@ class TransformABC(ABC):
             ex_msg = 'At least one indicator value must be provided.'
             raise RuntimeError(ex_msg)
 
-        self.add_name(name)
+        self.add_name(str(name))
 
     def _process_metadata(self, key: str, metadata: MetadataTransformModel | None):
         """Process standard metadata fields."""
@@ -531,20 +617,21 @@ class TransformABC(ABC):
 
     def _process_type(self):
         """Process standard metadata fields."""
+        transform = cast(IndicatorTransformModel | GroupTransformModel, self.transform)
         try:
-            _type = self._transform_value(self.transform.type)
+            _type = self._transform_value(transform.type)
             if _type is not None:
                 self.transformed_item['type'] = _type
             else:
                 self.log.error(
                     'feature=ti-transform, action=process-type, error=invalid=type, '
-                    f'path={self.transform.type.path}, value={_type}'
+                    f'path={transform.type.path}, value={_type}'
                 )
                 ex_msg = 'Invalid type'
                 raise RuntimeError(ex_msg)  # noqa: TRY301
         except Exception as ex:
             ex_msg = 'Type'
-            raise TransformException(ex_msg, ex, context=self.transform.type.dict()) from ex
+            raise TransformException(ex_msg, ex, context=transform.type.dict()) from ex
 
     def _select_transform(self):
         """Select the correct transform based on the "applies" field."""
@@ -564,7 +651,7 @@ class TransformABC(ABC):
 
         # not all metadata fields have a path, but they must have a path or default
         if metadata.path is None:
-            return metadata.default
+            return str(metadata.default) if metadata.default else None
 
         # get value from path
         value = self._path_search(metadata.path)
@@ -572,7 +659,7 @@ class TransformABC(ABC):
         # return default if value of None is returned from Path
         # IMPORTANT: a value of None passed to the transform may cause a failure (lambda x.lower())
         if value is None:
-            return metadata.default
+            return str(metadata.default) if metadata.default is not None else None
 
         for t in metadata.transform or []:
             # pass value to static_map or callable, but never both
@@ -586,7 +673,7 @@ class TransformABC(ABC):
 
         # ensure only a string value or None is returned (set to default if required)
         if value is None:
-            value = metadata.default
+            value = str(metadata.default) if metadata.default is not None else None
         elif not isinstance(value, str):
             value = str(value)
 
@@ -711,6 +798,28 @@ class TransformABC(ABC):
                     )
                     raise ValueError(ex_msg)
 
+    def _make_arrays_even(self, value1: list | Any, value2: list | Any) -> tuple[list, list]:
+        """Validate two arrays are equal length or can be expanded to match."""
+        if isinstance(value1, list) and isinstance(value2, list):
+            if len(value1) == len(value2):
+                return value1, value2
+            if min(len(value1), len(value2)) != 1:
+                ex_msg = (
+                    'When two arrays are provided, they must be the same length or'
+                    ' one of the arrays must be length 1.'
+                )
+                raise RuntimeError(ex_msg)
+            if len(value1) == 1:
+                return [value1[0]] * len(value2), value2
+            return value1, [value2[0]] * len(value1)
+
+        if not isinstance(value1, list) and not isinstance(value2, list):
+            return [value1], [value2]
+
+        if not isinstance(value1, list):
+            return [value1] * len(value2), value2
+        return value1, [value2] * len(value1)
+
     @abstractmethod
     def add_associated_group(self, group_xid: str):
         """Abstract method"""
@@ -748,7 +857,7 @@ class TransformABC(ABC):
         """Abstract method"""
 
     @abstractmethod
-    def add_metadata(self, key: str, value: str):
+    def add_metadata(self, key: str, value: str | int):
         """Abstract method"""
 
     @abstractmethod

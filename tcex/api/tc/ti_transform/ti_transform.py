@@ -6,6 +6,7 @@ from datetime import datetime
 # first-party
 from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
 from tcex.api.tc.ti_transform.transform_abc import (
+    AssociationTransformModel,
     NoValidTransformException,
     TransformABC,
     TransformException,
@@ -24,7 +25,7 @@ class TiTransforms(TransformsABC):
                 TiTransform(
                     ti_dict,
                     self.transforms,
-                    seperate_batch_associations=self.seperate_batch_associations,
+                    separate_batch_associations=self.separate_batch_associations,
                 )
             )
 
@@ -63,7 +64,9 @@ class TiTransforms(TransformsABC):
                 continue
 
             # now that batch is called we can identify the ti type
-            if self.seperate_batch_associations:
+            if self.separate_batch_associations or isinstance(
+                t.transform, AssociationTransformModel
+            ):
                 associations = data.pop('association', [])
                 batch.setdefault('association', []).extend(associations)
             if isinstance(t.transform, GroupTransformModel):
@@ -117,33 +120,29 @@ class TiTransform(TransformABC):
 
     def add_custom_association(self, summary: str, indicator_type: str, association_type: str):
         """Add a custom association."""
-        if not self.seperate_batch_associations:
+        if self.separate_batch_associations:
+            self.transformed_item.setdefault('association', []).append(
+                {
+                    'ref_1': self.transformed_item['summary'],
+                    'type_1': self.transformed_item['type'],
+                    'ref_2': summary,
+                    'type_2': indicator_type,
+                    'association_type': association_type,
+                }
+            )
+        else:
             raise TransformException(
                 field='associatedIndicator',
                 cause=RuntimeError(
                     'Cannot add associated indicator to IndicatorTransformModel when '
-                    'seperate_batch_associations is False.'
+                    'separate_batch_associations is False.'
                 ),
                 context=self.transformed_item,
             )
 
-        self.transformed_item.setdefault('association', []).append(
-            {
-                'ref_1': self.transformed_item['summary'],
-                'type_1': self.transformed_item['type'],
-                'ref_2': summary,
-                'type_2': indicator_type,
-                'association_type': association_type,
-            }
-        )
-
     def add_associated_indicator(self, summary: str, indicator_type: str):
         """Add an associated indicator."""
-        if not self.seperate_batch_associations:
-            self.transformed_item.setdefault('associatedIndicators', []).append(
-                {'summary': summary, 'indicatorType': indicator_type}
-            )
-        else:
+        if self.separate_batch_associations:
             self.transformed_item.setdefault('association', []).append(
                 {
                     'ref_1': self.transformed_item['xid'],
@@ -151,8 +150,12 @@ class TiTransform(TransformABC):
                     'type_2': indicator_type,
                 }
             )
+        else:
+            self.transformed_item.setdefault('associatedIndicators', []).append(
+                {'summary': summary, 'indicatorType': indicator_type}
+            )
 
-    def add_associated_group(self, group_xid: str):
+    def add_associated_group(self, ref_1: str):
         """Add an associated group.
 
         {
@@ -160,36 +163,36 @@ class TiTransform(TransformABC):
                 {
                     'groupXid': 'dd78f2b94ac61d3e5a55c1223a7635db00cd0aaa8aba26c5306e36dd6c1662ee'}
         """
-        if not self.seperate_batch_associations:
+        if not self.separate_batch_associations:
             # process type specific data
             if isinstance(self.transform, GroupTransformModel):
-                self.transformed_item.setdefault('associatedGroupXid', []).append(group_xid)
+                self.transformed_item.setdefault('associatedGroupXid', []).append(ref_1)
             elif isinstance(self.transform, IndicatorTransformModel):
-                associated_group = {'groupXid': group_xid}
+                associated_group = {'groupXid': ref_1}
                 self.transformed_item.setdefault('associatedGroups', []).append(associated_group)
         elif isinstance(self.transform, GroupTransformModel):
             self.transformed_item.setdefault('association', []).append(
                 {
-                    'ref_1': group_xid,
+                    'ref_1': ref_1,
                     'ref_2': self.transformed_item['xid'],
                 }
             )
-            self.log.info(
+            self.log.trace(
                 'Added associated group with xid: %s to %s',
-                group_xid,
+                ref_1,
                 self.transformed_item['xid'],
             )
         elif isinstance(self.transform, IndicatorTransformModel):
             self.transformed_item.setdefault('association', []).append(
                 {
-                    'ref_1': group_xid,
+                    'ref_1': ref_1,
                     'ref_2': self.transformed_item['summary'],
                     'type_2': self.transformed_item['type'],
                 }
             )
-            self.log.info(
+            self.log.trace(
                 'Added associated group with xid: %s to %s',
-                group_xid,
+                ref_1,
                 self.transformed_item['summary'],
             )
 
@@ -339,7 +342,7 @@ class TiTransform(TransformABC):
             }
             del v3_data['attribute']
 
-        # transfomr tags
+        # transform tags
         if v3_data.get('tag'):
             v3_data['tags'] = {'data': [{'name': t['name']} for t in v3_data['tag']]}
             del v3_data['tag']
