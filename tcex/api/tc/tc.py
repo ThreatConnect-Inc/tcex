@@ -5,7 +5,11 @@ from requests import Session  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.ti_transform import TiTransform, TiTransforms
-from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
+from tcex.api.tc.ti_transform.model import (
+    AssociationTransformModel,
+    GroupTransformModel,
+    IndicatorTransformModel,
+)
 from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
 from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3
@@ -39,7 +43,7 @@ class TC:
     @staticmethod
     def ti_transform(
         ti_dict: dict,
-        transforms: list[GroupTransformModel | IndicatorTransformModel],
+        transforms: list[AssociationTransformModel | GroupTransformModel | IndicatorTransformModel],
     ) -> TiTransform:
         """Return an instance of TI Transform class."""
         return TiTransform(ti_dict, transforms)
@@ -47,13 +51,13 @@ class TC:
     @staticmethod
     def ti_transforms(
         ti_dict: list[dict],
-        transforms: list[GroupTransformModel | IndicatorTransformModel],
+        transforms: list[AssociationTransformModel | GroupTransformModel | IndicatorTransformModel],
         *,
-        seperate_batch_associations: bool = False,
+        separate_batch_associations: bool = False,
     ) -> TiTransforms:
         """Return an instance of TI Transforms class."""
         return TiTransforms(
-            ti_dict, transforms, seperate_batch_associations=seperate_batch_associations
+            ti_dict, transforms, separate_batch_associations=separate_batch_associations
         )
 
     @cached_property

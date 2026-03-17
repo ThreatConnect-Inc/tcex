@@ -6,13 +6,17 @@ import json
 import uuid
 from collections.abc import Iterable
 from inspect import _empty, signature
-from typing import TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 # first-party
 from tcex.api.tc.ti_transform.model.transform_model import (
     GroupTransformModel,
     IndicatorTransformModel,
 )
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
 
 
 class TransformBuilderExport(TypedDict):
@@ -98,9 +102,9 @@ def custom_function_definition(definition: FunctionDefinition):
 class ProcessingFunctions:
     """Predefined functions to use in transforms."""
 
-    def __init__(self, tcex) -> None:
+    def __init__(self, tcex: 'TcEx') -> None:
         """."""
-        self.tcex = tcex
+        self.tcex: TcEx = tcex
         self.custom_fns = {}
 
     @custom_function_definition(
@@ -132,20 +136,9 @@ class ProcessingFunctions:
         """Allow for custom processing to be described."""
         fn = self.custom_fns.get(name.lower())
         if not fn:
-            ex_msg = f'Custom function not implemented: {name}:{description}'
-            ex_msg += f'\ncustom_fns: {self.custom_fns}'
+            ex_msg = f'Custom function not implemented: {description}'
             raise NotImplementedError(ex_msg)
-        # Get the list of supported parameters for the function
-
-        # Build params dynamically based on the function signature
-        all_args = {'ti_dict': ti_dict, 'transform': transform, **kwargs}
-        sig_params = signature(fn).parameters
-
-        # Only pass arguments that the function accepts
-        filtered_args = {
-            k: v for k, v in all_args.items() if k in sig_params or 'kwargs' in sig_params
-        }
-        return fn(value, **filtered_args)
+        return fn(value, ti_dict=ti_dict, transform=transform, **kwargs)
 
     def static_map(self, value, mapping: dict):
         """Map values to static values.
@@ -155,6 +148,22 @@ class ProcessingFunctions:
         if not isinstance(mapping, dict):
             mapping = json.loads(mapping)
         return mapping.get(str(value), value)
+
+    def deduplicate_array(self, value: list) -> list:
+        """Remove duplicate values from an array."""
+        return list(set(value))
+
+    def slice_array(self, value: list, start: int = 0, end: int | None = None) -> list:
+        """Slice an array."""
+        return value[start:end]
+
+    def remove_trailing_whitespace(self, value: str) -> str:
+        """Remove trailing whitespace from a string."""
+        return value.rstrip()
+
+    def remove_leading_whitespace(self, value: str) -> str:
+        """Remove leading whitespace from a string."""
+        return value.lstrip()
 
     def value_in(self, value, values: str, delimiter: str = ','):
         """Return the value if it is in the list of values, else return None."""
@@ -182,6 +191,14 @@ class ProcessingFunctions:
             table += f'|{"|".join([str(row.get(o, "")) for o in order])}|\n'
 
         return table
+
+    def defang(self, value: str) -> str:
+        """Defangs URLs, IPs, and common indicators to make them inert."""
+        return self.tcex.util.defang(value)
+
+    def refang(self, value: str) -> str:
+        """Refangs URLs, IPs, and common indicators to make them active."""
+        return self.tcex.util.refang(value)
 
     def any_to_datetime(self, value):
         """Convert any value to a datetime object."""
@@ -279,6 +296,7 @@ class ProcessingFunctions:
                                 api_def['kwargs'][kwarg]
                             )
         except Exception as ex:
+            # import here to avoid circular import
             # first-party
             from tcex.api.tc.ti_transform import TransformException  # noqa: PLC0415
 
@@ -320,6 +338,15 @@ class ProcessingFunctions:
         return name.replace('_', ' ').title()
 
     @staticmethod
+    def _get_type_string_from_annotation(annotation) -> str:
+        """Get a string representation of a type annotation."""
+        if annotation is None:
+            return 'str'
+        if hasattr(annotation, '__name__'):
+            return annotation.__name__
+        return str(annotation)
+
+    @staticmethod
     def _get_params_defs(fn) -> list[ParamDefinition]:
         """Get the arguments for a function.
 
@@ -338,8 +365,8 @@ class ProcessingFunctions:
                 ),
                 'name': p,
                 'label': ProcessingFunctions._snake_to_titlecase(p),
-                'type': (
-                    sig.parameters[p].annotation.__name__ if sig.parameters[p].annotation else 'str'
+                'type': ProcessingFunctions._get_type_string_from_annotation(
+                    sig.parameters[p].annotation
                 ),
                 'help': '',
                 'required': True,

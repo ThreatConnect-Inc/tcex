@@ -129,7 +129,7 @@ class AssociatedIndicatorFromIndicatorTransform(BaseModel, extra=Extra.forbid):
     """."""
 
     summary: str | MetadataTransformModel = Field(..., description='')
-    type: str | MetadataTransformModel = Field(..., description='')
+    indicator_type: str | MetadataTransformModel = Field(..., description='')
     association_type: str | MetadataTransformModel = Field(..., description='')
 
 
@@ -235,8 +235,88 @@ class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
                 values.get('value3'),
             ]
         ):
-            ex_msg = (
-                'An indicator transform must be defined (e.g., summary, value1, value2, value3).'
-            )
+            ex_msg = 'An indicator transform must be defined (e.g., value1, value2, value3).'
+            raise ValueError(ex_msg)
+        return values
+
+
+class GroupToGroupAssociation(BaseModel, extra=Extra.forbid):
+    """."""
+
+    xid_1: MetadataTransformModel = Field(..., description='')
+    xid_2: MetadataTransformModel = Field(..., description='')
+
+
+class GroupToIndicatorAssociation(BaseModel, extra=Extra.forbid):
+    """."""
+
+    xid: MetadataTransformModel = Field(..., description='')
+    indicator_value: MetadataTransformModel = Field(..., description='')
+    indicator_type: MetadataTransformModel = Field(..., description='')
+
+
+class IndicatorToIndicatorAssociation(BaseModel, extra=Extra.forbid):
+    """."""
+
+    indicator_value_1: MetadataTransformModel = Field(..., description='')
+    indicator_type_1: MetadataTransformModel = Field(..., description='')
+    indicator_value_2: MetadataTransformModel = Field(..., description='')
+    indicator_type_2: MetadataTransformModel = Field(..., description='')
+    custom_association_type: MetadataTransformModel = Field(..., description='')
+
+
+class AssociationTransformModel(BaseModel, extra='forbid'):
+    """."""
+
+    applies: Callable | None = Field(None, description='')
+    associations: list[
+        GroupToGroupAssociation | GroupToIndicatorAssociation | IndicatorToIndicatorAssociation
+    ] = Field(default_factory=list, description='')
+
+    # root validator to handle union of types in associations list
+    @root_validator(pre=True)
+    @classmethod
+    def _one_indicator_value(cls, values):
+        """Validate that one set of credentials is provided for the TC API."""
+        association_types = {
+            GroupToGroupAssociation,
+            GroupToIndicatorAssociation,
+            IndicatorToIndicatorAssociation,
+        }
+        if associations := values.get('associations'):
+            validated_associations = []
+            for association in associations:
+                match association:
+                    case (
+                        GroupToGroupAssociation()
+                        | GroupToIndicatorAssociation()
+                        | IndicatorToIndicatorAssociation()
+                    ):
+                        validated_associations.append(association)
+                    case dict():
+                        for association_type in association_types:
+                            try:
+                                validated_association = association_type(**association)
+                                validated_associations.append(validated_association)
+                                break
+                            except Exception:
+                                continue  # nosec
+                        else:
+                            ex_msg = (
+                                'Association must be one of the following types: '
+                                f'{association_types}.'
+                            )
+                            raise ValueError(ex_msg)
+
+                    case _:
+                        ex_msg = (
+                            f'Association must be one of the following types: {association_types}.'
+                        )
+                        raise ValueError(ex_msg)
+
+            values['associations'] = validated_associations
+
+        else:
+            ex_msg = 'At least one association must be defined.'
             raise ValueError(ex_msg)
         return values
