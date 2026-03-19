@@ -34,10 +34,12 @@ class LoadTransform:
     def load_transform(
         self,
         mapping_json: dict,
-        type_: Literal['group', 'indicator'],
     ) -> GroupTransformModel | IndicatorTransformModel:
         """Load and process the transform mapping JSON."""
-        match type_:
+        metadata = mapping_json.pop('metadata', {})
+        ti_type = metadata['threatIntelType']
+        # transformSchemaVersion = metadata.get('transformSchemaVersion', '1')
+        match ti_type:
             case 'group':
                 return GroupTransformModel(**self._transform_data(self._normalize(mapping_json)))
             case 'indicator':

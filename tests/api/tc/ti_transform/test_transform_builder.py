@@ -221,6 +221,10 @@ V2_TRANSFORM = {
     ],
     'type': {'metadata': {}, 'path': '`Event`', 'transform': []},
     'xid': {'metadata': {}, 'path': 'id', 'transform': []},
+    'metadata': {
+        'threatIntelType': 'group',
+        'transformSchemaVersion': '1',
+    }
 }
 
 
@@ -326,20 +330,6 @@ class TestTransformBuilderLoad:
         assert 'External ID' in attr_types
         assert 'Description' in attr_types
 
-    def test_load_v2_requires_ti_type(self, tcex: TcEx):
-        """Test v2 transform raises ValueError when ti_type is None.
-
-        A v2 transform (no 'transform'+'type' wrapper) requires an explicit
-        ti_type argument.
-
-        Fixtures:
-            tcex: TcEx instance for creating ProcessingFunctions
-        """
-        pf = ProcessingFunctions(tcex)
-
-        with pytest.raises(ValueError, match='ti_type is required'):
-            load(copy.deepcopy(V2_TRANSFORM), pf, ti_type=None)
-
     def test_load_v2_returns_group_model(self, tcex: TcEx):
         """Test v2 group transform produces a GroupTransformModel.
 
@@ -350,7 +340,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         assert isinstance(result, GroupTransformModel)
 
@@ -364,7 +354,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         assert result.external_date_added is not None
         assert result.external_date_added.path == 'notification.created_date'
@@ -379,7 +369,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         # name had metadata with a comment; it should be stripped
         assert result.name.path is not None
@@ -394,7 +384,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         assert result.type.path == '`Event`'
 
@@ -407,7 +397,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         assert result.xid is not None
         assert result.xid.path == 'id'
@@ -421,7 +411,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         assert len(result.associated_groups) == 2
 
@@ -435,7 +425,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         # First associated group has transforms with custom + forEach
         first_group = result.associated_groups[0]
@@ -453,7 +443,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         assert len(result.tags) == 2
 
@@ -466,7 +456,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         # Second tag has a prepend transform
         second_tag = result.tags[1]
@@ -483,7 +473,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         assert len(result.attributes) == 2
         attr_types = [a.type for a in result.attributes]
@@ -499,7 +489,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         assert result.security_labels == []
 
@@ -512,7 +502,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         assert result.status is not None
         assert result.status.transform is not None
@@ -528,7 +518,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         assert result.event_date is not None
         assert result.event_date.path == 'notification.breach_summary.exposure_date'
@@ -543,7 +533,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         # xid had an empty transform list; it should be stripped
         assert result.xid is not None
@@ -558,7 +548,7 @@ class TestTransformBuilderLoad:
             tcex: TcEx instance for creating ProcessingFunctions
         """
         pf = ProcessingFunctions(tcex)
-        result = load(copy.deepcopy(V2_TRANSFORM), pf, ti_type='group')
+        result = load(copy.deepcopy(V2_TRANSFORM), pf)
 
         assert result.external_last_modified is not None
         assert result.external_last_modified.path == 'notification.updated_date'
