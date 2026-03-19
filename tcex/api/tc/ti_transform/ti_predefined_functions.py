@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+# ruff: noqa: TRY301
 
 import hashlib
 import json
@@ -260,7 +261,7 @@ class ProcessingFunctions:
 
             if not type_:
                 ex_msg = 'No method or for_each key found in definition.'
-                raise ValueError(ex_msg)  # noqa: TRY301
+                raise ValueError(ex_msg)
 
             fn_name = api_def[type_]
 
@@ -271,7 +272,7 @@ class ProcessingFunctions:
 
             if not fn:
                 ex_msg = f'Unknown function: {fn_name}'
-                raise ValueError(ex_msg)  # noqa: TRY301
+                raise ValueError(ex_msg)
 
             translated[type_] = fn
 
@@ -281,7 +282,7 @@ class ProcessingFunctions:
                 for kwarg in api_def['kwargs']:
                     if kwarg not in sig.parameters:
                         ex_msg = f'Unknown argument {kwarg} for function {fn_name}'
-                        raise ValueError(ex_msg)  # noqa: TRY301
+                        raise ValueError(ex_msg)
 
                     annotation = sig.parameters[kwarg].annotation
                     additional_context = f', Argument: {kwarg}'
