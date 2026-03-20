@@ -77,7 +77,7 @@ dev = [
   "typer>=0.15.1",
 ]
 test = [
-  "deepdiff>=8.2.0",
+  "deepdiff>=8.6.2",
   "fakeredis>=2.27.0",
   "pytest>=8.3.4",
   "pytest-cov>=6.0.0",
