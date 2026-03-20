@@ -47,7 +47,7 @@ class LoadTransform:
                     **self._transform_data(self._normalize(mapping_json))
                 )
             case _:
-                msg = f'Unknown transform type: {type_}'
+                msg = f'Unknown transform type: {ti_type}'
                 raise TypeError(msg)
 
     def _normalize(self, data: dict) -> dict:

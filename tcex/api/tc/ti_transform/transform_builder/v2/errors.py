@@ -19,7 +19,7 @@ class ModelBase(BaseModel):
 
 
 class TransformErrorCause(ModelBase):
-    """Cause for an error, which should be enough information to locate the issuse."""
+    """Cause for an error, which should be enough information to locate the issue."""
 
     section: Literal[
         'Metadata', 'Associations', 'Attributes', 'File Occurrences', 'Security Labels', 'Tags'
@@ -29,7 +29,7 @@ class TransformErrorCause(ModelBase):
 
 
 class TransformError(ModelBase):
-    """Structured presentation of a vaidation error with a transform."""
+    """Structured presentation of a validation error with a transform."""
 
     message: str
     cause: TransformErrorCause

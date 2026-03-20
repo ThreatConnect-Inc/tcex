@@ -21,9 +21,10 @@ def load(
     """Convert a transform from Transform Builder to one of the tcex transform models."""
 
     match transform:
-        case {'transform': dict(), 'type': str()} as tb_v1:  # TB v1
-            return transform_builder_to_model(tb_v1, processing_functions)  # type: ignore
-        case {'metadata': {'threatIntelType': str()}} as tb_v2:  # TB v2
+        case {'transform': dict(), 'type': str()}:  # TB v1
+            return _transform_builder_to_model(transform, processing_functions)  # type: ignore
+        case {'metadata': {'threatIntelType': str()}}:  # TB v2
             return LoadTransform(processing_functions).load_transform(transform)
         case _:
-            raise ValueError('Unrecognized transform format.')
+            ex_msg = 'Unrecognized transform format.'
+            raise ValueError(ex_msg)
