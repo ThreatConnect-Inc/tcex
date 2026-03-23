@@ -4,6 +4,7 @@
 import hashlib
 import json
 import uuid
+import warnings
 from collections.abc import Iterable
 from inspect import _empty, signature
 from typing import TYPE_CHECKING, TypedDict
@@ -27,10 +28,18 @@ class TransformBuilderExport(TypedDict):
 
 
 def transform_builder_to_model(
-    transform: TransformBuilderExport,
-    processing_functions: 'ProcessingFunctions',
+    transform: TransformBuilderExport, processing_functions: 'ProcessingFunctions', **_kwargs
 ) -> IndicatorTransformModel | GroupTransformModel:
     """Convert a transform from Transform Builder to one of the tcex transform models."""
+    if not _kwargs.get('internal_call'):
+        warnings.warn(
+            (
+                'Use of transform_builder_to_model will be deprecated in tcex5.  instead, use '
+                'tcex.api.tc.ti_transform.transform_builder.load'
+            ),
+            PendingDeprecationWarning,
+            stacklevel=2,
+        )
 
     def find_entries(data, key, context='') -> Iterable[tuple[str, dict]]:
         """Find entries in a dict with a given name, regardless of depth."""
