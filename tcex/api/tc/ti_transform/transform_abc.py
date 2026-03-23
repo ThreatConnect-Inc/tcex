@@ -1,5 +1,6 @@
 """TcEx Framework Module"""
 
+# ruff: noqa: TRY301
 import collections
 import logging
 from abc import ABC, abstractmethod
@@ -629,7 +630,7 @@ class TransformABC(ABC):
                     f'path={transform.type.path}, value={_type}'
                 )
                 ex_msg = 'Invalid type'
-                raise RuntimeError(ex_msg)  # noqa: TRY301
+                raise RuntimeError(ex_msg)
         except Exception as ex:
             ex_msg = 'Type'
             raise TransformException(ex_msg, ex, context=transform.type.model_dump()) from ex

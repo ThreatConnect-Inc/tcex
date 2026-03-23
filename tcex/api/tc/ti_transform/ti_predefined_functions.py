@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+# ruff: noqa: TRY301
 
 import hashlib
 import json
@@ -23,11 +24,17 @@ class TransformBuilderExport(TypedDict):
     transform: dict
 
 
-def transform_builder_to_model(
+def _transform_builder_to_model(
     transform: TransformBuilderExport,
     processing_functions: 'ProcessingFunctions',
 ) -> IndicatorTransformModel | GroupTransformModel:
-    """Convert a transform from Transform Builder to one of the tcex transform models."""
+    """Convert a transform from Transform Builder to one of the tcex transform models.
+
+    This is for transforms exported from Transform Builder v1, and should not be called directly.
+
+    Instead, use tcex.api.tc.ti_transform.transform_builder.load, which will detect the version of
+    the transform and call the appropriate function to convert it to a tcex transform model.
+    """
 
     def find_entries(data, key, context='') -> Iterable[tuple[str, dict]]:
         """Find entries in a dict with a given name, regardless of depth."""
@@ -260,7 +267,7 @@ class ProcessingFunctions:
 
             if not type_:
                 ex_msg = 'No method or for_each key found in definition.'
-                raise ValueError(ex_msg)  # noqa: TRY301
+                raise ValueError(ex_msg)
 
             fn_name = api_def[type_]
 
@@ -271,7 +278,7 @@ class ProcessingFunctions:
 
             if not fn:
                 ex_msg = f'Unknown function: {fn_name}'
-                raise ValueError(ex_msg)  # noqa: TRY301
+                raise ValueError(ex_msg)
 
             translated[type_] = fn
 
@@ -281,7 +288,7 @@ class ProcessingFunctions:
                 for kwarg in api_def['kwargs']:
                     if kwarg not in sig.parameters:
                         ex_msg = f'Unknown argument {kwarg} for function {fn_name}'
-                        raise ValueError(ex_msg)  # noqa: TRY301
+                        raise ValueError(ex_msg)
 
                     annotation = sig.parameters[kwarg].annotation
                     additional_context = f', Argument: {kwarg}'
