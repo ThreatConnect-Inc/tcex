@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-
 import importlib
 import inspect
 import os
@@ -9,10 +8,8 @@ from datetime import datetime
 from random import randint
 from typing import Any
 
-
 from _pytest.fixtures import FixtureRequest
 from pydantic import BaseModel
-
 
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.v3 import V3
@@ -25,24 +22,66 @@ class V3Helper:
     """V3 API Helper Module"""
 
     def __init__(self, v3_object: str):
-        """Initialize instance properties"""
-        self.v3_object = v3_object
+        """Initialize instance properties.
 
-        # properties
-        self.app = MockApp(runtime_level='Playbook')
-        self.tcex = self.app.tcex
-        self.v3 = self.tcex.api.tc.v3
+        Kept intentionally lightweight — no I/O — so that class-level
+        ``v3_helper = V3Helper(...)`` declarations are safe during xdist
+        collection (each worker imports all test modules in parallel).
+        Heavy initialization is deferred to lazy properties below.
+        """
+        self.v3_object = v3_object
         self.util = Util()
 
-        # get v3 obj and obj collection (could append s for collection, but dict is cleaner)
-        module_data = self._module_map(v3_object)
-        self.v3_obj = self._import_model(module_data['module'], module_data.get('class_name'))
-        self.v3_obj_collection = self._import_model(
-            module_data.get('module'), module_data.get('collection_class_name')
-        )
+        # lazily initialized
+        self._app: MockApp | None = None
+        self._tcex: TcEx | None = None
+        self._v3 = None
+        self._v3_obj = None
+        self._v3_obj_collection = None
 
         # cleanup values
         self._v3_objects = []
+
+    @property
+    def app(self) -> MockApp:
+        """Return a MockApp instance (created on first access)."""
+        if self._app is None:
+            self._app = MockApp(runtime_level='Playbook')
+        return self._app
+
+    @property
+    def tcex(self) -> TcEx:
+        """Return a TcEx instance (created on first access)."""
+        if self._tcex is None:
+            self._tcex = self.app.tcex
+        return self._tcex
+
+    @property
+    def v3(self):
+        """Return the v3 API accessor (created on first access)."""
+        if self._v3 is None:
+            self._v3 = self.tcex.api.tc.v3
+        return self._v3
+
+    @property
+    def v3_obj(self):
+        """Return the v3 object instance (created on first access)."""
+        if self._v3_obj is None:
+            module_data = self._module_map(self.v3_object)
+            self._v3_obj = self._import_model(
+                module_data['module'], module_data.get('class_name')
+            )
+        return self._v3_obj
+
+    @property
+    def v3_obj_collection(self):
+        """Return the v3 collection instance (created on first access)."""
+        if self._v3_obj_collection is None:
+            module_data = self._module_map(self.v3_object)
+            self._v3_obj_collection = self._import_model(
+                module_data.get('module'), module_data.get('collection_class_name')
+            )
+        return self._v3_obj_collection
 
     @staticmethod
     def _to_list(value: Any) -> list:
@@ -210,6 +249,11 @@ class V3Helper:
                 'module': 'tcex.api.tc.v3.security.owners.owner',
                 'class_name': 'Owner',
                 'collection_class_name': 'Owners',
+            },
+            'exclusion_lists': {
+                'module': 'tcex.api.tc.v3.security.exclusion_lists.exclusion_list',
+                'class_name': 'ExclusionList',
+                'collection_class_name': 'ExclusionLists',
             },
             'results': {
                 'module': 'tcex.api.tc.v3.intel_requirements.results.result',
