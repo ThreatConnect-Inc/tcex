@@ -50,6 +50,8 @@ debugpy
 decrypter
 dedup
 deepdiff
+Defang
+defanged
 deleteconfig
 dendrol
 deps
@@ -98,6 +100,8 @@ hmac
 hset
 httpx
 hvac
+hxxp
+hxxps
 ipaddress
 iregx
 isort
@@ -162,6 +166,7 @@ pyupgrade
 pyyaml
 rargs
 ratelimit
+Refang
 relativedelta
 reqs
 rfile
