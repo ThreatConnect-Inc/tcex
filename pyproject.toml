@@ -180,6 +180,7 @@ reportPrivateImportUsage = false
 
 # Configuration for pytest test runner
 [tool.pytest.ini_options]
+addopts = "-n auto"
 filterwarnings = []
 junit_family = "xunit2"
 testpaths = [
