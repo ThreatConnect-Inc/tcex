@@ -129,7 +129,7 @@ commit = false
 # Additional arguments to pass to the git commit command
 commit_args = "--no-verify"
 # The current version of the project
-current_version = "5.0.0-dev2"
+current_version = "5.0.0-dev3"
 # The commit message template used when committing version bumps
 message = "Version updated from {current_version} to {new_version}"
 # Regular expression for parsing version strings
@@ -188,6 +188,7 @@ reportPrivateImportUsage = false
 
 # Configuration for pytest test runner
 [tool.pytest.ini_options]
+addopts = "-n auto"
 filterwarnings = []
 junit_family = "xunit2"
 testpaths = [

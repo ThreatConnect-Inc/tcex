@@ -1,15 +1,12 @@
 """TcEx Framework Module"""
 
-# standard library
 import json
 from collections.abc import Generator
 from pathlib import Path
 
-# third-party
 from pydantic import ValidationError
 from requests.exceptions import ProxyError
 
-# first-party
 from tcex.api.tc.v3._gen._options_abc import OptionsABC
 from tcex.api.tc.v3._gen.model import PropertyModel
 from tcex.pleb.cached_property import cached_property

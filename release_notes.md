@@ -18,7 +18,11 @@
 -   APP-5072 - [Services] Applied PR #356
 -   APP-5077 - [API] Updated V3 objects to allow setting a request timeout via property
 -   APP-5094 - [API] Added filesystem cache dict for attribute_types, owners, owner_roles, system_roles, users, and user_groups
+-   APP-5100 - [Mitre] Updated MITRE tag module to add a filesystem cache property
 -   APP-5101 - [Inputs] Updated the inputs module to set the tempfile.tempdir to be the temp directory passed in by the Platform
+-   APP-5135 - [Transform] Backported Transform changes from TcEx 5.0.0
+-   APP-5136 - [Playbook] Fixed the error messages in playbook.create when checking array types
+-   APP-5150 - [Pleb] Added new custom JMESPath functions
 
 ### 4.0.10
 
