@@ -247,7 +247,7 @@ class LoadTransform:
         """Translate a function definition in transform builder/API format to an actual function."""
         # convert transform function names to callables
         transforms_with_callable = []
-        for function in mapping.get('transform', []):
+        for function in mapping.get('transform', []) or []:
             transforms_with_callable.append(self._function_name_to_callable(function))
         if transforms_with_callable:
             mapping['transform'] = transforms_with_callable
