@@ -142,12 +142,11 @@ class MqttMessageBroker:
 
             # configure TLS before connecting (must be set before connect)
             if self.broker_cacert is not None:
-                _client.tls_set(
-                    ca_certs=self.broker_cacert,
-                    cert_reqs=ssl.CERT_REQUIRED,
-                )
+                ctx = ssl.create_default_context(cafile=self.broker_cacert)
+                ctx.load_default_certs()
+                ctx.verify_mode = ssl.CERT_REQUIRED
+                _client.tls_set_context(context=ctx)
                 _client.tls_insecure_set(value=False)
-
             # set credentials before connecting (must be set before connect)
             if self.broker_token is not None:
                 _client.username_pw_set('', password=self.broker_token.value)

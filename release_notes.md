@@ -15,6 +15,7 @@
 -   APP-5135 - [Transform] Backported Transform changes from TcEx 5.0.0
 -   APP-5136 - [Playbook] Fixed the error messages in playbook.create when checking array types
 -   APP-5150 - [Pleb] Added new custom JMESPath functions
+-   APP-5183 - [Services] Include system CA bundle in message broker connection
 
 ## 4.0.10
 
