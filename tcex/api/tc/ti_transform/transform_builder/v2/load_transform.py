@@ -9,6 +9,10 @@ from typing import Any, Literal
 
 # first-party
 from tcex.api.tc.ti_transform.model.transform_model import (
+    AssociatedIndicatorFromGroupTransform,
+    AssociatedIndicatorFromIndicatorTransform,
+    AttributeTransformModel,
+    FileOccurrenceTransformModel,
     GroupTransformModel,
     IndicatorTransformModel,
 )
@@ -43,10 +47,12 @@ class LoadTransform:
         # transformSchemaVersion = metadata.get('transformSchemaVersion', '1')
         match ti_type:
             case 'group':
-                return GroupTransformModel(**self._transform_data(self._normalize(mapping_json)))
+                return GroupTransformModel(
+                    **self._transform_data(self._normalize(mapping_json), ti_type)
+                )
             case 'indicator':
                 return IndicatorTransformModel(
-                    **self._transform_data(self._normalize(mapping_json))
+                    **self._transform_data(self._normalize(mapping_json), ti_type)
                 )
 
     def _normalize(self, data: dict) -> dict[str, Any]:
@@ -65,7 +71,7 @@ class LoadTransform:
 
         return normalized
 
-    def _transform_data(self, body: dict[str, Any]) -> dict:
+    def _transform_data(self, body: dict[str, Any], ti_type: str) -> dict:
         """Transform the data."""
         fields_copy: dict[str, Any] = {**body}
         fields_copy.pop('associated_indicators', None)
@@ -113,6 +119,7 @@ class LoadTransform:
                                         af
                                         in (
                                             'type',
+                                            'indicator_type',
                                             'value',
                                             'summary',
                                             'association_type',
@@ -138,6 +145,17 @@ class LoadTransform:
                                         raise RuntimeError(msg)
 
                                     self._translate_processing_function(field[af])
+
+                            match field_key:
+                                case 'attributes':
+                                    AttributeTransformModel(**field)
+                                case 'file_occurrences':
+                                    FileOccurrenceTransformModel(**field)
+                                case 'associated_indicators':
+                                    if ti_type.lower() == 'group':
+                                        AssociatedIndicatorFromGroupTransform(**field)
+                                    else:
+                                        AssociatedIndicatorFromIndicatorTransform(**field)
 
                             transform_data.setdefault(field_key, []).append(field)
                         except Exception:
@@ -247,7 +265,7 @@ class LoadTransform:
         """Translate a function definition in transform builder/API format to an actual function."""
         # convert transform function names to callables
         transforms_with_callable = []
-        for function in mapping.get('transform', []):
+        for function in mapping.get('transform') or []:
             transforms_with_callable.append(self._function_name_to_callable(function))
         if transforms_with_callable:
             mapping['transform'] = transforms_with_callable
