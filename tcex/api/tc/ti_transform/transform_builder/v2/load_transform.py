@@ -9,12 +9,12 @@ from typing import Literal
 
 # first-party
 from tcex.api.tc.ti_transform.model.transform_model import (
+    AssociatedIndicatorFromGroupTransform,
     AssociatedIndicatorFromIndicatorTransform,
     AttributeTransformModel,
     FileOccurrenceTransformModel,
     GroupTransformModel,
     IndicatorTransformModel,
-    AssociatedIndicatorFromGroupTransform,
 )
 from tcex.api.tc.ti_transform.ti_predefined_functions import ProcessingFunctions
 from tcex.api.tc.ti_transform.transform_builder.v2.errors import TransformError, TransformErrorCause
