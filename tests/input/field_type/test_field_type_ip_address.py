@@ -10,19 +10,16 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.ip_address
 """
 
-
 from collections.abc import Callable
-
+from typing import Annotated
 
 import pytest
-from pydantic import BaseModel, field_validator
-
-
-from tcex.input.field_type import (AddressEntity, IpAddress, always_array,
-                                   entity_input, ip_address)
-from tcex.pleb.scoped_property import scoped_property
+from pydantic import BaseModel, ValidationError, field_validator
 from tests.input.field_type.util import InputTest
 from tests.mock_app import MockApp  # TYPE-CHECKING
+
+from tcex.input.field_type import AddressEntity, IpAddress, always_array, entity_input, ip_address
+from tcex.pleb.scoped_property import scoped_property
 
 
 class TestInputsIpAddressFieldTypes(InputTest):
@@ -362,3 +359,117 @@ class TestInputsIpAddressFieldTypes(InputTest):
             fail_test=fail_test,
             playbook_app=playbook_app,
         )
+
+
+class TestIpAddressAnnotated:
+    """Test IpAddress field type via Annotated[str, ip_address(...)] syntax.
+
+    Exercises the annotated-metadata chaining contract so that
+    ip_address(...) factory constraints take effect when the type is written
+    as Annotated[str, ip_address(...)] rather than as a bare IpAddress subclass.
+    """
+
+    def setup_method(self) -> None:
+        """Configure setup before each test."""
+        scoped_property._reset()  # noqa: SLF001
+
+    @pytest.mark.parametrize(
+        argnames='input_value,expected,should_fail',
+        argvalues=[
+            pytest.param(
+                # valid IPv4 address
+                '1.1.1.1',
+                '1.1.1.1',
+                False,
+                id='pass-valid-ipv4',
+            ),
+            pytest.param(
+                # valid IPv6 address
+                '2001:db8::1',
+                '2001:db8::1',
+                False,
+                id='pass-valid-ipv6',
+            ),
+            pytest.param(
+                # string that is not a valid IP address
+                'not-an-ip',
+                None,
+                True,
+                id='fail-invalid-ip-string',
+            ),
+        ],
+    )
+    def test_ip_address_annotated_basic(
+        self,
+        input_value: str,
+        expected: str | None,
+        should_fail: bool,
+    ) -> None:
+        """Test IpAddress via Annotated validates IPv4 and IPv6 strings."""
+
+        class M(BaseModel):
+            x: Annotated[str, ip_address()]
+
+        if should_fail:
+            with pytest.raises(ValidationError):
+                M(x=input_value)
+        else:
+            result = M(x=input_value)
+            assert result.x == expected, f'Expected {expected!r}, got {result.x!r}'
+
+    @pytest.mark.parametrize(
+        argnames='input_value,expected,strip_port,should_fail',
+        argvalues=[
+            pytest.param(
+                # IP without port is unchanged
+                '1.1.1.1',
+                '1.1.1.1',
+                False,
+                False,
+                id='pass-ip-no-port-strip-false',
+            ),
+            pytest.param(
+                # IP with port and strip_port=True removes the port
+                '1.1.1.1:443',
+                '1.1.1.1',
+                True,
+                False,
+                id='pass-ip-with-port-stripped',
+            ),
+            pytest.param(
+                # IP with port and strip_port=False (default) is not a valid IP
+                '1.1.1.1:443',
+                None,
+                False,
+                True,
+                id='fail-ip-with-port-not-stripped',
+            ),
+        ],
+    )
+    def test_ip_address_annotated_strip_port(
+        self,
+        input_value: str,
+        expected: str | None,
+        strip_port: bool,
+        should_fail: bool,
+    ) -> None:
+        """Test IpAddress via Annotated with strip_port option."""
+
+        class M(BaseModel):
+            x: Annotated[str, ip_address(strip_port=strip_port)]
+
+        if should_fail:
+            with pytest.raises(ValidationError):
+                M(x=input_value)
+        else:
+            result = M(x=input_value)
+            assert result.x == expected, f'Expected {expected!r}, got {result.x!r}'
+
+    def test_ip_address_annotated_optional_none(self) -> None:
+        """Test IpAddress via Annotated accepts None for an optional field."""
+
+        class M(BaseModel):
+            x: Annotated[str, ip_address()] | None = None
+
+        result = M(x=None)
+        assert result.x is None

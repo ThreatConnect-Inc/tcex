@@ -45,16 +45,20 @@ class Sensitive:
     @classmethod
     def __get_pydantic_core_schema__(
         cls, source: type[Any], handler: GetCoreSchemaHandler
-    ) -> core_schema.AfterValidatorFunctionSchema:
+    ) -> core_schema.CoreSchema:
         """Run validators / modifiers on input."""
-        return core_schema.with_info_after_validator_function(
-            cls._validate,
-            core_schema.str_schema(
+        if isinstance(source, type) and issubclass(source, str | bytes | Sensitive):
+            base_schema: core_schema.CoreSchema = core_schema.str_schema(
                 coerce_numbers_to_str=True,
                 max_length=cls.max_length,
                 min_length=cls.min_length,
                 strict=False,
-            ),
+            )
+        else:
+            base_schema = handler(source)
+        return core_schema.with_info_after_validator_function(
+            cls._validate,
+            base_schema,
             field_name=handler.field_name,
         )
 

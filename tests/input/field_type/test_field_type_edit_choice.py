@@ -9,20 +9,17 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.EditChoice
 """
 
-
 from collections.abc import Callable
-from typing import Any
-
+from typing import Annotated, Any
 
 import pytest
-from pydantic import BaseModel
-
+from pydantic import BaseModel, ValidationError
+from tests.input.field_type.util import InputTest
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 from tcex.input.field_type import EditChoice, edit_choice
 from tcex.pleb.cached_property import cached_property
 from tcex.pleb.scoped_property import scoped_property
-from tests.input.field_type.util import InputTest
-from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
 class TestInputsFieldTypes(InputTest):
@@ -105,7 +102,7 @@ class TestInputsFieldTypes(InputTest):
                 False,
                 None,
                 False,
-                id='pass-normal-input'
+                id='pass-normal-input',
             ),
             pytest.param(
                 '${users:bsummers@threatconnect.com}',
@@ -114,7 +111,7 @@ class TestInputsFieldTypes(InputTest):
                 False,
                 None,
                 False,
-                id='pass-normal-users-variable'
+                id='pass-normal-users-variable',
             ),
             pytest.param(
                 '${user_groups:bsummers@threatconnect.com}',
@@ -123,7 +120,7 @@ class TestInputsFieldTypes(InputTest):
                 False,
                 None,
                 False,
-                id='pass-normal-user_groups-variable'
+                id='pass-normal-user_groups-variable',
             ),
             pytest.param(
                 'choice_1', 'choice_1', False, False, None, False, id='pass-required-valid-choice'
@@ -263,3 +260,73 @@ class TestInputsFieldTypes(InputTest):
             fail_test=fail_test,
             playbook_app=playbook_app,
         )
+
+
+class TestEditChoiceAnnotated:
+    """Test EditChoice field type via Annotated[str, edit_choice(...)] syntax.
+
+    Exercises the annotated-metadata chaining contract so that
+    edit_choice(...) factory constraints take effect when the type is written
+    as Annotated[str, edit_choice(...)] rather than as a bare EditChoice subclass.
+
+    EditChoice validation reads install.json via InstallJson() and accesses
+    registry.session_tc for variable resolution, so the playbook_app fixture
+    is required to initialize the registry before any model is validated.
+    Using allow_additional=True avoids needing specific valid_values in
+    install.json — any non-empty string passes through.
+    """
+
+    def setup_method(self) -> None:
+        """Configure setup before each test."""
+        scoped_property._reset()  # noqa: SLF001
+        cached_property._reset()  # noqa: SLF001
+
+    @pytest.mark.parametrize(
+        argnames='input_value,should_fail',
+        argvalues=[
+            pytest.param(
+                # any non-empty string passes when allow_additional=True
+                'any_value',
+                False,
+                id='pass-any-non-empty-string',
+            ),
+            pytest.param(
+                # another arbitrary string also passes
+                'another_value',
+                False,
+                id='pass-another-non-empty-string',
+            ),
+            pytest.param(
+                # empty string is always rejected at the EditChoice level
+                '',
+                True,
+                id='fail-empty-string-rejected',
+            ),
+        ],
+    )
+    def test_edit_choice_annotated(
+        self,
+        input_value: str,
+        should_fail: bool,
+        playbook_app: Callable[..., MockApp],
+    ) -> None:
+        """Test EditChoice via Annotated with allow_additional=True.
+
+        The playbook_app fixture initializes the registry (registry.session_tc)
+        that EditChoice validation needs to resolve TC variables in valid_values.
+        The model is still instantiated directly via BaseModel, not through the
+        TcEx input pipeline.
+        """
+        # Initialize registry + install.json by touching .tcex; no TC server needed
+        # because valid_values resolves to [] (field 'x' absent from mock install.json).
+        _ = playbook_app().tcex
+
+        class M(BaseModel):
+            x: Annotated[str, edit_choice(allow_additional=True)]
+
+        if should_fail:
+            with pytest.raises(ValidationError):
+                M(x=input_value)
+        else:
+            result = M(x=input_value)
+            assert result.x == input_value, f'Expected {input_value!r}, got {result.x!r}'

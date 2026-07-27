@@ -10,18 +10,16 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.integer
 """
 
-
 from collections.abc import Callable
-
+from typing import Annotated
 
 import pytest
-from pydantic import BaseModel, field_validator
-
+from pydantic import BaseModel, ValidationError, field_validator
+from tests.input.field_type.util import InputTest
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 from tcex.input.field_type import Integer, always_array, integer
 from tcex.pleb.scoped_property import scoped_property
-from tests.input.field_type.util import InputTest
-from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
 class TestInputsFieldTypes(InputTest):
@@ -402,3 +400,76 @@ class TestInputsFieldTypes(InputTest):
             fail_test=fail_test,
             playbook_app=playbook_app,
         )
+
+
+class TestIntegerAnnotated:
+    """Test Integer field type via Annotated[int, integer(...)] syntax.
+
+    Exercises the annotated-metadata chaining contract so that
+    integer(...) factory constraints take effect when the type is written
+    as Annotated[int, integer(...)] rather than as a bare Integer subclass.
+    """
+
+    def setup_method(self) -> None:
+        """Configure setup before each test."""
+        scoped_property._reset()  # noqa: SLF001
+
+    @pytest.mark.parametrize(
+        argnames='input_value,expected,should_fail',
+        argvalues=[
+            pytest.param(
+                # valid int within ge=1 and le=100
+                42,
+                42,
+                False,
+                id='pass-valid-int-in-range',
+            ),
+            pytest.param(
+                # numeric string coerced to int by pydantic-core int_schema lax mode
+                '42',
+                42,
+                False,
+                id='pass-string-coerced-to-int',
+            ),
+            pytest.param(
+                # int below ge=1 violates the lower bound
+                0,
+                None,
+                True,
+                id='fail-below-ge-bound',
+            ),
+            pytest.param(
+                # int above le=100 violates the upper bound
+                101,
+                None,
+                True,
+                id='fail-above-le-bound',
+            ),
+        ],
+    )
+    def test_integer_annotated_constraints(
+        self,
+        input_value: int | str,
+        expected: int | None,
+        should_fail: bool,
+    ) -> None:
+        """Test Integer via Annotated with ge and le range constraints."""
+
+        class M(BaseModel):
+            x: Annotated[int, integer(ge=1, le=100)]
+
+        if should_fail:
+            with pytest.raises(ValidationError):
+                M(x=input_value)
+        else:
+            result = M(x=input_value)
+            assert result.x == expected, f'Expected {expected!r}, got {result.x!r}'
+
+    def test_integer_annotated_optional_none(self) -> None:
+        """Test Integer via Annotated accepts None for an optional field."""
+
+        class M(BaseModel):
+            x: Annotated[int, integer(ge=1, le=100)] | None = None
+
+        result = M(x=None)
+        assert result.x is None

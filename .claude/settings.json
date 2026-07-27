@@ -1,26 +1,23 @@
 {
   "agent": "tcex-orchestrator",
-  "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
-  },
   "hooks": {
     "PreToolUse": [
       {
         "hooks": [
           {
-            "command": ".claude/scripts/enforce_no_dynamic_paths.sh",
+            "command": ".claude/hooks/enforce_no_dynamic_paths.sh",
             "type": "command"
           },
           {
-            "command": ".claude/scripts/enforce_pinned_paths.sh",
+            "command": ".claude/hooks/enforce_pinned_paths.sh",
             "type": "command"
           },
           {
-            "command": ".claude/scripts/enforce_no_branch_change.sh",
+            "command": ".claude/hooks/enforce_no_branch_change.sh",
             "type": "command"
           },
           {
-            "command": ".claude/scripts/enforce_no_commit.sh",
+            "command": ".claude/hooks/enforce_no_commit.sh",
             "type": "command"
           }
         ],
@@ -29,7 +26,7 @@
       {
         "hooks": [
           {
-            "command": ".claude/scripts/enforce_us_spelling.sh",
+            "command": ".claude/hooks/enforce_us_spelling.sh",
             "type": "command"
           }
         ],
@@ -38,51 +35,7 @@
     ]
   },
   "permissions": {
-    "allow": [
-      "Bash(/opt/homebrew/opt/gawk/libexec/gnubin/awk *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/basename *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/cat *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/chmod *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/cp *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/cut *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/date *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/dirname *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/du *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/echo *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/env *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/head *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/ln *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/ls *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/mkdir *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/mv *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/printf *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/rm *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/sort *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/stat *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/tail *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/tee *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/touch *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/tr *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/uniq *)",
-      "Bash(/opt/homebrew/opt/coreutils/libexec/gnubin/wc *)",
-      "Bash(/opt/homebrew/opt/grep/libexec/gnubin/grep *)",
-      "Bash(/opt/homebrew/opt/gnu-sed/libexec/gnubin/sed *)",
-      "Bash(/opt/homebrew/opt/findutils/libexec/gnubin/find *)",
-      "Bash(/opt/homebrew/opt/findutils/libexec/gnubin/xargs *)",
-      "Bash(/opt/homebrew/opt/gnu-tar/libexec/gnubin/tar *)",
-      "Bash(/opt/homebrew/opt/diffutils/bin/diff *)",
-      "Bash(/opt/homebrew/bin/gzip *)",
-      "Bash(/opt/homebrew/bin/gunzip *)",
-      "Bash(/opt/homebrew/bin/zcat *)",
-      "Bash(/opt/homebrew/bin/jq *)",
-      "Bash(/opt/homebrew/bin/wget *)",
-      "Bash(/usr/bin/curl *)",
-      "Bash(/usr/bin/file *)",
-      "mcp__atlassian__*",
-      "mcp__github__*",
-      "mcp__ide__*",
-      "mcp__plugin_slack_slack__*"
-    ],
+    "allow": [],
     "ask": [],
     "deny": [
       "Bash(git am:*)",

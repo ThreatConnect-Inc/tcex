@@ -10,19 +10,17 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.sensitive
 """
 
-
 from collections.abc import Callable
-
+from typing import Annotated
 
 import pytest
 from pydantic import BaseModel, ValidationError
-
+from tests.input.field_type.util import InputTest
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 from tcex.input.field_type import Sensitive
 from tcex.input.field_type.sensitive import sensitive
 from tcex.pleb.scoped_property import scoped_property
-from tests.input.field_type.util import InputTest
-from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
 class TestInputsFieldTypeSensitive(InputTest):
@@ -439,3 +437,76 @@ class TestInputsFieldTypeSensitive(InputTest):
             tcex.inputs.add_model(PytestModel)
 
         assert 'validation error' in str(ex.value)
+
+
+class TestSensitiveAnnotated:
+    """Test Sensitive field type via Annotated[str, sensitive(...)] syntax.
+
+    Exercises the annotated-metadata chaining contract so that
+    sensitive(...) factory constraints take effect when the type is written
+    as Annotated[str, sensitive(...)] rather than as a bare Sensitive subclass.
+    The validator wraps the value in a Sensitive instance regardless of the
+    str annotation on the outer type.
+    """
+
+    def setup_method(self) -> None:
+        """Configure setup before each test."""
+        scoped_property._reset()  # noqa: SLF001
+
+    @pytest.mark.parametrize(
+        argnames='input_value,expected_value,should_fail',
+        argvalues=[
+            pytest.param(
+                # non-empty string passes allow_empty=False
+                'secret',
+                'secret',
+                False,
+                id='pass-valid-non-empty-string',
+            ),
+            pytest.param(
+                # empty string rejected by allow_empty=False
+                '',
+                None,
+                True,
+                id='fail-empty-string-not-allowed',
+            ),
+            pytest.param(
+                # numeric value coerced to str via coerce_numbers_to_str=True
+                42,
+                '42',
+                False,
+                id='pass-numeric-coerced-to-str',
+            ),
+        ],
+    )
+    def test_sensitive_annotated_constraints(
+        self,
+        input_value: str | int,
+        expected_value: str | None,
+        should_fail: bool,
+    ) -> None:
+        """Test Sensitive via Annotated with allow_empty and numeric coercion."""
+
+        class M(BaseModel):
+            x: Annotated[str, sensitive(allow_empty=False)]
+
+        if should_fail:
+            with pytest.raises(ValidationError):
+                M(x=input_value)
+        else:
+            result = M(x=input_value)
+            assert isinstance(result.x, Sensitive), (
+                f'Expected Sensitive instance, got {type(result.x)}'
+            )
+            assert result.x.value == expected_value, (
+                f'Expected value {expected_value!r}, got {result.x.value!r}'
+            )
+
+    def test_sensitive_annotated_optional_none(self) -> None:
+        """Test Sensitive via Annotated accepts None for an optional field."""
+
+        class M(BaseModel):
+            x: Annotated[str, sensitive()] | None = None
+
+        result = M(x=None)
+        assert result.x is None

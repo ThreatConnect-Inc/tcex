@@ -25,11 +25,15 @@ class IpAddress(str):
     @classmethod
     def __get_pydantic_core_schema__(
         cls, source: type[Any], handler: GetCoreSchemaHandler
-    ) -> core_schema.AfterValidatorFunctionSchema:
+    ) -> core_schema.CoreSchema:
         """Run validators / modifiers on input."""
+        if isinstance(source, type) and issubclass(source, str):
+            base_schema: core_schema.CoreSchema = core_schema.str_schema()
+        else:
+            base_schema = handler(source)
         return core_schema.with_info_after_validator_function(
             cls._validate,
-            core_schema.str_schema(),
+            base_schema,
             field_name=handler.field_name,
         )
 

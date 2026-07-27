@@ -31,11 +31,17 @@ class String(str):
     @classmethod
     def __get_pydantic_core_schema__(
         cls, source: type[Any], handler: GetCoreSchemaHandler
-    ) -> core_schema.AfterValidatorFunctionSchema:
+    ) -> core_schema.CoreSchema:
         """Run validators / modifiers on input."""
+        if isinstance(source, type) and issubclass(source, str):
+            base_schema: core_schema.CoreSchema = core_schema.str_schema(
+                max_length=cls.max_length, min_length=cls.min_length
+            )
+        else:
+            base_schema = handler(source)
         return core_schema.with_info_after_validator_function(
             cls._validate,
-            core_schema.str_schema(max_length=cls.max_length, min_length=cls.min_length),
+            base_schema,
             field_name=handler.field_name,
         )
 
@@ -61,10 +67,10 @@ class String(str):
         return value
 
     @classmethod
-    def validate_type(cls, value: str, field_name: str) -> str:
+    def validate_type(cls, value: object, field_name: str) -> str:
         """Raise exception if value is not a Binary type."""
         if not isinstance(value, str):
-            raise InvalidType(field_name, type(value))
+            raise InvalidType(field_name, 'str', type(value).__name__)
         return value
 
 

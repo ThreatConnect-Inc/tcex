@@ -9,21 +9,17 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.Binary
 """
 
-
 from collections.abc import Callable
-from typing import Any
-
+from typing import Annotated, Any
 
 import pytest
-from pydantic import BaseModel, field_validator
-
-
-from tcex.input.field_type import (Binary, always_array, binary,
-                                   conditional_required)
-from tcex.pleb.cached_property import cached_property
-from tcex.pleb.scoped_property import scoped_property
+from pydantic import BaseModel, ValidationError, field_validator
 from tests.input.field_type.util import InputTest
 from tests.mock_app import MockApp  # TYPE-CHECKING
+
+from tcex.input.field_type import Binary, always_array, binary, conditional_required
+from tcex.pleb.cached_property import cached_property
+from tcex.pleb.scoped_property import scoped_property
 
 
 class TestInputsFieldTypes(InputTest):
@@ -437,3 +433,100 @@ class TestInputsFieldTypes(InputTest):
             fail_test=fail_test,
             playbook_app=playbook_app,
         )
+
+
+class TestBinaryAnnotated:
+    """Test Binary field type via Annotated[bytes, binary(...)] syntax.
+
+    Exercises the annotated-metadata chaining contract so that
+    binary(...) factory constraints take effect when the type is written
+    as Annotated[bytes, binary(...)] rather than as a bare Binary subclass.
+    """
+
+    def setup_method(self) -> None:
+        """Configure setup before each test."""
+        cached_property._reset()  # noqa: SLF001
+        scoped_property._reset()  # noqa: SLF001
+
+    @pytest.mark.parametrize(
+        argnames='input_value,expected,should_fail',
+        argvalues=[
+            pytest.param(
+                # valid bytes well within max_length=20
+                b'hello',
+                b'hello',
+                False,
+                id='pass-valid-bytes-within-max-length',
+            ),
+            pytest.param(
+                # 21-byte value exceeds max_length=20
+                b'toolongbytes123456789',
+                None,
+                True,
+                id='fail-exceeds-max-length',
+            ),
+            pytest.param(
+                # empty bytes rejected by allow_empty=False
+                b'',
+                None,
+                True,
+                id='fail-empty-bytes-not-allowed',
+            ),
+        ],
+    )
+    def test_binary_annotated_constraints(
+        self,
+        input_value: bytes,
+        expected: bytes | None,
+        should_fail: bool,
+    ) -> None:
+        """Test Binary via Annotated with max_length and allow_empty constraints."""
+
+        class M(BaseModel):
+            x: Annotated[bytes, binary(max_length=20, allow_empty=False)]
+
+        if should_fail:
+            with pytest.raises(ValidationError):
+                M(x=input_value)
+        else:
+            result = M(x=input_value)
+            assert result.x == expected, f'Expected {expected!r}, got {result.x!r}'
+
+    @pytest.mark.parametrize(
+        argnames='input_value,expected',
+        argvalues=[
+            pytest.param(
+                # leading and trailing whitespace bytes are removed by strip=True
+                b'  hello  ',
+                b'hello',
+                id='pass-strip-trims-whitespace-bytes',
+            ),
+            pytest.param(
+                # bytes with no surrounding whitespace are unchanged
+                b'hello',
+                b'hello',
+                id='pass-strip-no-whitespace-unchanged',
+            ),
+        ],
+    )
+    def test_binary_annotated_strip(
+        self,
+        input_value: bytes,
+        expected: bytes,
+    ) -> None:
+        """Test Binary via Annotated with strip=True trims surrounding whitespace bytes."""
+
+        class M(BaseModel):
+            x: Annotated[bytes, binary(strip=True)]
+
+        result = M(x=input_value)
+        assert result.x == expected, f'Expected {expected!r}, got {result.x!r}'
+
+    def test_binary_annotated_optional_none(self) -> None:
+        """Test Binary via Annotated accepts None for an optional field."""
+
+        class M(BaseModel):
+            x: Annotated[bytes, binary()] | None = None
+
+        result = M(x=None)
+        assert result.x is None

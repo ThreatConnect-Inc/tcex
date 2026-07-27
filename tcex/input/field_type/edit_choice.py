@@ -149,9 +149,13 @@ class EditChoice(str):
             - Ensures field_name is available during validation for error reporting
             - Integrates seamlessly with Pydantic's validation system
         """
+        if isinstance(source, type) and issubclass(source, str):
+            base_schema: core_schema.CoreSchema = core_schema.str_schema()
+        else:
+            base_schema = handler(source)
         return core_schema.with_info_after_validator_function(
             cls._validate,
-            core_schema.str_schema(),
+            base_schema,
             field_name=handler.field_name,
         )
 
@@ -186,7 +190,7 @@ class EditChoice(str):
         return value.strip()
 
     @classmethod
-    def validate_type(cls, value: str, field_name: str) -> str:
+    def validate_type(cls, value: object, field_name: str) -> str:
         """Validate that the input value is of string type.
 
         This method performs type validation to ensure that the input value is
@@ -225,7 +229,7 @@ class EditChoice(str):
             raise InvalidType(
                 field_name=field_name,
                 expected_types='(str)',
-                provided_type=type(value),
+                provided_type=type(value).__name__,
             )
         return value
 

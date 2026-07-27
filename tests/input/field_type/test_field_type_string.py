@@ -10,19 +10,16 @@ Classes:
 TcEx Module Tested: tcex.input.field_type.string
 """
 
-
 from collections.abc import Callable
-
+from typing import Annotated
 
 import pytest
-from pydantic import BaseModel, field_validator
-
-
-from tcex.input.field_type import (String, always_array, conditional_required,
-                                   string)
-from tcex.pleb.scoped_property import scoped_property
+from pydantic import BaseModel, ValidationError, field_validator
 from tests.input.field_type.util import InputTest
 from tests.mock_app import MockApp  # TYPE-CHECKING
+
+from tcex.input.field_type import String, always_array, conditional_required, string
+from tcex.pleb.scoped_property import scoped_property
 
 
 class TestInputsFieldTypes(InputTest):
@@ -659,3 +656,143 @@ class TestInputsFieldTypes(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.model.my_data == expected_value  # type: ignore
+
+
+class TestStringAnnotated:
+    """Test String field type via Annotated[str, string(...)] syntax.
+
+    Exercises the annotated-metadata chaining contract so that
+    string(...) factory constraints take effect when the type is written
+    as Annotated[str, string(...)] rather than as a bare String subclass.
+    """
+
+    def setup_method(self) -> None:
+        """Configure setup before each test."""
+        scoped_property._reset()  # noqa: SLF001
+
+    @pytest.mark.parametrize(
+        argnames='input_value,expected,should_fail',
+        argvalues=[
+            pytest.param(
+                # valid string well within max_length=10
+                'hello',
+                'hello',
+                False,
+                id='pass-valid-within-max-length',
+            ),
+            pytest.param(
+                # short string also within max_length
+                'hi',
+                'hi',
+                False,
+                id='pass-short-string',
+            ),
+            pytest.param(
+                # string of 13 chars exceeds max_length=10
+                'toolongstring',
+                None,
+                True,
+                id='fail-exceeds-max-length',
+            ),
+            pytest.param(
+                # empty string rejected by allow_empty=False
+                '',
+                None,
+                True,
+                id='fail-empty-not-allowed',
+            ),
+        ],
+    )
+    def test_string_annotated_max_length(
+        self,
+        input_value: str,
+        expected: str | None,
+        should_fail: bool,
+    ) -> None:
+        """Test String via Annotated with max_length and allow_empty constraints."""
+
+        class M(BaseModel):
+            x: Annotated[str, string(max_length=10, allow_empty=False)]
+
+        if should_fail:
+            with pytest.raises(ValidationError):
+                M(x=input_value)
+        else:
+            result = M(x=input_value)
+            assert result.x == expected, f'Expected {expected!r}, got {result.x!r}'
+
+    @pytest.mark.parametrize(
+        argnames='input_value,expected,should_fail',
+        argvalues=[
+            pytest.param(
+                # string matching the lowercase-only regex
+                'hello',
+                'hello',
+                False,
+                id='pass-matches-regex',
+            ),
+            pytest.param(
+                # string with uppercase letters does not match the regex
+                'Hello123',
+                None,
+                True,
+                id='fail-regex-no-match',
+            ),
+        ],
+    )
+    def test_string_annotated_regex(
+        self,
+        input_value: str,
+        expected: str | None,
+        should_fail: bool,
+    ) -> None:
+        """Test String via Annotated with a regex constraint."""
+
+        class M(BaseModel):
+            x: Annotated[str, string(regex=r'^[a-z]+$')]
+
+        if should_fail:
+            with pytest.raises(ValidationError):
+                M(x=input_value)
+        else:
+            result = M(x=input_value)
+            assert result.x == expected, f'Expected {expected!r}, got {result.x!r}'
+
+    @pytest.mark.parametrize(
+        argnames='input_value,expected',
+        argvalues=[
+            pytest.param(
+                # leading and trailing whitespace is removed by strip=True
+                '  hello  ',
+                'hello',
+                id='pass-strip-trims-whitespace',
+            ),
+            pytest.param(
+                # value with no surrounding whitespace is unchanged
+                'hello',
+                'hello',
+                id='pass-strip-no-whitespace-unchanged',
+            ),
+        ],
+    )
+    def test_string_annotated_strip(
+        self,
+        input_value: str,
+        expected: str,
+    ) -> None:
+        """Test String via Annotated with strip=True trims surrounding whitespace."""
+
+        class M(BaseModel):
+            x: Annotated[str, string(strip=True)]
+
+        result = M(x=input_value)
+        assert result.x == expected, f'Expected {expected!r}, got {result.x!r}'
+
+    def test_string_annotated_optional_none(self) -> None:
+        """Test String via Annotated accepts None for an optional field."""
+
+        class M(BaseModel):
+            x: Annotated[str, string()] | None = None
+
+        result = M(x=None)
+        assert result.x is None
