@@ -1,12 +1,18 @@
 """Utility to load transform files."""
 
 # ruff: noqa: TRY301
+# standard library
 import json
 import logging
 from inspect import signature
-from typing import Literal
+from typing import Any, Literal
 
+# first-party
 from tcex.api.tc.ti_transform.model.transform_model import (
+    AssociatedIndicatorFromGroupTransform,
+    AssociatedIndicatorFromIndicatorTransform,
+    AttributeTransformModel,
+    FileOccurrenceTransformModel,
     GroupTransformModel,
     IndicatorTransformModel,
 )
@@ -34,25 +40,24 @@ class LoadTransform:
     def load_transform(
         self,
         mapping_json: dict,
-    ) -> GroupTransformModel | IndicatorTransformModel:
+    ) -> GroupTransformModel | IndicatorTransformModel:  # type: ignore
         """Load and process the transform mapping JSON."""
         metadata = mapping_json.pop('metadata', {})
         ti_type = metadata['threatIntelType']
         # transformSchemaVersion = metadata.get('transformSchemaVersion', '1')
         match ti_type:
             case 'group':
-                return GroupTransformModel(**self._transform_data(self._normalize(mapping_json)))
+                return GroupTransformModel(
+                    **self._transform_data(self._normalize(mapping_json), ti_type)
+                )
             case 'indicator':
                 return IndicatorTransformModel(
-                    **self._transform_data(self._normalize(mapping_json))
+                    **self._transform_data(self._normalize(mapping_json), ti_type)
                 )
-            case _:
-                msg = f'Unknown transform type: {ti_type}'
-                raise TypeError(msg)
 
-    def _normalize(self, data: dict) -> dict:
+    def _normalize(self, data: dict) -> dict[str, Any]:
         """Normalize the transform data."""
-        normalized = {}
+        normalized: dict[str, Any] = {}
         for key, value in data.items():
             normalized_key = self.util.camel_to_snake(key)
             if isinstance(value, dict):
@@ -66,9 +71,9 @@ class LoadTransform:
 
         return normalized
 
-    def _transform_data(self, body: dict) -> dict:
+    def _transform_data(self, body: dict[str, Any], ti_type: str) -> dict:
         """Transform the data."""
-        fields_copy = {**body}
+        fields_copy: dict[str, Any] = {**body}
         fields_copy.pop('associated_indicators', None)
 
         transform_data = {}
@@ -114,6 +119,7 @@ class LoadTransform:
                                         af
                                         in (
                                             'type',
+                                            'indicator_type',
                                             'value',
                                             'summary',
                                             'association_type',
@@ -139,6 +145,17 @@ class LoadTransform:
                                         raise RuntimeError(msg)
 
                                     self._translate_processing_function(field[af])
+
+                            match field_key:
+                                case 'attributes':
+                                    AttributeTransformModel(**field)
+                                case 'file_occurrences':
+                                    FileOccurrenceTransformModel(**field)
+                                case 'associated_indicators':
+                                    if ti_type.lower() == 'group':
+                                        AssociatedIndicatorFromGroupTransform(**field)
+                                    else:
+                                        AssociatedIndicatorFromIndicatorTransform(**field)
 
                             transform_data.setdefault(field_key, []).append(field)
                         except Exception:
@@ -248,7 +265,7 @@ class LoadTransform:
         """Translate a function definition in transform builder/API format to an actual function."""
         # convert transform function names to callables
         transforms_with_callable = []
-        for function in mapping.get('transform', []):
+        for function in mapping.get('transform') or []:
             transforms_with_callable.append(self._function_name_to_callable(function))
         if transforms_with_callable:
             mapping['transform'] = transforms_with_callable
