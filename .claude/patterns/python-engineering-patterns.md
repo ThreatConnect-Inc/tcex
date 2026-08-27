@@ -50,6 +50,7 @@ import from `tcex.pleb` (not `functools`) so the test suite's `_reset()` can cle
 ```python
 from tcex.pleb.cached_property import cached_property
 
+
 @cached_property
 def api(self) -> API:
     """Return instance of API."""
@@ -76,6 +77,7 @@ from `pydantic.alias_generators` (not the old custom `snake_to_camel`), and `ext
 ```python
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
+
 
 class InstallJsonModel(BaseModel):
     """Install.json data model."""
@@ -113,6 +115,7 @@ from typing import Any, ClassVar
 
 from pydantic.annotated_handlers import GetCoreSchemaHandler
 from pydantic_core import core_schema
+
 
 class String(str):
     allow_empty: ClassVar[bool] = True
@@ -189,6 +192,7 @@ class BaseValueError(ValueError):
         _logger.trace(f'Checking value for field {field_name}: {message}')
         super().__init__(message)
 
+
 class InvalidEmptyValue(BaseValueError):
     def __init__(self, field_name: str):
         super().__init__(field_name, 'an empty value is not allowed for this field')
@@ -209,9 +213,11 @@ from typing import ForwardRef
 
 KeyValue = ForwardRef('KeyValue')  # type: ignore
 
+
 class KeyValue(BaseModel):
     key: str
     value: 'list[KeyValue] | KeyValue | str | None'
+
 
 KeyValue.model_rebuild()
 ```
@@ -246,6 +252,7 @@ implementing the ABC and extending the selector — keep the public method surfa
 class KeyValueABC(ABC):
     @abstractmethod
     def create(self, context: str, key: str, value: Any) -> int: ...
+
 
 class KeyValueStore:
     @cached_property
