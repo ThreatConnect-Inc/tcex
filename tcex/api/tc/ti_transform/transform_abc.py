@@ -683,7 +683,7 @@ class TransformABC(ABC):
 
     def _transform_value_callable(
         self, value: dict | list | str, c: Callable | PredefinedFunctionModel, kwargs=None
-    ) -> str | None | list[str]:
+    ) -> str | list[str] | None:
         """Transform values in the TI data."""
         # find signature of method and call with correct args
         if isinstance(c, PredefinedFunctionModel):

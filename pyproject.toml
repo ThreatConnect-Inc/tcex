@@ -129,7 +129,7 @@ commit = false
 # Additional arguments to pass to the git commit command
 commit_args = "--no-verify"
 # The current version of the project
-current_version = "5.0.0"
+current_version = "5.0.1-dev0"
 # The commit message template used when committing version bumps
 message = "Version updated from {current_version} to {new_version}"
 # Regular expression for parsing version strings
@@ -250,6 +250,7 @@ ignore = [
   "PLR0912", # Too many branches
   "PLR0913", # Too many arguments in function definition
   "PLR0915", # Too many statements
+  "PLR0917", # Too many positional arguments in function definition
   "PT006", # Wrong name(s) type in ..., expected ...
   "TC001", # Move application import ... into a type-checking block
   "TC003", # Move standard library import ... into a type-checking block
