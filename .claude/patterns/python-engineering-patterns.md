@@ -50,6 +50,7 @@ import from `tcex.pleb` (not `functools`) so the test suite's `_reset()` can cle
 ```python
 from tcex.pleb.cached_property import cached_property
 
+
 @cached_property
 def api(self) -> API:
     """Return instance of API."""
@@ -75,8 +76,10 @@ where the surface is closed).
 from pydantic import BaseModel, Extra
 from tcex.util.string_operation import snake_to_camel
 
+
 class Config:
     """DataModel Config"""
+
     alias_generator = snake_to_camel
     validate_assignment = True
     extra = Extra.allow
@@ -147,6 +150,7 @@ class BaseValueError(ValueError):
         _logger.trace(f'Checking value for field {field_name}: {message}')
         super().__init__(message)
 
+
 class InvalidEmptyValue(BaseValueError):
     def __init__(self, field_name: str):
         super().__init__(field_name, 'an empty value is not allowed for this field')
@@ -164,9 +168,11 @@ Do this for any model that references itself or a not-yet-defined sibling.
 ```python
 KeyValue = ForwardRef('KeyValue')
 
+
 class KeyValue(BaseModel):
     key: str
     value: 'list[KeyValue] | KeyValue | str | None'
+
 
 KeyValue.update_forward_refs()
 ```
@@ -201,6 +207,7 @@ implementing the ABC and extending the selector — keep the public method surfa
 class KeyValueABC(ABC):
     @abstractmethod
     def create(self, context: str, key: str, value: Any) -> int: ...
+
 
 class KeyValueStore:
     @cached_property

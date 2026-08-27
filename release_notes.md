@@ -1,5 +1,10 @@
 # Release Notes
 
+## 4.0.12-dev0
+
+-   APP-5497 - [API] Fixed encoding when passing indicator value as an id
+
+
 ## 4.0.11
 
 -   APP-5036 - [Services] Updated message broker connection to not set tls_version
