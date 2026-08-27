@@ -63,7 +63,7 @@ class ObjectABC(ABC):  # noqa: B024
         ex_msg = 'Child class must implement this property.'
         raise NotImplementedError(ex_msg)
 
-    def _calculate_unique_id(self) -> dict[str, int | str]:
+    def _calculate_unique_id(self, encode_value: bool = False) -> dict[str, int | str]:
         if self.model.id:
             return {'filter': 'id', 'value': self.model.id}
 
@@ -71,7 +71,10 @@ class ObjectABC(ABC):  # noqa: B024
             return {'filter': 'xid', 'value': self.model.xid}  # type: ignore
 
         if self.type_.lower() in ['indicator']:
-            return {'filter': 'summary', 'value': self.model.summary}  # type: ignore
+            value = self.model.summary  # type: ignore
+            if encode_value and value is not None:
+                value = urllib.parse.quote(str(value), safe='')
+            return {'filter': 'summary', 'value': value}
 
         return {}
 
@@ -98,12 +101,15 @@ class ObjectABC(ABC):  # noqa: B024
                 unique_id_data.get('filter'),  # type: ignore
             )(TqlOperator.EQ, unique_id_data.get('value'))
 
+        # unique_id is later spliced into a URL by the generated remove() method - must be encoded.
+        parent_unique_id = self._calculate_unique_id(encode_value=True).get('value')
+
         # return the sub object, injecting the parent data
         for obj in sublist:
             obj._parent_data = {  # noqa: SLF001
                 'api_endpoint': self._api_endpoint,
                 'type': self.type_,
-                'unique_id': unique_id_data.get('value'),
+                'unique_id': parent_unique_id,
             }
             yield obj
         self.request = sublist.request
@@ -220,7 +226,7 @@ class ObjectABC(ABC):  # noqa: B024
         body = self.model.gen_body_json(method)
 
         # get the unique id value for id, xid, summary, etc ...
-        unique_id = self._calculate_unique_id().get('value')
+        unique_id = self._calculate_unique_id(encode_value=True).get('value')
 
         # validate an id is available
         self._validate_id(unique_id, self.url(method, unique_id))
@@ -284,7 +290,7 @@ class ObjectABC(ABC):  # noqa: B024
         params = self.gen_params(params) if params else None
 
         # get the unique id value for id, xid, summary, etc ...
-        unique_id = self._calculate_unique_id().get('value')
+        unique_id = self._calculate_unique_id(encode_value=True).get('value')
 
         # validate an id is available
         self._validate_id(unique_id, self.url(method, unique_id))
@@ -414,10 +420,10 @@ class ObjectABC(ABC):  # noqa: B024
         params = self.gen_params(params) if params else None
 
         # get the unique id value for id, xid, summary, etc ...
-        unique_id = self._calculate_unique_id().get('value')
+        unique_id = self._calculate_unique_id(encode_value=True).get('value')
 
         # validate an id is available
-        self._validate_id(unique_id, self.url(method))
+        self._validate_id(unique_id, self.url(method, unique_id))
 
         self._request(
             method,
@@ -436,7 +442,7 @@ class ObjectABC(ABC):  # noqa: B024
 
     def url(self, method: str, unique_id: int | str | None = None) -> str:
         """Return the proper URL."""
-        unique_id = unique_id or self._calculate_unique_id().get('value')
+        unique_id = unique_id or self._calculate_unique_id(encode_value=True).get('value')
         if method in ['DELETE', 'GET', 'PUT']:
             return f'{self._api_endpoint}/{unique_id}'
         return self._api_endpoint
