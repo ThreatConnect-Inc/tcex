@@ -1,8 +1,9 @@
 # Release Notes
 
-## 4.0.12
+## 4.0.12-dev0
 
 - APP-5511 - [Batch] Update dedupe logic to handle case-insenstive IOC types.
+- APP-5497 - [API] Fixed encoding when passing indicator value as an id
 
 ## 4.0.11
 

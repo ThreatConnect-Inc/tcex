@@ -68,15 +68,17 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-app = typer.Typer(add_completion=False, help="<what this script does>")
+app = typer.Typer(add_completion=False, help='<what this script does>')
 console = Console()
 
 
 @app.command()
 def main(
-    target: str = typer.Argument(..., help="<what to operate on>"),
+    target: str = typer.Argument(..., help='<what to operate on>'),
     commit: bool = typer.Option(
-        False, "--commit", help="Apply changes. Without this flag the script runs read-only (dry-run)."
+        False,
+        '--commit',
+        help='Apply changes. Without this flag the script runs read-only (dry-run).',
     ),
 ) -> None:
     """<command summary>."""
@@ -85,10 +87,10 @@ def main(
     # 3. if not commit: report what WOULD change and return
     # 4. if commit: perform the changes, then report what DID change
     if not commit:
-        console.print("[yellow]dry-run[/] — no changes written (pass --commit to apply)")
+        console.print('[yellow]dry-run[/] — no changes written (pass --commit to apply)')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app()
 ```
 

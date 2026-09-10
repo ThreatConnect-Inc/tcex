@@ -84,8 +84,11 @@ class GenerateFilterABC(GenerateABC, ABC):
             )
             _code.extend(
                 [
-                    f"""{self.i2}{filter_data.keyword.snake_case()} = self.util.any_to_datetime"""
-                    f"""({filter_data.keyword.snake_case()}).strftime('%Y-%m-%d %H:%M:%S')"""
+                    (
+                        f"""{self.i2}{filter_data.keyword.snake_case()} = """
+                        f"""self.util.any_to_datetime"""
+                        f"""({filter_data.keyword.snake_case()}).strftime('%Y-%m-%d %H:%M:%S')"""
+                    )
                 ]
             )
 
@@ -96,10 +99,12 @@ class GenerateFilterABC(GenerateABC, ABC):
                         f"""{self.i2}if isinstance({filter_data.keyword.snake_case()}, list) """
                         """and operator not in self.list_types:"""
                     ),
-                    f"""{self.i3}ex_msg = ("""
-                    f"""{self.i5}'Operator must be CONTAINS, NOT_CONTAINS, IN\'"""
-                    f"""{self.i5}'or NOT_IN when filtering on a list of values.\'"""
-                    f"""{self.i4})""",
+                    (
+                        f"""{self.i3}ex_msg = ("""
+                        f"""{self.i5}'Operator must be CONTAINS, NOT_CONTAINS, IN\'"""
+                        f"""{self.i5}'or NOT_IN when filtering on a list of values.\'"""
+                        f"""{self.i4})"""
+                    ),
                     f"""{self.i3}raise RuntimeError(ex_msg)""",
                     '',
                 ]
