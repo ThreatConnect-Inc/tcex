@@ -180,9 +180,16 @@ class BatchCleaner:
                     if fname:
                         keys.add(f'filename:{fname.lower()}')
             return keys
+
         if self.deduplicate_indicators:
+            # some IOC values are not case-senstive, handle those seperately.
+            if item.get('type') in {'ASN', 'CIDR', 'Hashtag', 'Host'}:
+                summary = item.get('summary')
+                return {summary.casefold()} if summary else set()
+
             summary = item.get('summary')
             return {summary} if summary else set()
+
         return set()
 
     @staticmethod
@@ -441,7 +448,7 @@ class BatchCleaner:
         Returns:
             A set of individual hash strings with whitespace stripped.
         """
-        return {h.strip() for h in summary.split(' : ') if h.strip()}
+        return {h.strip().casefold() for h in summary.split(' : ') if h.strip()}
 
     @cached_property
     def naics_tags(self) -> NAICSTags:
