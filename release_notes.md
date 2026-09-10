@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.0.12
+
+- APP-5511 - [Batch] Update dedupe logic to handle case-insenstive IOC types.
+
 ## 4.0.11
 
 -   APP-5036 - [Services] Updated message broker connection to not set tls_version
