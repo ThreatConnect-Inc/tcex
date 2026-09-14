@@ -1,5 +1,8 @@
 # Release Notes
 
+## 5.0.1
+- APP-5525 - [Batch] update batch dedup code to correctly handle case-insenstiive IOCs"
+
 ## 5.0.0
 
 -   APP-4971 - Updated TcEx to use Pydantic v2

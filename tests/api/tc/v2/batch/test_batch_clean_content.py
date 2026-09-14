@@ -1,5 +1,6 @@
 """Tests for BatchCleaner."""
 
+# standard library
 import json
 import logging
 import re
@@ -7,9 +8,11 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import Mock
 
+# third-party
 import pytest
 from deepdiff.diff import DeepDiff
 
+# first-party
 from tcex import TcEx
 from tcex.api.tc.v2.batch.batch_cleaner import BatchCleaner
 
@@ -626,6 +629,12 @@ def test_deduplicate_does_not_change_non_file_summary() -> None:
         (True, [make_indicator(None), make_indicator(None)], 2),
         (True, [make_file_indicator(MD5), make_file_indicator(f'{MD5} : {SHA256}')], 1),
         (True, [make_file_indicator(MD5), make_file_indicator(SHA256)], 2),
+        (True, [make_indicator('badsite.com', indicator_type='Host'),
+                make_indicator('BADSITE.com', indicator_type='Host')], 1),
+        (True, [make_indicator('ASN1234', indicator_type='ASN'),
+                make_indicator('asn1234', indicator_type='ASN')], 1),
+        (True, [make_indicator('#threatconnect', indicator_type='Hashtag'),
+                make_indicator('#THREATCONNECT', indicator_type='Hashtag')], 1),
     ],
     ids=[
         'same-summary-merged',
@@ -634,6 +643,9 @@ def test_deduplicate_does_not_change_non_file_summary() -> None:
         'null-summary-not-deduplicated',
         'file-hash-overlap-merged',
         'file-no-overlap-kept-separate',
+        'host-case-insensitive-merge',
+        'asn-case-insensitive-merge',
+        'hashtag-case-insensitive-merge'
     ],
 )
 def test_clean_indicator_dedup(
