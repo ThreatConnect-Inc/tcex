@@ -42,8 +42,7 @@ inline-tuple form, positional args, or the comma-string-ids shortcut. A leading 
         ),
     ],
 )
-def test_decrypt_aes_cbc(self, key, ciphertext, iv, expected):
-    ...
+def test_decrypt_aes_cbc(self, key, ciphertext, iv, expected): ...
 ```
 
 Rules:
@@ -147,6 +146,7 @@ real response surface (`.ok`, `.status_code`, `.json()`). Keep reusable mocks be
 ```python
 def mp_post(*args, **kwargs):
     return MockPost({}, ok=False)
+
 
 monkeypatch.setattr(tcex.session.tc, 'post', mp_post)
 ```

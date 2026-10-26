@@ -1,5 +1,9 @@
 # Release Notes
 
+## 5.0.1-dev0
+
+-   APP-5498 - [API] Fixed encoding when passing indicator value as an id
+
 ## 5.0.0
 
 -   APP-4971 - Updated TcEx to use Pydantic v2
