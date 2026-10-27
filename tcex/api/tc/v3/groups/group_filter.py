@@ -205,22 +205,6 @@ class GroupFilter(FilterABC):
 
         self._tql.add_filter('documentType', operator, document_type, TqlType.STRING)
 
-    def downvote_count(self, operator: Enum, downvote_count: int | list):
-        """Filter Downvote Count based on **downvoteCount** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            downvote_count: The number of downvotes the group has received.
-        """
-        if isinstance(downvote_count, list) and operator not in self.list_types:
-            ex_msg = (
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-            raise RuntimeError(ex_msg)
-
-        self._tql.add_filter('downvoteCount', operator, downvote_count, TqlType.INTEGER)
-
     def email_date(self, operator: Enum, email_date: Arrow | datetime | int | str):
         """Filter Date (Email) based on **emailDate** keyword.
 
@@ -980,22 +964,6 @@ class GroupFilter(FilterABC):
             raise RuntimeError(ex_msg)
 
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
-
-    def upvote_count(self, operator: Enum, upvote_count: int | list):
-        """Filter Upvote Count based on **upvoteCount** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            upvote_count: The number of upvotes the group has received.
-        """
-        if isinstance(upvote_count, list) and operator not in self.list_types:
-            ex_msg = (
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-            raise RuntimeError(ex_msg)
-
-        self._tql.add_filter('upvoteCount', operator, upvote_count, TqlType.INTEGER)
 
     def victim_asset(self, operator: Enum, victim_asset: list | str):
         """Filter victimAsset based on **victimAsset** keyword.

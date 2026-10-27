@@ -1,6 +1,6 @@
 """TcEx Framework Module"""
 
-import datetime
+import datetime as dt
 import logging
 from types import FunctionType
 from typing import TYPE_CHECKING, Any, cast
@@ -76,11 +76,11 @@ class Benchmark:
                 **kwargs: Additional keyword arguments.
             """
 
-            before = datetime.datetime.now(datetime.UTC)
+            before = dt.datetime.now(dt.UTC)
             data = wrapped(*args, **kwargs)
-            after = datetime.datetime.now(datetime.UTC)
+            after = dt.datetime.now(dt.UTC)
             delta = after - before
-            if delta > datetime.timedelta(
+            if delta > dt.timedelta(
                 microseconds=self.microseconds, milliseconds=self.milliseconds, seconds=self.seconds
             ):
                 # wrapt always wraps a function/method, which has __name__; cast for ty

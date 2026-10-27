@@ -87,6 +87,16 @@ class IndicatorModel(
         validate_default=True,
         json_schema_extra={'methods': ['POST', 'PUT']},
     )
+    cal_last_checked: datetime | None = Field(
+        default=None,
+        description=(
+            'The date/time CAL was last consulted for this indicator; null means CAL has never been'
+            ' checked.'
+        ),
+        frozen=True,
+        title='calLastChecked',
+        validate_default=True,
+    )
     cal_score: int | None = Field(
         default=None,
         description='The CAL score for this indicator.',
