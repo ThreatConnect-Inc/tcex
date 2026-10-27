@@ -1,8 +1,9 @@
 # Release Notes
 
-## 5.0.1-dev0
+## 5.0.1
 
 -   APP-5498 - [API] Fixed encoding when passing indicator value as an id
+-   APP-5525 - [Batch] update batch dedup code to correctly handle case-insensitive IOCs"
 -   APP-5622 - [AI] Hardened enforce_no_branch_change.sh / enforce_no_commit.sh hooks for portability
 -   APP-5623 - Loosened dependency version pins in pyproject.toml to reduce future CVE churn
 
