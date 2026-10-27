@@ -25,7 +25,7 @@ classifiers = [
 # List of runtime dependencies
 dependencies = [
   "arrow~=1.4.0",
-  "black~=26.5.1",
+  "black~=26.10.1",
   "inflection~=0.5.1",
   "isort~=8.0.1",
   "jmespath~=1.1.0",
