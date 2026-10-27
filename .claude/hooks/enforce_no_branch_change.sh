@@ -38,7 +38,17 @@ CMD="$(printf '%s' "$PAYLOAD" | jq -r '.tool_input.command // ""')"
 
 # Split the command into segments on shell separators: | || && ; |&
 # Replace each separator with a newline, then iterate segment-by-segment.
-SEGMENTS="$(printf '%s' "$CMD" | /opt/homebrew/opt/gnu-sed/libexec/gnubin/sed -E 's/\|\||&&|\|&|[|;&]/\n/g')"
+#
+# Uses the system `awk` deliberately (NOT a pinned Homebrew GNU path): this
+# hook must keep working on machines without Homebrew or gnu-sed (Linux, a
+# devcontainer, an Intel Mac, or a Mac without gnu-sed installed). Both BSD
+# awk (macOS default) and GNU awk accept this gsub. If the split ever fails,
+# `set -e` would abort the script before reaching `exit 2` below, and Claude
+# Code treats a non-0/non-2 PreToolUse exit as non-blocking — i.e. the guard
+# would silently fail OPEN. Relying on a universally-present tool like `awk`
+# (rather than a Homebrew-only `sed` build) is what keeps that failure mode
+# from happening in practice.
+SEGMENTS="$(printf '%s' "$CMD" | awk '{ gsub(/\|\||&&|\|&|[|;&]/, "\n"); print }')"
 
 block() {
     local reason="$1" segment="$2"

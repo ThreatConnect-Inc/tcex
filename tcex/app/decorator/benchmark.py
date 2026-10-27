@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # standard library
-import datetime
+import datetime as dt
 import logging
 from typing import TYPE_CHECKING, Any
 
@@ -79,11 +79,11 @@ class Benchmark:
                 **kwargs: Additional keyword arguments.
             """
 
-            before = datetime.datetime.now(datetime.UTC)
+            before = dt.datetime.now(dt.UTC)
             data = wrapped(*args, **kwargs)
-            after = datetime.datetime.now(datetime.UTC)
+            after = dt.datetime.now(dt.UTC)
             delta = after - before
-            if delta > datetime.timedelta(
+            if delta > dt.timedelta(
                 microseconds=self.microseconds, milliseconds=self.milliseconds, seconds=self.seconds
             ):
                 _logger.debug(f'function: "{wrapped.__name__}", benchmark_time: "{delta}"')  # ty: ignore[unresolved-attribute]
