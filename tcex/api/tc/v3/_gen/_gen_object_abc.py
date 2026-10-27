@@ -513,8 +513,10 @@ class GenerateObjectABC(GenerateABC, ABC):
             f'{self.i2}if all(isinstance(item, ({model_class} | ObjectABC)) for item in data):',
             f'{self.i3}transformed_data = data',
             f'{self.i2}elif all(isinstance(item, dict) for item in data):',
-            f'{self.i3}transformed_data = '
-            f'[{model_class}(**d) for d in data]  # ty: ignore[invalid-argument-type]',
+            (
+                f'{self.i3}transformed_data = '
+                f'[{model_class}(**d) for d in data]  # ty: ignore[invalid-argument-type]'
+            ),
             f'{self.i2}else:',
             f'{self.i3}ex_msg = "Invalid data to replace_{model_type.singular()}"',
             f'{self.i3}raise ValueError(ex_msg)',
@@ -700,8 +702,10 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'{self.i2}if isinstance(data, AssigneeModel):',
                 f'{self.i3}self.model.assignee = data',
                 f'{self.i2}elif isinstance(',
-                f'{self.i3}data, AssigneeUserModel | AssigneeUserGroupModel '
-                f'| UserModel | UserGroupModel',
+                (
+                    f'{self.i3}data, AssigneeUserModel | AssigneeUserGroupModel '
+                    f'| UserModel | UserGroupModel'
+                ),
                 f'{self.i2}):',
                 f'{self.i3}self.model.assignee.data = data  # type: ignore',
                 # f'{self.i2}data._staged = True

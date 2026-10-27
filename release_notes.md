@@ -1,7 +1,9 @@
 # Release Notes
 
-## 5.0.1
-- APP-5525 - [Batch] update batch dedup code to correctly handle case-insenstiive IOCs"
+## 5.0.1-dev0
+
+-   APP-5498 - [API] Fixed encoding when passing indicator value as an id
+-   APP-5525 - [Batch] update batch dedup code to correctly handle case-insenstiive IOCs"
 
 ## 5.0.0
 
