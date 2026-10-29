@@ -1,6 +1,6 @@
 """TcEx Framework Module"""
 
-import datetime
+import datetime as dt
 import hashlib
 import json
 import logging
@@ -28,7 +28,7 @@ class CustomJSONEncoder(JSONEncoder):
                 'Please verify that the object has been converted to a dictionary.'
             )
             raise ValueError(ex_msg)  # noqa: TRY004
-        if isinstance(o, datetime.date | datetime.datetime):
+        if isinstance(o, dt.date | dt.datetime):
             return o.isoformat()
         return o
 
