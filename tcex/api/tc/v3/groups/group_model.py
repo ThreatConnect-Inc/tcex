@@ -25,6 +25,22 @@ class GroupModel(
     _shared_type = PrivateAttr(default=False)
     _staged = PrivateAttr(default=False)
 
+    ai_last_retrieval_date: datetime | None = Field(
+        None,
+        applies_to=['Document', 'Report', 'Event'],
+        description='The date and time that the AI insight was produced in the external system.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='aiLastRetrievalDate',
+    )
+    ai_provider: str | None = Field(
+        None,
+        allow_mutation=False,
+        applies_to=['Document', 'Report', 'Event'],
+        description='The provider of the AI generated insights.',
+        read_only=True,
+        title='aiProvider',
+    )
     assignments: 'TaskAssigneesModel' = Field(
         None,
         description=(

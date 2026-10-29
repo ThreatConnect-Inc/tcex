@@ -86,6 +86,16 @@ class IndicatorModel(
         read_only=False,
         title='attributes',
     )
+    cal_last_checked: datetime | None = Field(
+        None,
+        allow_mutation=False,
+        description=(
+            'The date/time CAL was last consulted for this indicator; null means CAL has never been'
+            ' checked.'
+        ),
+        read_only=True,
+        title='calLastChecked',
+    )
     cal_score: int | None = Field(
         None,
         allow_mutation=False,

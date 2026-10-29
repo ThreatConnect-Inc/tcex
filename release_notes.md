@@ -2,8 +2,10 @@
 
 ## 4.0.12-dev0
 
-- APP-5511 - [Batch] Update dedupe logic to handle case-insensitive IOC types.
-- APP-5497 - [API] Fixed encoding when passing indicator value as an id
+-   APP-5511 - [Batch] Update dedupe logic to handle case-insensitive IOC types.
+-   APP-5497 - [API] Fixed encoding when passing indicator value as an id
+-   APP-5613 - [AI] Hardened enforce_no_branch_change.sh / enforce_no_commit.sh hooks for portability
+-   APP-5614 - Loosened dependency version pins in pyproject.toml to reduce future CVE churn
 
 ## 4.0.11
 
